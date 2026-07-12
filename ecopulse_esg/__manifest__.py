@@ -1,18 +1,14 @@
 {
     "name": "EcoPulse ESG",
-    "version": "1.0.0",
-    "summary": "Intelligent Environmental, Social and Governance management",
-    "description": """
-EcoPulse ESG converts everyday ERP operations into measurable,
-explainable and actionable sustainability insights.
-    """,
-    "author": "EcoPulse ESG Team",
-    "website": "https://github.com/ChinnamAbhishek/EcoPulse-ESG",
-    "category": "Operations/ESG",
+    "version": "19.0.1.0.0",
+    "summary": "Environmental, Social and Governance Management Platform",
+    "category": "Operations",
+    "author": "Abhishek Chinnam",
     "license": "LGPL-3",
 
     "depends": [
         "base",
+        "web",
         "mail",
         "hr",
         "product",
@@ -21,17 +17,23 @@ explainable and actionable sustainability insights.
     "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
-
         "data/sequence_data.xml",
 
-        "views/department_views.xml",
         "views/environmental_views.xml",
+        "views/department_views.xml",
+        "views/dashboard_action.xml",
         "views/menu_views.xml",
-    ],
 
-    "demo": [
         "data/demo_data.xml",
     ],
+
+    "assets": {
+        "web.assets_backend": [
+            "ecopulse_esg/static/src/dashboard/dashboard.js",
+            "ecopulse_esg/static/src/dashboard/dashboard.xml",
+            "ecopulse_esg/static/src/dashboard/dashboard.scss",
+        ],
+    },
 
     "application": True,
     "installable": True,

@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+    <t t-name="ecopulse_esg.EcoPulseDashboard">
+        <div class="o_ecopulse_dashboard">
+
+            <section class="eco_hero">
+                <div>
+                    <span class="eco_badge">ESG MANAGEMENT PLATFORM</span>
+
+                    <h1>EcoPulse ESG Dashboard</h1>
+
+                    <p>
+                        Track carbon emissions, sustainability goals,
+                        departments and emission factors.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="eco_refresh"
+                    t-on-click="refresh"
+                >
+                    <i class="fa fa-refresh me-2"/>
+                    Refresh
+                </button>
+            </section>
+
+            <div t-if="state.loading" class="eco_loading">
+                <div class="spinner-border" role="status"/>
+                <p>Loading dashboard...</p>
+            </div>
+
+            <section t-else="" class="eco_cards">
+
+                <article
+                    class="eco_card eco_green"
+                    t-on-click="openTransactions"
+                >
+                    <div class="eco_icon">
+                        <i class="fa fa-leaf"/>
+                    </div>
+
+                    <div>
+                        <span>Carbon Transactions</span>
+                        <strong t-esc="state.transactions"/>
+                        <small>Recorded emission activities</small>
+                    </div>
+                </article>
+
+                <article
+                    class="eco_card eco_blue"
+                    t-on-click="openGoals"
+                >
+                    <div class="eco_icon">
+                        <i class="fa fa-bullseye"/>
+                    </div>
+
+                    <div>
+                        <span>Environmental Goals</span>
+                        <strong t-esc="state.goals"/>
+                        <small>Sustainability targets</small>
+                    </div>
+                </article>
+
+                <article
+                    class="eco_card eco_orange"
+                    t-on-click="openDepartments"
+                >
+                    <div class="eco_icon">
+                        <i class="fa fa-building"/>
+                    </div>
+
+                    <div>
+                        <span>Departments</span>
+                        <strong t-esc="state.departments"/>
+                        <small>Organisation departments</small>
+                    </div>
+                </article>
+
+                <article
+                    class="eco_card eco_purple"
+                    t-on-click="openFactors"
+                >
+                    <div class="eco_icon">
+                        <i class="fa fa-calculator"/>
+                    </div>
+
+                    <div>
+                        <span>Emission Factors</span>
+                        <strong t-esc="state.factors"/>
+                        <small>Carbon calculation factors</small>
+                    </div>
+                </article>
+
+            </section>
+
+            <section class="eco_information">
+                <div class="eco_information_header">
+                    <h2>Environmental Performance</h2>
+
+                    <p>
+                        EcoPulse helps organisations calculate,
+                        monitor and manage ESG performance.
+                    </p>
+                </div>
+
+                <div class="eco_feature_grid">
+
+                    <div class="eco_feature">
+                        <i class="fa fa-cloud"/>
+                        <h3>Carbon Tracking</h3>
+                        <p>
+                            Record Scope 1, Scope 2 and Scope 3
+                            emission-generating activities.
+                        </p>
+                    </div>
+
+                    <div class="eco_feature">
+                        <i class="fa fa-line-chart"/>
+                        <h3>Goal Monitoring</h3>
+                        <p>
+                            Create environmental goals and monitor
+                            sustainability progress.
+                        </p>
+                    </div>
+
+                    <div class="eco_feature">
+                        <i class="fa fa-users"/>
+                        <h3>Department Analysis</h3>
+                        <p>
+                            Compare environmental performance across
+                            organisation departments.
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </t>
+</templates>
+'@ | Set-Content "$root\ecopulse_esg\static\src\dashboard\dashboard.xml" -Encoding UTF8

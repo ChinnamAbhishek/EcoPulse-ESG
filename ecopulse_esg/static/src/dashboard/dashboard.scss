@@ -1,0 +1,222 @@
+﻿.o_ecopulse_dashboard {
+    min-height: 100%;
+    padding: 28px;
+    background: #f3f7f5;
+    color: #183c31;
+}
+
+.eco_hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding: 30px;
+    border-radius: 22px;
+    background: linear-gradient(125deg, #075c45, #0e9c72);
+    box-shadow: 0 16px 40px rgba(7, 92, 69, 0.2);
+    color: #ffffff;
+}
+
+.eco_hero h1 {
+    margin: 10px 0 7px;
+    font-size: 32px;
+    font-weight: 750;
+}
+
+.eco_hero p {
+    max-width: 650px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.eco_badge {
+    display: inline-block;
+    padding: 6px 11px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.eco_refresh {
+    padding: 11px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    font-weight: 650;
+}
+
+.eco_refresh:hover {
+    background: rgba(255, 255, 255, 0.24);
+}
+
+.eco_loading {
+    display: flex;
+    min-height: 300px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    color: #668077;
+}
+
+.eco_cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.eco_card {
+    display: flex;
+    min-height: 150px;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px;
+    border: 1px solid rgba(20, 76, 58, 0.1);
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 8px 25px rgba(20, 76, 58, 0.07);
+    cursor: pointer;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.eco_card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(20, 76, 58, 0.13);
+}
+
+.eco_card span,
+.eco_card strong,
+.eco_card small {
+    display: block;
+}
+
+.eco_card span {
+    color: #6a8179;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.eco_card strong {
+    margin: 8px 0 5px;
+    color: #173f33;
+    font-size: 31px;
+}
+
+.eco_card small {
+    color: #879a93;
+    font-size: 11px;
+}
+
+.eco_icon {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 13px;
+    font-size: 19px;
+}
+
+.eco_green .eco_icon {
+    background: #e6f8f1;
+    color: #087d5c;
+}
+
+.eco_blue .eco_icon {
+    background: #e9f1ff;
+    color: #326bc4;
+}
+
+.eco_orange .eco_icon {
+    background: #fff0e6;
+    color: #d66a25;
+}
+
+.eco_purple .eco_icon {
+    background: #f1ebff;
+    color: #7750bf;
+}
+
+.eco_information {
+    overflow: hidden;
+    border: 1px solid rgba(20, 76, 58, 0.1);
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 8px 25px rgba(20, 76, 58, 0.06);
+}
+
+.eco_information_header {
+    padding: 22px 24px;
+    border-bottom: 1px solid #edf2ef;
+}
+
+.eco_information_header h2 {
+    margin: 0 0 5px;
+    font-size: 18px;
+}
+
+.eco_information_header p {
+    margin: 0;
+    color: #7c9189;
+    font-size: 12px;
+}
+
+.eco_feature_grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    padding: 24px;
+}
+
+.eco_feature {
+    padding: 20px;
+    border-radius: 15px;
+    background: #f6faf8;
+}
+
+.eco_feature i {
+    margin-bottom: 13px;
+    color: #07805e;
+    font-size: 23px;
+}
+
+.eco_feature h3 {
+    margin: 0 0 7px;
+    font-size: 14px;
+}
+
+.eco_feature p {
+    margin: 0;
+    color: #788e86;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+@media (max-width: 1050px) {
+    .eco_cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .o_ecopulse_dashboard {
+        padding: 14px;
+    }
+
+    .eco_hero {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .eco_cards,
+    .eco_feature_grid {
+        grid-template-columns: 1fr;
+    }
+}
+'@ | Set-Content "$root\ecopulse_esg\static\src\dashboard\dashboard.scss" -Encoding UTF8
