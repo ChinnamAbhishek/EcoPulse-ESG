@@ -9,3 +9,5 @@ venv/
 .venv/
 *.zip
 .DS_Store
+
+odoo/
