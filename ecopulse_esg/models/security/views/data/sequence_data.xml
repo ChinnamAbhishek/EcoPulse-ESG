@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="seq_ecopulse_carbon_transaction" model="ir.sequence">
+        <field name="name">Carbon Transaction</field>
+        <field name="code">ecopulse.carbon.transaction</field>
+        <field name="prefix">CARB/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

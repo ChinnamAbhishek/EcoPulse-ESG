@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem id="menu_ecopulse_root"
+              name="EcoPulse ESG"
+              sequence="10"
+              groups="ecopulse_esg.group_ecopulse_employee"/>
+
+    <menuitem id="menu_ecopulse_overview"
+              name="Overview"
+              parent="menu_ecopulse_root"
+              sequence="10"/>
+
+    <menuitem id="menu_ecopulse_environmental"
+              name="Environmental"
+              parent="menu_ecopulse_root"
+              sequence="20"/>
+
+    <menuitem id="menu_ecopulse_carbon_transactions"
+              name="Carbon Transactions"
+              parent="menu_ecopulse_environmental"
+              action="action_ecopulse_carbon_transaction"
+              sequence="10"/>
+
+    <menuitem id="menu_ecopulse_environmental_goals"
+              name="Environmental Goals"
+              parent="menu_ecopulse_environmental"
+              action="action_ecopulse_environmental_goal"
+              sequence="20"/>
+
+    <menuitem id="menu_ecopulse_configuration"
+              name="Configuration"
+              parent="menu_ecopulse_root"
+              sequence="90"
+              groups="ecopulse_esg.group_ecopulse_manager"/>
+
+    <menuitem id="menu_ecopulse_departments"
+              name="Departments"
+              parent="menu_ecopulse_configuration"
+              action="action_ecopulse_department"
+              sequence="10"/>
+
+    <menuitem id="menu_ecopulse_emission_factors"
+              name="Emission Factors"
+              parent="menu_ecopulse_configuration"
+              action="action_ecopulse_emission_factor"
+              sequence="20"/>
+</odoo>

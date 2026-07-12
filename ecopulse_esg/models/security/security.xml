@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="module_category_ecopulse_esg" model="ir.module.category">
+        <field name="name">EcoPulse ESG</field>
+        <field name="description">
+            Manage Environmental, Social and Governance activities.
+        </field>
+        <field name="sequence">35</field>
+    </record>
+
+    <record id="group_ecopulse_employee" model="res.groups">
+        <field name="name">ESG Employee</field>
+        <field name="category_id"
+               ref="ecopulse_esg.module_category_ecopulse_esg"/>
+    </record>
+
+    <record id="group_ecopulse_department_manager" model="res.groups">
+        <field name="name">ESG Department Manager</field>
+        <field name="category_id"
+               ref="ecopulse_esg.module_category_ecopulse_esg"/>
+        <field name="implied_ids"
+               eval="[(4, ref('ecopulse_esg.group_ecopulse_employee'))]"/>
+    </record>
+
+    <record id="group_ecopulse_manager" model="res.groups">
+        <field name="name">ESG Manager</field>
+        <field name="category_id"
+               ref="ecopulse_esg.module_category_ecopulse_esg"/>
+        <field name="implied_ids"
+               eval="[(4, ref('ecopulse_esg.group_ecopulse_department_manager'))]"/>
+    </record>
+
+    <record id="group_ecopulse_admin" model="res.groups">
+        <field name="name">ESG Administrator</field>
+        <field name="category_id"
+               ref="ecopulse_esg.module_category_ecopulse_esg"/>
+        <field name="implied_ids"
+               eval="[(4, ref('ecopulse_esg.group_ecopulse_manager'))]"/>
+        <field name="users"
+               eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="department_technology" model="ecopulse.department">
+        <field name="name">Technology</field>
+        <field name="code">TECH</field>
+        <field name="environmental_score">76</field>
+        <field name="social_score">82</field>
+        <field name="governance_score">75</field>
+    </record>
+
+    <record id="department_logistics" model="ecopulse.department">
+        <field name="name">Logistics</field>
+        <field name="code">LOG</field>
+        <field name="environmental_score">65</field>
+        <field name="social_score">72</field>
+        <field name="governance_score">70</field>
+    </record>
+
+    <record id="emission_factor_diesel" model="ecopulse.emission.factor">
+        <field name="name">Diesel Combustion</field>
+        <field name="source_type">diesel</field>
+        <field name="unit">litre</field>
+        <field name="factor_value">2.68</field>
+        <field name="factor_unit">kg CO2e/litre</field>
+        <field name="scope">scope_1</field>
+        <field name="region">India</field>
+    </record>
+
+    <record id="emission_factor_petrol" model="ecopulse.emission.factor">
+        <field name="name">Petrol Combustion</field>
+        <field name="source_type">petrol</field>
+        <field name="unit">litre</field>
+        <field name="factor_value">2.31</field>
+        <field name="factor_unit">kg CO2e/litre</field>
+        <field name="scope">scope_1</field>
+        <field name="region">India</field>
+    </record>
+
+    <record id="demo_carbon_transaction_diesel"
+            model="ecopulse.carbon.transaction">
+        <field name="source_module">fleet</field>
+        <field name="source_record_reference">FLEET-DEMO-001</field>
+        <field name="source_record_key">demo.fleet,1</field>
+        <field name="department_id"
+               ref="ecopulse_esg.department_logistics"/>
+        <field name="activity_quantity">100</field>
+        <field name="emission_factor_id"
+               ref="ecopulse_esg.emission_factor_diesel"/>
+        <field name="calculation_method">automatic</field>
+    </record>
+
+    <record id="goal_reduce_logistics_emissions"
+            model="ecopulse.environmental.goal">
+        <field name="name">Reduce Logistics Emissions by 20%</field>
+        <field name="department_id"
+               ref="ecopulse_esg.department_logistics"/>
+        <field name="metric_type">emission_reduction</field>
+        <field name="baseline_value">1000</field>
+        <field name="target_value">800</field>
+        <field name="current_value">900</field>
+        <field name="start_date">2026-07-01</field>
+        <field name="end_date">2026-12-31</field>
+        <field name="description">
+            Reduce fleet and transportation emissions through route
+            optimization, maintenance and green mobility.
+        </field>
+    </record>
+</odoo>

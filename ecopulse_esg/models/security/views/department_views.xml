@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_ecopulse_department_list" model="ir.ui.view">
+        <field name="name">ecopulse.department.list</field>
+        <field name="model">ecopulse.department</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="status == 'inactive'">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="department_head_id"/>
+                <field name="employee_count"/>
+                <field name="environmental_score"/>
+                <field name="social_score"/>
+                <field name="governance_score"/>
+                <field name="total_esg_score"/>
+                <field name="total_emissions"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecopulse_department_form" model="ir.ui.view">
+        <field name="name">ecopulse.department.form</field>
+        <field name="model">ecopulse.department</field>
+        <field name="arch" type="xml">
+            <form string="ESG Department">
+                <header>
+                    <button name="action_recalculate_environmental_score"
+                            string="Recalculate Environmental Score"
+                            type="object"
+                            class="btn-primary"
+                            groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                    <field name="status" widget="statusbar"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button"
+                                type="action"
+                                name="%(action_ecopulse_carbon_transaction)d"
+                                icon="fa-leaf">
+                            <field name="total_emissions"
+                                   widget="statinfo"
+                                   string="kg CO2e"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Example: Technology"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="department_head_id"/>
+                            <field name="parent_department_id"/>
+                            <field name="employee_count" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="environmental_score"/>
+                            <field name="social_score"/>
+                            <field name="governance_score"/>
+                            <field name="total_esg_score" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Score Configuration">
+                            <group>
+                                <field name="environmental_weight"/>
+                                <field name="social_weight"/>
+                                <field name="governance_weight"/>
+                            </group>
+                        </page>
+
+                        <page string="Child Departments">
+                            <field name="child_department_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="department_head_id"/>
+                                    <field name="total_esg_score"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Carbon Transactions">
+                            <field name="carbon_transaction_ids" readonly="1">
+                                <list>
+                                    <field name="reference"/>
+                                    <field name="transaction_date"/>
+                                    <field name="source_module"/>
+                                    <field name="activity_quantity"/>
+                                    <field name="activity_unit"/>
+                                    <field name="calculated_emission"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ecopulse_department_search" model="ir.ui.view">
+        <field name="name">ecopulse.department.search</field>
+        <field name="model">ecopulse.department</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="department_head_id"/>
+
+                <filter name="active_departments"
+                        string="Active"
+                        domain="[('status', '=', 'active')]"/>
+
+                <filter name="inactive_departments"
+                        string="Inactive"
+                        domain="[('status', '=', 'inactive')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_parent"
+                            string="Parent Department"
+                            context="{'group_by': 'parent_department_id'}"/>
+
+                    <filter name="group_status"
+                            string="Status"
+                            context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ecopulse_department" model="ir.actions.act_window">
+        <field name="name">Departments</field>
+        <field name="res_model">ecopulse.department</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="search_view_id"
+               ref="view_ecopulse_department_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first ESG department.
+            </p>
+        </field>
+    </record>
+</odoo>

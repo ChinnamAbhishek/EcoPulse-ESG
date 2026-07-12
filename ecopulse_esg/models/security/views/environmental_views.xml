@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Emission Factor Views -->
+
+    <record id="view_ecopulse_emission_factor_list" model="ir.ui.view">
+        <field name="name">ecopulse.emission.factor.list</field>
+        <field name="model">ecopulse.emission.factor</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="status == 'inactive'">
+                <field name="name"/>
+                <field name="source_type"/>
+                <field name="unit"/>
+                <field name="factor_value"/>
+                <field name="factor_unit"/>
+                <field name="scope"/>
+                <field name="region"/>
+                <field name="valid_from"/>
+                <field name="valid_to"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecopulse_emission_factor_form" model="ir.ui.view">
+        <field name="name">ecopulse.emission.factor.form</field>
+        <field name="model">ecopulse.emission.factor</field>
+        <field name="arch" type="xml">
+            <form string="Emission Factor">
+                <header>
+                    <field name="status" widget="statusbar"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Example: Diesel Combustion"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="source_type"/>
+                            <field name="unit"/>
+                            <field name="factor_value"/>
+                            <field name="factor_unit"/>
+                        </group>
+
+                        <group>
+                            <field name="scope"/>
+                            <field name="region"/>
+                            <field name="valid_from"/>
+                            <field name="valid_to"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"
+                                   placeholder="Source and calculation notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ecopulse_emission_factor"
+            model="ir.actions.act_window">
+        <field name="name">Emission Factors</field>
+        <field name="res_model">ecopulse.emission.factor</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Carbon Transaction Views -->
+
+    <record id="view_ecopulse_carbon_transaction_list"
+            model="ir.ui.view">
+        <field name="name">ecopulse.carbon.transaction.list</field>
+        <field name="model">ecopulse.carbon.transaction</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'verified'"
+                  decoration-muted="status == 'cancelled'"
+                  decoration-warning="status == 'draft'">
+                <field name="reference"/>
+                <field name="transaction_date"/>
+                <field name="department_id"/>
+                <field name="source_module"/>
+                <field name="activity_quantity"/>
+                <field name="activity_unit"/>
+                <field name="emission_factor_id"/>
+                <field name="calculated_emission"/>
+                <field name="scope"/>
+                <field name="calculation_method"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecopulse_carbon_transaction_form"
+            model="ir.ui.view">
+        <field name="name">ecopulse.carbon.transaction.form</field>
+        <field name="model">ecopulse.carbon.transaction</field>
+        <field name="arch" type="xml">
+            <form string="Carbon Transaction">
+                <header>
+                    <button name="action_calculate"
+                            string="Calculate"
+                            type="object"
+                            class="btn-primary"
+                            invisible="status != 'draft'"/>
+
+                    <button name="action_verify"
+                            string="Verify"
+                            type="object"
+                            class="btn-primary"
+                            invisible="status != 'calculated'"
+                            groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            invisible="status in ('verified', 'cancelled')"/>
+
+                    <button name="action_reset_to_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="status != 'cancelled'"/>
+
+                    <field name="status"
+                           widget="statusbar"
+                           statusbar_visible="draft,calculated,verified,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <label for="reference"/>
+                        <h1>
+                            <field name="reference"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Source Information">
+                            <field name="source_module"/>
+                            <field name="source_record_reference"/>
+                            <field name="source_record_key"
+                                   groups="ecopulse_esg.group_ecopulse_admin"/>
+                            <field name="department_id"/>
+                            <field name="transaction_date"/>
+                        </group>
+
+                        <group string="Emission Calculation">
+                            <field name="activity_quantity"/>
+                            <field name="activity_unit" readonly="1"/>
+                            <field name="emission_factor_id"/>
+                            <field name="factor_value" readonly="1"/>
+                            <field name="scope" readonly="1"/>
+                            <field name="calculated_emission"
+                                   readonly="1"
+                                   class="oe_inline"/>
+                            <field name="calculation_method"/>
+                        </group>
+                    </group>
+
+                    <group string="Calculation Preview">
+                        <label string="Formula"/>
+                        <div class="alert alert-info" role="alert">
+                            Activity Quantity × Emission Factor =
+                            Calculated Emission
+                        </div>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ecopulse_carbon_transaction_search"
+            model="ir.ui.view">
+        <field name="name">ecopulse.carbon.transaction.search</field>
+        <field name="model">ecopulse.carbon.transaction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="department_id"/>
+                <field name="emission_factor_id"/>
+                <field name="source_record_reference"/>
+
+                <filter name="verified"
+                        string="Verified"
+                        domain="[('status', '=', 'verified')]"/>
+
+                <filter name="automatic"
+                        string="Automatically Calculated"
+                        domain="[('calculation_method', '=', 'automatic')]"/>
+
+                <filter name="scope_1"
+                        string="Scope 1"
+                        domain="[('scope', '=', 'scope_1')]"/>
+
+                <filter name="scope_2"
+                        string="Scope 2"
+                        domain="[('scope', '=', 'scope_2')]"/>
+
+                <filter name="scope_3"
+                        string="Scope 3"
+                        domain="[('scope', '=', 'scope_3')]"/>
+
+                <separator/>
+
+                <filter name="transaction_date"
+                        string="Transaction Date"
+                        date="transaction_date"/>
+
+                <group expand="0" string="Group By">
+                    <filter name="group_department"
+                            string="Department"
+                            context="{'group_by': 'department_id'}"/>
+
+                    <filter name="group_source"
+                            string="Source"
+                            context="{'group_by': 'source_module'}"/>
+
+                    <filter name="group_scope"
+                            string="Scope"
+                            context="{'group_by': 'scope'}"/>
+
+                    <filter name="group_month"
+                            string="Month"
+                            context="{'group_by': 'transaction_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_ecopulse_carbon_transaction_graph"
+            model="ir.ui.view">
+        <field name="name">ecopulse.carbon.transaction.graph</field>
+        <field name="model">ecopulse.carbon.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="Carbon Emissions" type="bar">
+                <field name="department_id"/>
+                <field name="calculated_emission" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_ecopulse_carbon_transaction_pivot"
+            model="ir.ui.view">
+        <field name="name">ecopulse.carbon.transaction.pivot</field>
+        <field name="model">ecopulse.carbon.transaction</field>
+        <field name="arch" type="xml">
+            <pivot string="Carbon Analysis">
+                <field name="department_id" type="row"/>
+                <field name="source_module" type="col"/>
+                <field name="calculated_emission" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_ecopulse_carbon_transaction"
+            model="ir.actions.act_window">
+        <field name="name">Carbon Transactions</field>
+        <field name="res_model">ecopulse.carbon.transaction</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+        <field name="search_view_id"
+               ref="view_ecopulse_carbon_transaction_search"/>
+    </record>
+
+    <!-- Environmental Goal Views -->
+
+    <record id="view_ecopulse_environmental_goal_list"
+            model="ir.ui.view">
+        <field name="name">ecopulse.environmental.goal.list</field>
+        <field name="model">ecopulse.environmental.goal</field>
+        <field name="arch" type="xml">
+            <list decoration-success="status == 'completed'"
+                  decoration-danger="status == 'at_risk'"
+                  decoration-muted="status == 'cancelled'">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="metric_type"/>
+                <field name="baseline_value"/>
+                <field name="target_value"/>
+                <field name="current_value"/>
+                <field name="progress_percentage"
+                       widget="progressbar"/>
+                <field name="end_date"/>
+                <field name="risk_level"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ecopulse_environmental_goal_form"
+            model="ir.ui.view">
+        <field name="name">ecopulse.environmental.goal.form</field>
+        <field name="model">ecopulse.environmental.goal</field>
+        <field name="arch" type="xml">
+            <form string="Environmental Goal">
+                <header>
+                    <field name="status"
+                           widget="statusbar"
+                           statusbar_visible="draft,active,at_risk,completed,cancelled"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Example: Reduce Fleet Emissions"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="department_id"/>
+                            <field name="metric_type"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+
+                        <group>
+                            <field name="baseline_value"/>
+                            <field name="target_value"/>
+                            <field name="current_value"/>
+                            <field name="progress_percentage"
+                                   widget="progressbar"
+                                   readonly="1"/>
+                            <field name="risk_level" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ecopulse_environmental_goal"
+            model="ir.actions.act_window">
+        <field name="name">Environmental Goals</field>
+        <field name="res_model">ecopulse.environmental.goal</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+    </record>
+</odoo>
