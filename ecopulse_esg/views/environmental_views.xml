@@ -167,9 +167,9 @@
                     </group>
 
                     <group string="Calculation Preview">
-                        <label string="Formula"/>
+                        <div class="o_form_label">Formula</div>
                         <div class="alert alert-info" role="alert">
-                            Activity Quantity × Emission Factor =
+                            Activity Quantity Ã— Emission Factor =
                             Calculated Emission
                         </div>
                     </group>
@@ -223,7 +223,7 @@
                         string="Transaction Date"
                         date="transaction_date"/>
 
-                <group expand="0" string="Group By">
+                <group string="Group By">
                     <filter name="group_department"
                             string="Department"
                             context="{'group_by': 'department_id'}"/>
