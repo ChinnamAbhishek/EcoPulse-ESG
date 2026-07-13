@@ -58,7 +58,7 @@
                     <h3>Preparing sustainability intelligence</h3>
 
                     <p>
-                        Loading live carbon, goal and department analytics...
+                        Loading carbon, goal and department analytics...
                     </p>
 
                 </div>
@@ -69,7 +69,250 @@
             <!-- Main Dashboard -->
             <t t-else="">
 
-                <!-- Primary KPI Cards -->
+                <!-- Interactive Filters -->
+                <section class="eco_filter_panel">
+
+                    <div class="eco_filter_header">
+
+                        <div class="eco_filter_title">
+
+                            <div class="eco_filter_title_icon">
+                                <i class="fa fa-filter"/>
+                            </div>
+
+                            <div>
+                                <h2>Interactive ESG Filters</h2>
+
+                                <p>
+                                    Filter transactions and instantly
+                                    update dashboard analytics.
+                                </p>
+                            </div>
+
+                        </div>
+
+                        <div class="eco_filter_header_actions">
+
+                            <div class="eco_filtered_count">
+                                <span>Matching Records</span>
+
+                                <strong>
+                                    <t t-esc="state.filteredTransactionCount"/>
+                                </strong>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="btn eco_export_button"
+                                t-on-click="exportFilteredTransactions">
+
+                                <i class="fa fa-download me-2"/>
+                                Export CSV
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="eco_filter_grid">
+
+                        <!-- Start Date -->
+                        <div class="eco_filter_field">
+
+                            <label for="eco_filter_start_date">
+                                <i class="fa fa-calendar-o me-1"/>
+                                Start Date
+                            </label>
+
+                            <input
+                                id="eco_filter_start_date"
+                                type="date"
+                                class="form-control eco_filter_control"
+                                t-model="state.filters.startDate"/>
+
+                        </div>
+
+
+                        <!-- End Date -->
+                        <div class="eco_filter_field">
+
+                            <label for="eco_filter_end_date">
+                                <i class="fa fa-calendar-check-o me-1"/>
+                                End Date
+                            </label>
+
+                            <input
+                                id="eco_filter_end_date"
+                                type="date"
+                                class="form-control eco_filter_control"
+                                t-model="state.filters.endDate"/>
+
+                        </div>
+
+
+                        <!-- Department -->
+                        <div class="eco_filter_field">
+
+                            <label for="eco_filter_department">
+                                <i class="fa fa-building-o me-1"/>
+                                Department
+                            </label>
+
+                            <select
+                                id="eco_filter_department"
+                                class="form-select eco_filter_control"
+                                t-model="state.filters.departmentId">
+
+                                <option value="">
+                                    All Departments
+                                </option>
+
+                                <t
+                                    t-foreach="state.departmentOptions"
+                                    t-as="department"
+                                    t-key="department.id">
+
+                                    <option t-att-value="department.id">
+                                        <t t-esc="department.name"/>
+                                    </option>
+
+                                </t>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Scope -->
+                        <div class="eco_filter_field">
+
+                            <label for="eco_filter_scope">
+                                <i class="fa fa-pie-chart me-1"/>
+                                Emission Scope
+                            </label>
+
+                            <select
+                                id="eco_filter_scope"
+                                class="form-select eco_filter_control"
+                                t-model="state.filters.scope">
+
+                                <option value="">
+                                    All Scopes
+                                </option>
+
+                                <option value="scope_1">
+                                    Scope 1
+                                </option>
+
+                                <option value="scope_2">
+                                    Scope 2
+                                </option>
+
+                                <option value="scope_3">
+                                    Scope 3
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Status -->
+                        <div class="eco_filter_field">
+
+                            <label for="eco_filter_status">
+                                <i class="fa fa-check-square-o me-1"/>
+                                Transaction Status
+                            </label>
+
+                            <select
+                                id="eco_filter_status"
+                                class="form-select eco_filter_control"
+                                t-model="state.filters.status">
+
+                                <option value="">
+                                    All Statuses
+                                </option>
+
+                                <option value="draft">
+                                    Draft
+                                </option>
+
+                                <option value="calculated">
+                                    Calculated
+                                </option>
+
+                                <option value="verified">
+                                    Verified
+                                </option>
+
+                                <option value="cancelled">
+                                    Cancelled
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Filter Buttons -->
+                        <div class="eco_filter_buttons">
+
+                            <button
+                                type="button"
+                                class="btn eco_apply_filter_button"
+                                t-on-click="applyFilters">
+
+                                <i class="fa fa-check me-2"/>
+                                Apply Filters
+
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn eco_reset_filter_button"
+                                t-on-click="resetFilters">
+
+                                <i class="fa fa-undo me-2"/>
+                                Reset
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <t t-if="state.filtersApplied">
+
+                        <div class="eco_active_filter_banner">
+
+                            <div>
+                                <i class="fa fa-info-circle me-2"/>
+
+                                Dashboard analytics are showing filtered
+                                transaction data.
+                            </div>
+
+                            <button
+                                type="button"
+                                class="eco_clear_filter_link"
+                                t-on-click="resetFilters">
+
+                                Clear all filters
+
+                            </button>
+
+                        </div>
+
+                    </t>
+
+                </section>
+
+
+                <!-- Main KPI Cards -->
                 <section class="eco_kpi_grid">
 
                     <article
@@ -99,7 +342,7 @@
                         </div>
 
                         <div class="eco_kpi_unit">
-                            kg CO₂e recorded
+                            kg CO₂e in selected records
                         </div>
 
                     </article>
@@ -124,15 +367,15 @@
                         </div>
 
                         <div class="eco_kpi_label">
-                            Carbon Transactions
+                            Matching Transactions
                         </div>
 
                         <div class="eco_kpi_value">
-                            <t t-esc="state.carbonTransactions"/>
+                            <t t-esc="state.filteredTransactionCount"/>
                         </div>
 
                         <div class="eco_kpi_unit">
-                            emission activity records
+                            records matching filters
                         </div>
 
                     </article>
@@ -206,7 +449,7 @@
                 </section>
 
 
-                <!-- Transaction Status Cards -->
+                <!-- Transaction Status -->
                 <section class="eco_status_summary_grid">
 
                     <div class="eco_status_summary_card">
@@ -290,8 +533,8 @@
                                 <h2>Monthly Emission Trend</h2>
 
                                 <p>
-                                    Carbon emissions recorded during the
-                                    latest twelve active months.
+                                    Monthly carbon totals calculated from
+                                    the selected transaction records.
                                 </p>
                             </div>
 
@@ -377,21 +620,12 @@
                                     <i class="fa fa-bar-chart"/>
                                 </div>
 
-                                <h3>No monthly emission data</h3>
+                                <h3>No matching emission data</h3>
 
                                 <p>
-                                    Add carbon transactions to generate
-                                    monthly emission analytics.
+                                    Change the selected filters or add
+                                    carbon transactions.
                                 </p>
-
-                                <button
-                                    type="button"
-                                    class="btn eco_refresh_button"
-                                    t-on-click="createCarbonTransaction">
-
-                                    Add Carbon Transaction
-
-                                </button>
 
                             </div>
 
@@ -400,7 +634,7 @@
                     </article>
 
 
-                    <!-- Department Leaderboard -->
+                    <!-- Department Ranking -->
                     <article class="eco_panel">
 
                         <div class="eco_panel_header">
@@ -409,8 +643,8 @@
                                 <h2>Department Emission Leaderboard</h2>
 
                                 <p>
-                                    Departments ranked by total carbon
-                                    emissions.
+                                    Departments ranked using the filtered
+                                    transaction data.
                                 </p>
                             </div>
 
@@ -501,7 +735,7 @@
                         <t t-else="">
 
                             <div class="eco_small_empty_state">
-                                No department emission information available.
+                                No matching department emission data.
                             </div>
 
                         </t>
@@ -514,7 +748,6 @@
                 <!-- Scope and Source Analytics -->
                 <section class="eco_content_grid">
 
-                    <!-- Scope Distribution -->
                     <article class="eco_panel">
 
                         <div class="eco_panel_header">
@@ -523,7 +756,7 @@
                                 <h2>Emission Scope Distribution</h2>
 
                                 <p>
-                                    Carbon emissions divided across
+                                    Filtered carbon emissions divided across
                                     operational scopes.
                                 </p>
                             </div>
@@ -552,11 +785,9 @@
                             </div>
 
                             <div class="eco_progress_track">
-
                                 <div
                                     class="eco_progress_fill eco_fill_1"
                                     t-att-style="'width: ' + state.scope1Percent + '%'"/>
-
                             </div>
 
                             <small>
@@ -584,11 +815,9 @@
                             </div>
 
                             <div class="eco_progress_track">
-
                                 <div
                                     class="eco_progress_fill eco_fill_2"
                                     t-att-style="'width: ' + state.scope2Percent + '%'"/>
-
                             </div>
 
                             <small>
@@ -616,11 +845,9 @@
                             </div>
 
                             <div class="eco_progress_track">
-
                                 <div
                                     class="eco_progress_fill eco_fill_3"
                                     t-att-style="'width: ' + state.scope3Percent + '%'"/>
-
                             </div>
 
                             <small>
@@ -633,7 +860,7 @@
                     </article>
 
 
-                    <!-- Source Analytics -->
+                    <!-- Emission Sources -->
                     <article class="eco_panel">
 
                         <div class="eco_panel_header">
@@ -682,10 +909,8 @@
                                     <div class="eco_source_card">
 
                                         <div class="eco_source_icon">
-
                                             <i
                                                 t-att-class="'fa ' + getSourceIcon(source.key)"/>
-
                                         </div>
 
                                         <div class="eco_source_details">
@@ -723,7 +948,7 @@
                         <t t-else="">
 
                             <div class="eco_small_empty_state">
-                                No source analytics available.
+                                No matching source analytics available.
                             </div>
 
                         </t>
@@ -733,7 +958,7 @@
                 </section>
 
 
-                <!-- Goal Analytics and Alerts -->
+                <!-- Goal Analytics -->
                 <section class="eco_goal_analytics">
 
                     <article class="eco_panel">
@@ -765,46 +990,35 @@
                         <div class="eco_goal_summary_grid">
 
                             <div class="eco_goal_summary">
-
                                 <span>Average Progress</span>
 
                                 <strong>
                                     <t t-esc="state.averageGoalProgress"/>%
                                 </strong>
-
                             </div>
 
-
                             <div class="eco_goal_summary">
-
                                 <span>Active Goals</span>
 
                                 <strong>
                                     <t t-esc="state.activeGoals"/>
                                 </strong>
-
                             </div>
 
-
                             <div class="eco_goal_summary eco_goal_summary_success">
-
                                 <span>Completed</span>
 
                                 <strong>
                                     <t t-esc="state.completedGoals"/>
                                 </strong>
-
                             </div>
 
-
                             <div class="eco_goal_summary eco_goal_summary_risk">
-
                                 <span>At Risk</span>
 
                                 <strong>
                                     <t t-esc="state.atRiskGoals"/>
                                 </strong>
-
                             </div>
 
                         </div>
@@ -999,7 +1213,7 @@
                 </section>
 
 
-                <!-- Recent Carbon Transactions -->
+                <!-- Recent Transactions -->
                 <section class="eco_panel eco_recent_panel">
 
                     <div class="eco_panel_header">
@@ -1008,20 +1222,34 @@
                             <h2>Recent Carbon Transactions</h2>
 
                             <p>
-                                Latest emission activities recorded in
-                                EcoPulse ESG.
+                                Most recent transaction records matching
+                                the selected filters.
                             </p>
                         </div>
 
-                        <button
-                            type="button"
-                            class="btn eco_text_button"
-                            t-on-click="openCarbonTransactions">
+                        <div class="eco_table_header_actions">
 
-                            View all transactions
-                            <i class="fa fa-arrow-right ms-2"/>
+                            <button
+                                type="button"
+                                class="btn eco_export_small_button"
+                                t-on-click="exportFilteredTransactions">
 
-                        </button>
+                                <i class="fa fa-download me-1"/>
+                                Export CSV
+
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn eco_text_button"
+                                t-on-click="openCarbonTransactions">
+
+                                View all
+                                <i class="fa fa-arrow-right ms-2"/>
+
+                            </button>
+
+                        </div>
 
                     </div>
 
@@ -1033,7 +1261,6 @@
                             <table class="table eco_transaction_table">
 
                                 <thead>
-
                                     <tr>
                                         <th>Reference</th>
                                         <th>Date</th>
@@ -1043,7 +1270,6 @@
                                         <th>Emission</th>
                                         <th>Status</th>
                                     </tr>
-
                                 </thead>
 
                                 <tbody>
@@ -1127,22 +1353,22 @@
                         <div class="eco_empty_state">
 
                             <div class="eco_empty_icon">
-                                <i class="fa fa-leaf"/>
+                                <i class="fa fa-filter"/>
                             </div>
 
-                            <h3>No carbon transactions yet</h3>
+                            <h3>No matching transactions</h3>
 
                             <p>
-                                Add the first transaction to begin
-                                carbon-emission analysis.
+                                Change or reset the filters to display
+                                transaction records.
                             </p>
 
                             <button
                                 type="button"
                                 class="btn eco_refresh_button"
-                                t-on-click="createCarbonTransaction">
+                                t-on-click="resetFilters">
 
-                                Add First Transaction
+                                Reset Filters
 
                             </button>
 
@@ -1187,10 +1413,7 @@
 
                             <span>
                                 <strong>Record Carbon Activity</strong>
-
-                                <small>
-                                    Add a new emission transaction
-                                </small>
+                                <small>Add a new emission transaction</small>
                             </span>
 
                             <i class="fa fa-chevron-right"/>
@@ -1209,10 +1432,7 @@
 
                             <span>
                                 <strong>Create Environmental Goal</strong>
-
-                                <small>
-                                    Define a sustainability target
-                                </small>
+                                <small>Define a sustainability target</small>
                             </span>
 
                             <i class="fa fa-chevron-right"/>
@@ -1231,10 +1451,7 @@
 
                             <span>
                                 <strong>Manage Emission Factors</strong>
-
-                                <small>
-                                    Configure calculation values
-                                </small>
+                                <small>Configure calculation values</small>
                             </span>
 
                             <i class="fa fa-chevron-right"/>
@@ -1253,10 +1470,7 @@
 
                             <span>
                                 <strong>Department Performance</strong>
-
-                                <small>
-                                    Review departmental ESG data
-                                </small>
+                                <small>Review departmental ESG data</small>
                             </span>
 
                             <i class="fa fa-chevron-right"/>
@@ -1268,7 +1482,7 @@
                 </section>
 
 
-                <!-- Footer Banner -->
+                <!-- Footer -->
                 <section class="eco_footer_banner">
 
                     <div class="eco_footer_icon">
@@ -1307,5 +1521,5 @@
         </div>
 
     </t>
-    
+
 </templates>
