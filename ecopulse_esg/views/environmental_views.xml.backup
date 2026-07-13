@@ -169,7 +169,7 @@
                     <group string="Calculation Preview">
                         <div class="o_form_label">Formula</div>
                         <div class="alert alert-info" role="alert">
-                            Activity Quantity Ãƒâ€” Emission Factor =
+                            Activity Quantity Ã— Emission Factor =
                             Calculated Emission
                         </div>
                     </group>
@@ -185,12 +185,13 @@
             </form>
         </field>
     </record>
-    <record id="view_ecopulse_carbon_transaction_search" model="ir.ui.view">
+
+    <record id="view_ecopulse_carbon_transaction_search"
+            model="ir.ui.view">
         <field name="name">ecopulse.carbon.transaction.search</field>
         <field name="model">ecopulse.carbon.transaction</field>
         <field name="arch" type="xml">
-            <search string="Search Carbon Transactions">
-
+            <search>
                 <field name="reference"/>
                 <field name="department_id"/>
                 <field name="emission_factor_id"/>
@@ -216,26 +217,29 @@
                         string="Scope 3"
                         domain="[('scope', '=', 'scope_3')]"/>
 
+                <separator/>
+
                 <filter name="transaction_date"
                         string="Transaction Date"
                         date="transaction_date"/>
 
-                <filter name="group_department"
-                        string="Group by Department"
-                        context="{'group_by': 'department_id'}"/>
+                <group string="Group By">
+                    <filter name="group_department"
+                            string="Department"
+                            context="{'group_by': 'department_id'}"/>
 
-                <filter name="group_emission_factor"
-                        string="Group by Emission Factor"
-                        context="{'group_by': 'emission_factor_id'}"/>
+                    <filter name="group_source"
+                            string="Source"
+                            context="{'group_by': 'source_module'}"/>
 
-                <filter name="group_scope"
-                        string="Group by Scope"
-                        context="{'group_by': 'scope'}"/>
+                    <filter name="group_scope"
+                            string="Scope"
+                            context="{'group_by': 'scope'}"/>
 
-                <filter name="group_status"
-                        string="Group by Status"
-                        context="{'group_by': 'status'}"/>
-
+                    <filter name="group_month"
+                            string="Month"
+                            context="{'group_by': 'transaction_date:month'}"/>
+                </group>
             </search>
         </field>
     </record>

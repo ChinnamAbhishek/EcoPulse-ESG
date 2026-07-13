@@ -18,12 +18,10 @@
         "security/security.xml",
         "security/ir.model.access.csv",
         "data/sequence_data.xml",
-
         "views/environmental_views.xml",
         "views/department_views.xml",
         "views/dashboard_action.xml",
         "views/menu_views.xml",
-
         "data/demo_data.xml",
     ],
 

@@ -1,143 +1,473 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-
 <templates xml:space="preserve">
+
     <t t-name="ecopulse_esg.EcoPulseDashboard">
         <div class="o_ecopulse_dashboard">
 
-            <section class="eco_hero">
+            <section class="eco_dashboard_header">
                 <div>
-                    <span class="eco_badge">ESG MANAGEMENT PLATFORM</span>
+                    <div class="eco_eyebrow">
+                        ENVIRONMENTAL INTELLIGENCE PLATFORM
+                    </div>
 
-                    <h1>EcoPulse ESG Dashboard</h1>
+                    <h1>EcoPulse ESG Command Center</h1>
 
                     <p>
-                        Track carbon emissions, sustainability goals,
-                        departments and emission factors.
+                        Track emissions, environmental goals, departments,
+                        and sustainability performance from one place.
                     </p>
                 </div>
 
-                <button
-                    type="button"
-                    class="eco_refresh"
-                    t-on-click="refresh"
-                >
-                    <i class="fa fa-refresh me-2"/>
-                    Refresh
-                </button>
-            </section>
-
-            <div t-if="state.loading" class="eco_loading">
-                <div class="spinner-border" role="status"/>
-                <p>Loading dashboard...</p>
-            </div>
-
-            <section t-else="" class="eco_cards">
-
-                <article
-                    class="eco_card eco_green"
-                    t-on-click="openTransactions"
-                >
-                    <div class="eco_icon">
-                        <i class="fa fa-leaf"/>
+                <div class="eco_header_actions">
+                    <div class="eco_last_updated">
+                        <i class="fa fa-clock-o"/>
+                        Last updated:
+                        <strong>
+                            <t t-esc="state.lastUpdated || '—'"/>
+                        </strong>
                     </div>
 
-                    <div>
-                        <span>Carbon Transactions</span>
-                        <strong t-esc="state.transactions"/>
-                        <small>Recorded emission activities</small>
-                    </div>
-                </article>
-
-                <article
-                    class="eco_card eco_blue"
-                    t-on-click="openGoals"
-                >
-                    <div class="eco_icon">
-                        <i class="fa fa-bullseye"/>
-                    </div>
-
-                    <div>
-                        <span>Environmental Goals</span>
-                        <strong t-esc="state.goals"/>
-                        <small>Sustainability targets</small>
-                    </div>
-                </article>
-
-                <article
-                    class="eco_card eco_orange"
-                    t-on-click="openDepartments"
-                >
-                    <div class="eco_icon">
-                        <i class="fa fa-building"/>
-                    </div>
-
-                    <div>
-                        <span>Departments</span>
-                        <strong t-esc="state.departments"/>
-                        <small>Organisation departments</small>
-                    </div>
-                </article>
-
-                <article
-                    class="eco_card eco_purple"
-                    t-on-click="openFactors"
-                >
-                    <div class="eco_icon">
-                        <i class="fa fa-calculator"/>
-                    </div>
-
-                    <div>
-                        <span>Emission Factors</span>
-                        <strong t-esc="state.factors"/>
-                        <small>Carbon calculation factors</small>
-                    </div>
-                </article>
-
-            </section>
-
-            <section class="eco_information">
-                <div class="eco_information_header">
-                    <h2>Environmental Performance</h2>
-
-                    <p>
-                        EcoPulse helps organisations calculate,
-                        monitor and manage ESG performance.
-                    </p>
-                </div>
-
-                <div class="eco_feature_grid">
-
-                    <div class="eco_feature">
-                        <i class="fa fa-cloud"/>
-                        <h3>Carbon Tracking</h3>
-                        <p>
-                            Record Scope 1, Scope 2 and Scope 3
-                            emission-generating activities.
-                        </p>
-                    </div>
-
-                    <div class="eco_feature">
-                        <i class="fa fa-line-chart"/>
-                        <h3>Goal Monitoring</h3>
-                        <p>
-                            Create environmental goals and monitor
-                            sustainability progress.
-                        </p>
-                    </div>
-
-                    <div class="eco_feature">
-                        <i class="fa fa-users"/>
-                        <h3>Department Analysis</h3>
-                        <p>
-                            Compare environmental performance across
-                            organisation departments.
-                        </p>
-                    </div>
-
+                    <button
+                        type="button"
+                        class="btn eco_refresh_button"
+                        t-on-click="refreshDashboard">
+                        <i class="fa fa-refresh me-2"/>
+                        Refresh
+                    </button>
                 </div>
             </section>
+
+            <t t-if="state.loading">
+                <div class="eco_loading_panel">
+                    <div class="eco_loader"/>
+                    <h3>Preparing sustainability insights</h3>
+                    <p>Loading live ESG information...</p>
+                </div>
+            </t>
+
+            <t t-else="">
+                <section class="eco_kpi_grid">
+
+                    <article
+                        class="eco_kpi_card eco_kpi_primary"
+                        role="button"
+                        t-on-click="openCarbonTransactions">
+
+                        <div class="eco_kpi_top">
+                            <div class="eco_icon_box">
+                                <i class="fa fa-leaf"/>
+                            </div>
+                            <span class="eco_card_link">
+                                View details
+                                <i class="fa fa-arrow-right"/>
+                            </span>
+                        </div>
+
+                        <div class="eco_kpi_label">
+                            Total Carbon Emissions
+                        </div>
+
+                        <div class="eco_kpi_value">
+                            <t t-esc="formatNumber(state.totalEmissions)"/>
+                        </div>
+
+                        <div class="eco_kpi_unit">
+                            kg CO₂e recorded
+                        </div>
+                    </article>
+
+                    <article
+                        class="eco_kpi_card"
+                        role="button"
+                        t-on-click="openCarbonTransactions">
+
+                        <div class="eco_kpi_top">
+                            <div class="eco_icon_box eco_icon_blue">
+                                <i class="fa fa-exchange"/>
+                            </div>
+                            <span class="eco_card_link">
+                                Open
+                                <i class="fa fa-arrow-right"/>
+                            </span>
+                        </div>
+
+                        <div class="eco_kpi_label">
+                            Carbon Transactions
+                        </div>
+
+                        <div class="eco_kpi_value">
+                            <t t-esc="state.carbonTransactions"/>
+                        </div>
+
+                        <div class="eco_kpi_unit">
+                            activity records
+                        </div>
+                    </article>
+
+                    <article
+                        class="eco_kpi_card"
+                        role="button"
+                        t-on-click="openEnvironmentalGoals">
+
+                        <div class="eco_kpi_top">
+                            <div class="eco_icon_box eco_icon_orange">
+                                <i class="fa fa-bullseye"/>
+                            </div>
+                            <span class="eco_card_link">
+                                Open
+                                <i class="fa fa-arrow-right"/>
+                            </span>
+                        </div>
+
+                        <div class="eco_kpi_label">
+                            Environmental Goals
+                        </div>
+
+                        <div class="eco_kpi_value">
+                            <t t-esc="state.environmentalGoals"/>
+                        </div>
+
+                        <div class="eco_kpi_unit">
+                            sustainability targets
+                        </div>
+                    </article>
+
+                    <article
+                        class="eco_kpi_card"
+                        role="button"
+                        t-on-click="openDepartments">
+
+                        <div class="eco_kpi_top">
+                            <div class="eco_icon_box eco_icon_purple">
+                                <i class="fa fa-building"/>
+                            </div>
+                            <span class="eco_card_link">
+                                Open
+                                <i class="fa fa-arrow-right"/>
+                            </span>
+                        </div>
+
+                        <div class="eco_kpi_label">
+                            Departments
+                        </div>
+
+                        <div class="eco_kpi_value">
+                            <t t-esc="state.departments"/>
+                        </div>
+
+                        <div class="eco_kpi_unit">
+                            monitored business units
+                        </div>
+                    </article>
+
+                </section>
+
+                <section class="eco_content_grid">
+
+                    <article class="eco_panel">
+                        <div class="eco_panel_header">
+                            <div>
+                                <h2>Emission Scope Distribution</h2>
+                                <p>
+                                    Emissions across Scope 1, Scope 2,
+                                    and Scope 3.
+                                </p>
+                            </div>
+
+                            <div class="eco_panel_icon">
+                                <i class="fa fa-pie-chart"/>
+                            </div>
+                        </div>
+
+                        <div class="eco_scope_item">
+                            <div class="eco_scope_heading">
+                                <div>
+                                    <span class="eco_scope_dot eco_scope_1"/>
+                                    <strong>Scope 1</strong>
+                                    <span>Direct emissions</span>
+                                </div>
+
+                                <strong>
+                                    <t t-esc="state.scope1Percent"/>%
+                                </strong>
+                            </div>
+
+                            <div class="eco_progress_track">
+                                <div
+                                    class="eco_progress_fill eco_fill_1"
+                                    t-att-style="'width: ' + state.scope1Percent + '%'"/>
+                            </div>
+
+                            <small>
+                                <t t-esc="formatNumber(state.scope1Total)"/>
+                                kg CO₂e
+                            </small>
+                        </div>
+
+                        <div class="eco_scope_item">
+                            <div class="eco_scope_heading">
+                                <div>
+                                    <span class="eco_scope_dot eco_scope_2"/>
+                                    <strong>Scope 2</strong>
+                                    <span>Purchased energy</span>
+                                </div>
+
+                                <strong>
+                                    <t t-esc="state.scope2Percent"/>%
+                                </strong>
+                            </div>
+
+                            <div class="eco_progress_track">
+                                <div
+                                    class="eco_progress_fill eco_fill_2"
+                                    t-att-style="'width: ' + state.scope2Percent + '%'"/>
+                            </div>
+
+                            <small>
+                                <t t-esc="formatNumber(state.scope2Total)"/>
+                                kg CO₂e
+                            </small>
+                        </div>
+
+                        <div class="eco_scope_item">
+                            <div class="eco_scope_heading">
+                                <div>
+                                    <span class="eco_scope_dot eco_scope_3"/>
+                                    <strong>Scope 3</strong>
+                                    <span>Value-chain emissions</span>
+                                </div>
+
+                                <strong>
+                                    <t t-esc="state.scope3Percent"/>%
+                                </strong>
+                            </div>
+
+                            <div class="eco_progress_track">
+                                <div
+                                    class="eco_progress_fill eco_fill_3"
+                                    t-att-style="'width: ' + state.scope3Percent + '%'"/>
+                            </div>
+
+                            <small>
+                                <t t-esc="formatNumber(state.scope3Total)"/>
+                                kg CO₂e
+                            </small>
+                        </div>
+                    </article>
+
+                    <article class="eco_panel">
+                        <div class="eco_panel_header">
+                            <div>
+                                <h2>Quick Actions</h2>
+                                <p>
+                                    Manage sustainability information quickly.
+                                </p>
+                            </div>
+
+                            <div class="eco_panel_icon">
+                                <i class="fa fa-bolt"/>
+                            </div>
+                        </div>
+
+                        <div class="eco_quick_actions">
+
+                            <button
+                                type="button"
+                                class="eco_action_button eco_action_primary"
+                                t-on-click="createCarbonTransaction">
+
+                                <span class="eco_action_icon">
+                                    <i class="fa fa-plus"/>
+                                </span>
+
+                                <span>
+                                    <strong>Record Carbon Activity</strong>
+                                    <small>Add a new emission transaction</small>
+                                </span>
+
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="eco_action_button"
+                                t-on-click="createEnvironmentalGoal">
+
+                                <span class="eco_action_icon">
+                                    <i class="fa fa-bullseye"/>
+                                </span>
+
+                                <span>
+                                    <strong>Create Environmental Goal</strong>
+                                    <small>Define a sustainability target</small>
+                                </span>
+
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="eco_action_button"
+                                t-on-click="openEmissionFactors">
+
+                                <span class="eco_action_icon">
+                                    <i class="fa fa-calculator"/>
+                                </span>
+
+                                <span>
+                                    <strong>Manage Emission Factors</strong>
+                                    <small>Configure calculation values</small>
+                                </span>
+
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+
+                            <button
+                                type="button"
+                                class="eco_action_button"
+                                t-on-click="openDepartments">
+
+                                <span class="eco_action_icon">
+                                    <i class="fa fa-building"/>
+                                </span>
+
+                                <span>
+                                    <strong>Department Performance</strong>
+                                    <small>Review departmental ESG data</small>
+                                </span>
+
+                                <i class="fa fa-chevron-right"/>
+                            </button>
+
+                        </div>
+                    </article>
+
+                </section>
+
+                <section class="eco_panel eco_recent_panel">
+                    <div class="eco_panel_header">
+                        <div>
+                            <h2>Recent Carbon Transactions</h2>
+                            <p>Latest emission activity in EcoPulse ESG.</p>
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn eco_text_button"
+                            t-on-click="openCarbonTransactions">
+                            View all
+                            <i class="fa fa-arrow-right ms-2"/>
+                        </button>
+                    </div>
+
+                    <t t-if="state.recentTransactions.length">
+                        <div class="table-responsive">
+                            <table class="table eco_transaction_table">
+                                <thead>
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Date</th>
+                                        <th>Department</th>
+                                        <th>Scope</th>
+                                        <th>Emission</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <t
+                                        t-foreach="state.recentTransactions"
+                                        t-as="transaction"
+                                        t-key="transaction.id">
+
+                                        <tr>
+                                            <td>
+                                                <strong>
+                                                    <t t-esc="transaction.reference || 'New'"/>
+                                                </strong>
+                                            </td>
+
+                                            <td>
+                                                <t t-esc="transaction.transaction_date || '—'"/>
+                                            </td>
+
+                                            <td>
+                                                <t t-esc="getDepartmentName(transaction.department_id)"/>
+                                            </td>
+
+                                            <td>
+                                                <span class="eco_scope_badge">
+                                                    <t t-esc="getScopeLabel(transaction.scope)"/>
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                                <strong>
+                                                    <t t-esc="formatNumber(transaction.carbon_emission)"/>
+                                                </strong>
+                                                <small> kg CO₂e</small>
+                                            </td>
+
+                                            <td>
+                                                <span class="eco_status_badge">
+                                                    <t t-esc="getStatusLabel(transaction.status)"/>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+
+                    <t t-else="">
+                        <div class="eco_empty_state">
+                            <div class="eco_empty_icon">
+                                <i class="fa fa-leaf"/>
+                            </div>
+
+                            <h3>No carbon transactions yet</h3>
+
+                            <p>
+                                Add the first transaction to begin analysis.
+                            </p>
+
+                            <button
+                                type="button"
+                                class="btn eco_refresh_button"
+                                t-on-click="createCarbonTransaction">
+                                Add First Transaction
+                            </button>
+                        </div>
+                    </t>
+                </section>
+
+                <section class="eco_footer_banner">
+                    <div class="eco_footer_icon">
+                        <i class="fa fa-globe"/>
+                    </div>
+
+                    <div>
+                        <strong>
+                            Building a measurable and sustainable future
+                        </strong>
+
+                        <span>
+                            EcoPulse ESG converts environmental data into
+                            actionable insights.
+                        </span>
+                    </div>
+
+                    <div class="eco_factor_summary">
+                        <strong>
+                            <t t-esc="state.emissionFactors"/>
+                        </strong>
+                        <span>Emission factors configured</span>
+                    </div>
+                </section>
+            </t>
 
         </div>
     </t>
+
 </templates>
-'@ | Set-Content "$root\ecopulse_esg\static\src\dashboard\dashboard.xml" -Encoding UTF8
