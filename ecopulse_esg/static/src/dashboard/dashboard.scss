@@ -44,32 +44,42 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    padding: 26px;
+    gap: 24px;
+    padding: 28px;
     margin-bottom: 22px;
-    border: 1px solid #dfe9e3;
-    border-radius: 18px;
-    background: linear-gradient(135deg, #edf9f2, #ffffff);
-    box-shadow: 0 10px 28px rgba(25, 60, 41, 0.08);
+    border: 1px solid #dce8e1;
+    border-radius: 20px;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(40, 184, 110, 0.12),
+            transparent 34%
+        ),
+        linear-gradient(135deg, #edf9f2, #ffffff);
+    box-shadow: 0 12px 30px rgba(25, 60, 41, 0.08);
 }
 
 .eco_dashboard_header h1 {
-    margin: 5px 0 8px;
+    margin: 6px 0 8px;
     color: #123d29;
-    font-size: 30px;
-    font-weight: 700;
+    font-size: 31px;
+    font-weight: 750;
+    line-height: 1.2;
 }
 
 .eco_dashboard_header p {
+    max-width: 760px;
     margin: 0;
     color: #68766d;
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 .eco_eyebrow {
     color: #16834f;
     font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.4px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
 }
 
 .eco_header_actions {
@@ -82,6 +92,7 @@
 .eco_last_updated {
     color: #68766d;
     font-size: 13px;
+    white-space: nowrap;
 }
 
 .eco_last_updated i {
@@ -96,6 +107,7 @@
     background: #16834f;
     color: #ffffff;
     font-weight: 700;
+    box-shadow: 0 6px 14px rgba(22, 131, 79, 0.2);
     transition: 0.2s ease;
 }
 
@@ -110,18 +122,31 @@
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
-    margin-bottom: 22px;
+    margin-bottom: 18px;
 }
 
 .eco_kpi_card {
-    min-height: 180px;
+    position: relative;
+    min-height: 182px;
     padding: 22px;
+    overflow: hidden;
     border: 1px solid #e2e9e5;
     border-radius: 18px;
     background: #ffffff;
     box-shadow: 0 8px 24px rgba(25, 60, 41, 0.06);
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: 0.22s ease;
+}
+
+.eco_kpi_card::after {
+    position: absolute;
+    right: -35px;
+    bottom: -45px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(22, 131, 79, 0.05);
+    content: "";
 }
 
 .eco_kpi_card:hover {
@@ -135,6 +160,10 @@
     color: #ffffff;
 }
 
+.eco_kpi_primary::after {
+    background: rgba(255, 255, 255, 0.09);
+}
+
 .eco_kpi_primary .eco_kpi_label,
 .eco_kpi_primary .eco_kpi_unit,
 .eco_kpi_primary .eco_card_link,
@@ -142,11 +171,18 @@
     color: #ffffff;
 }
 
+.eco_kpi_primary .eco_icon_box {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
 .eco_kpi_top {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
 }
 
 .eco_icon_box {
@@ -186,18 +222,26 @@
     margin-left: 5px;
 }
 
+.eco_kpi_label,
+.eco_kpi_value,
+.eco_kpi_unit {
+    position: relative;
+    z-index: 1;
+}
+
 .eco_kpi_label {
     margin-bottom: 8px;
     color: #738078;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 650;
 }
 
 .eco_kpi_value {
     margin-bottom: 6px;
     color: #183527;
     font-size: 34px;
-    font-weight: 700;
+    font-weight: 750;
+    line-height: 1.1;
 }
 
 .eco_kpi_unit {
@@ -205,9 +249,84 @@
     font-size: 12px;
 }
 
+.eco_status_summary_grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.eco_status_summary_card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 1px solid #e1e9e4;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(25, 60, 41, 0.04);
+}
+
+.eco_status_summary_card span {
+    display: block;
+    margin-bottom: 3px;
+    color: #7f8b84;
+    font-size: 11px;
+}
+
+.eco_status_summary_card strong {
+    color: #183527;
+    font-size: 22px;
+}
+
+.eco_status_summary_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    font-size: 18px;
+}
+
+.eco_verified_icon {
+    background: #e9f7ef;
+    color: #16834f;
+}
+
+.eco_calculated_icon {
+    background: #eaf2ff;
+    color: #3775c9;
+}
+
+.eco_draft_icon {
+    background: #fff2df;
+    color: #c97916;
+}
+
+.eco_factor_icon {
+    background: #f1eaff;
+    color: #7958b5;
+}
+
+.eco_analytics_grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(340px, 0.85fr);
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
 .eco_content_grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.eco_goal_analytics {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.75fr);
     gap: 20px;
     margin-bottom: 22px;
 }
@@ -232,13 +351,15 @@
     margin: 0 0 5px;
     color: #183527;
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 750;
 }
 
 .eco_panel_header p {
+    max-width: 600px;
     margin: 0;
     color: #869189;
     font-size: 12px;
+    line-height: 1.5;
 }
 
 .eco_panel_icon {
@@ -251,6 +372,231 @@
     border-radius: 11px;
     background: #edf8f2;
     color: #16834f;
+}
+
+.eco_chart_summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.eco_chart_summary > div {
+    padding: 14px 16px;
+    border: 1px solid #e3ebe6;
+    border-radius: 12px;
+    background: #f8fbf9;
+}
+
+.eco_chart_summary span {
+    display: block;
+    margin-bottom: 5px;
+    color: #7e8a83;
+    font-size: 11px;
+}
+
+.eco_chart_summary strong {
+    color: #183527;
+    font-size: 16px;
+}
+
+.eco_monthly_chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    min-height: 280px;
+    padding: 18px 12px 0;
+    overflow-x: auto;
+    border-top: 1px solid #edf1ef;
+}
+
+.eco_month_column {
+    display: flex;
+    flex: 1 0 52px;
+    flex-direction: column;
+    align-items: center;
+    min-width: 52px;
+}
+
+.eco_month_value {
+    min-height: 18px;
+    margin-bottom: 6px;
+    color: #65736b;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.eco_month_bar_area {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    height: 205px;
+    padding: 0 6px;
+}
+
+.eco_month_bar {
+    position: relative;
+    width: 100%;
+    min-height: 4%;
+    border-radius: 8px 8px 3px 3px;
+    background: linear-gradient(180deg, #26b36a, #16834f);
+    box-shadow: 0 7px 14px rgba(22, 131, 79, 0.15);
+    transition: 0.25s ease;
+}
+
+.eco_month_bar:hover {
+    filter: brightness(1.05);
+    transform: scaleX(1.06);
+}
+
+.eco_month_bar_tooltip {
+    position: absolute;
+    right: 50%;
+    bottom: calc(100% + 8px);
+    z-index: 10;
+    width: max-content;
+    max-width: 180px;
+    padding: 7px 9px;
+    border-radius: 7px;
+    background: #173c29;
+    color: #ffffff;
+    font-size: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(50%) translateY(4px);
+    transition: 0.2s ease;
+}
+
+.eco_month_bar:hover .eco_month_bar_tooltip {
+    opacity: 1;
+    transform: translateX(50%) translateY(0);
+}
+
+.eco_month_label {
+    margin-top: 9px;
+    color: #7f8a83;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.eco_top_department_card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px;
+    margin-bottom: 18px;
+    border: 1px solid #d7ebdf;
+    border-radius: 13px;
+    background: linear-gradient(135deg, #eefaf3, #ffffff);
+}
+
+.eco_top_department_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: #16834f;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+.eco_top_department_card span,
+.eco_top_department_card small {
+    display: block;
+}
+
+.eco_top_department_card span {
+    margin-bottom: 2px;
+    color: #7c8881;
+    font-size: 10px;
+}
+
+.eco_top_department_card strong {
+    display: block;
+    margin-bottom: 2px;
+    color: #183527;
+    font-size: 16px;
+}
+
+.eco_top_department_card small {
+    color: #16834f;
+    font-weight: 700;
+}
+
+.eco_department_ranking {
+    display: grid;
+    gap: 14px;
+}
+
+.eco_department_item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+}
+
+.eco_department_rank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: #edf8f2;
+    color: #16834f;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.eco_department_details {
+    min-width: 0;
+}
+
+.eco_department_heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 7px;
+}
+
+.eco_department_heading > div {
+    min-width: 0;
+}
+
+.eco_department_heading strong {
+    color: #243d30;
+    font-size: 12px;
+}
+
+.eco_department_heading > strong {
+    flex-shrink: 0;
+    color: #16834f;
+}
+
+.eco_department_heading span {
+    display: block;
+    margin-top: 2px;
+    color: #8a958f;
+    font-size: 10px;
+}
+
+.eco_department_track {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #edf1ef;
+}
+
+.eco_department_fill {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #16834f, #35bd76);
+    transition: width 0.45s ease;
 }
 
 .eco_scope_item {
@@ -273,6 +619,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     margin-bottom: 9px;
 }
 
@@ -290,6 +637,7 @@
 .eco_scope_dot {
     width: 9px;
     height: 9px;
+    flex-shrink: 0;
     border-radius: 50%;
 }
 
@@ -331,72 +679,108 @@
     background: #e59a35;
 }
 
-.eco_quick_actions {
-    display: grid;
-    gap: 11px;
+.eco_top_source_card {
+    padding: 15px 17px;
+    margin-bottom: 16px;
+    border: 1px solid #dfe9e3;
+    border-radius: 13px;
+    background: #f8fbf9;
 }
 
-.eco_action_button {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 13px;
-    width: 100%;
-    padding: 13px 14px;
-    border: 1px solid #e4ebe7;
-    border-radius: 12px;
-    background: #fbfcfb;
-    color: #203a2c;
-    text-align: left;
-    transition: 0.2s ease;
-}
-
-.eco_action_button:hover {
-    border-color: #92c9aa;
-    background: #f3faf6;
-    transform: translateX(3px);
-}
-
-.eco_action_button > i {
-    color: #87928b;
-}
-
-.eco_action_icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 37px;
-    height: 37px;
-    border-radius: 10px;
-    background: #e2f4ea;
-    color: #16834f;
-}
-
-.eco_action_button strong,
-.eco_action_button small {
+.eco_top_source_card span,
+.eco_top_source_card small {
     display: block;
 }
 
-.eco_action_button strong {
-    margin-bottom: 2px;
-    font-size: 13px;
+.eco_top_source_card span {
+    margin-bottom: 3px;
+    color: #7e8b83;
+    font-size: 10px;
 }
 
-.eco_action_button small {
-    color: #87928b;
-    font-size: 11px;
+.eco_top_source_card strong {
+    display: block;
+    margin-bottom: 3px;
+    color: #183527;
+    font-size: 18px;
 }
 
-.eco_action_primary {
-    border-color: #c8e8d6;
-    background: #effaf4;
+.eco_top_source_card small {
+    color: #16834f;
+    font-weight: 700;
 }
 
-.eco_goal_analytics {
+.eco_source_grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(300px, 0.8fr);
-    gap: 20px;
-    margin-bottom: 22px;
+    gap: 10px;
+}
+
+.eco_source_card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    border: 1px solid #e5ebe7;
+    border-radius: 11px;
+    background: #ffffff;
+    transition: 0.2s ease;
+}
+
+.eco_source_card:hover {
+    border-color: #b8ddc8;
+    background: #fbfefc;
+    transform: translateX(2px);
+}
+
+.eco_source_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #edf8f2;
+    color: #16834f;
+}
+
+.eco_source_details {
+    min-width: 0;
+}
+
+.eco_source_details strong,
+.eco_source_details span {
+    display: block;
+}
+
+.eco_source_details strong {
+    color: #274234;
+    font-size: 12px;
+}
+
+.eco_source_details span {
+    margin-top: 2px;
+    color: #8a958f;
+    font-size: 10px;
+}
+
+.eco_source_total {
+    text-align: right;
+}
+
+.eco_source_total strong,
+.eco_source_total span {
+    display: block;
+}
+
+.eco_source_total strong {
+    color: #183527;
+    font-size: 12px;
+}
+
+.eco_source_total span {
+    color: #8a958f;
+    font-size: 9px;
 }
 
 .eco_goal_summary_grid {
@@ -467,6 +851,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+}
+
+.eco_goal_title_row > strong {
+    color: #284234;
 }
 
 .eco_goal_meta {
@@ -559,6 +947,7 @@
 .eco_alert_item p {
     margin: 0;
     font-size: 11px;
+    line-height: 1.45;
 }
 
 .eco_alert_icon {
@@ -594,7 +983,7 @@
 }
 
 .eco_no_alerts {
-    padding: 40px 15px;
+    padding: 42px 15px;
     text-align: center;
 }
 
@@ -606,6 +995,7 @@
 .eco_no_alerts h3 {
     margin: 12px 0 5px;
     color: #21432f;
+    font-size: 17px;
 }
 
 .eco_no_alerts p {
@@ -615,21 +1005,6 @@
 
 .eco_recent_panel {
     margin-bottom: 22px;
-}
-
-.eco_text_button {
-    padding: 7px 11px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: #16834f;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.eco_text_button:hover {
-    background: #edf8f2;
-    color: #0f7042;
 }
 
 .eco_transaction_table {
@@ -657,11 +1032,12 @@
 }
 
 .eco_scope_badge,
+.eco_source_badge,
 .eco_status_badge {
     display: inline-block;
     padding: 5px 9px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     white-space: nowrap;
 }
@@ -671,9 +1047,120 @@
     color: #376eaa;
 }
 
+.eco_source_badge {
+    background: #f0f5f2;
+    color: #56675d;
+}
+
 .eco_status_badge {
+    background: #edf0ee;
+    color: #6f7c74;
+}
+
+.eco_status_verified {
     background: #e9f7ef;
     color: #137446;
+}
+
+.eco_status_calculated {
+    background: #eaf4ff;
+    color: #316cae;
+}
+
+.eco_status_draft {
+    background: #fff5e7;
+    color: #a66b12;
+}
+
+.eco_status_cancelled {
+    background: #f1f1f1;
+    color: #757575;
+}
+
+.eco_quick_action_panel {
+    margin-bottom: 22px;
+}
+
+.eco_quick_actions {
+    display: grid;
+    gap: 11px;
+}
+
+.eco_quick_actions_horizontal {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.eco_action_button {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 13px;
+    width: 100%;
+    min-height: 76px;
+    padding: 13px 14px;
+    border: 1px solid #e4ebe7;
+    border-radius: 12px;
+    background: #fbfcfb;
+    color: #203a2c;
+    text-align: left;
+    transition: 0.2s ease;
+}
+
+.eco_action_button:hover {
+    border-color: #92c9aa;
+    background: #f3faf6;
+    transform: translateY(-2px);
+}
+
+.eco_action_button > i {
+    color: #87928b;
+}
+
+.eco_action_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 37px;
+    height: 37px;
+    border-radius: 10px;
+    background: #e2f4ea;
+    color: #16834f;
+}
+
+.eco_action_button strong,
+.eco_action_button small {
+    display: block;
+}
+
+.eco_action_button strong {
+    margin-bottom: 2px;
+    font-size: 12px;
+}
+
+.eco_action_button small {
+    color: #87928b;
+    font-size: 10px;
+    line-height: 1.35;
+}
+
+.eco_action_primary {
+    border-color: #c8e8d6;
+    background: #effaf4;
+}
+
+.eco_text_button {
+    padding: 7px 11px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: #16834f;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.eco_text_button:hover {
+    background: #edf8f2;
+    color: #0f7042;
 }
 
 .eco_empty_state {
@@ -701,6 +1188,16 @@
     background: #e9f7ef;
     color: #16834f;
     font-size: 23px;
+}
+
+.eco_small_empty_state {
+    padding: 24px 15px;
+    border: 1px dashed #d9e3dd;
+    border-radius: 12px;
+    color: #87928b;
+    background: #fafcfb;
+    text-align: center;
+    font-size: 12px;
 }
 
 .eco_footer_banner {
@@ -782,17 +1279,20 @@
     }
 }
 
-@media (max-width: 1200px) {
-    .eco_kpi_grid {
+@media (max-width: 1280px) {
+    .eco_kpi_grid,
+    .eco_status_summary_grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .eco_content_grid {
-        grid-template-columns: 1fr;
+    .eco_quick_actions_horizontal {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
 @media (max-width: 1100px) {
+    .eco_analytics_grid,
+    .eco_content_grid,
     .eco_goal_analytics {
         grid-template-columns: 1fr;
     }
@@ -810,17 +1310,23 @@
         padding: 20px;
     }
 
+    .eco_dashboard_header h1 {
+        font-size: 25px;
+    }
+
     .eco_header_actions {
         width: 100%;
         justify-content: space-between;
     }
 
-    .eco_kpi_grid {
-        grid-template-columns: 1fr;
-    }
-
+    .eco_kpi_grid,
+    .eco_status_summary_grid,
     .eco_goal_summary_grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .eco_chart_summary {
+        grid-template-columns: 1fr;
     }
 
     .eco_goal_item {
@@ -849,18 +1355,29 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
     .eco_header_actions {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .eco_last_updated {
+        white-space: normal;
     }
 
     .eco_refresh_button {
         width: 100%;
     }
 
-    .eco_goal_summary_grid {
+    .eco_kpi_grid,
+    .eco_status_summary_grid,
+    .eco_goal_summary_grid,
+    .eco_quick_actions_horizontal {
         grid-template-columns: 1fr;
+    }
+
+    .eco_status_summary_card {
+        padding: 14px;
     }
 
     .eco_goal_title_row {
@@ -870,12 +1387,25 @@
 
     .eco_scope_heading {
         align-items: flex-start;
-        gap: 8px;
         flex-direction: column;
     }
 
     .eco_scope_heading > div {
         align-items: flex-start;
         flex-wrap: wrap;
+    }
+
+    .eco_department_heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .eco_source_card {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .eco_source_total {
+        grid-column: 2;
+        text-align: left;
     }
 }

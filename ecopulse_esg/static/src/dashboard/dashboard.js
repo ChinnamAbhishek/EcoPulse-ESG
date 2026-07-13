@@ -22,6 +22,9 @@ export class EcoPulseDashboard extends Component {
             emissionFactors: 0,
 
             totalEmissions: 0,
+            verifiedTransactions: 0,
+            calculatedTransactions: 0,
+            draftTransactions: 0,
 
             scope1Total: 0,
             scope2Total: 0,
@@ -37,9 +40,22 @@ export class EcoPulseDashboard extends Component {
             activeGoals: 0,
             atRiskGoals: 0,
             averageGoalProgress: 0,
-
             goalRecords: [],
             alerts: [],
+
+            monthlyEmissions: [],
+            highestEmissionMonth: "No data",
+            highestEmissionMonthValue: 0,
+            monthlyMaximum: 0,
+
+            departmentRanking: [],
+            topDepartment: "No data",
+            topDepartmentEmission: 0,
+            departmentMaximum: 0,
+
+            sourceAnalytics: [],
+            topSource: "No data",
+            topSourceEmission: 0,
         });
 
         onWillStart(async () => {
@@ -74,13 +90,21 @@ export class EcoPulseDashboard extends Component {
 
                 this.orm.searchRead(
                     "ecopulse.carbon.transaction",
-                    [],
+                    [["status", "!=", "cancelled"]],
                     [
-                        "carbon_emission",
+                        "reference",
+                        "transaction_date",
+                        "department_id",
+                        "source_module",
                         "scope",
+                        "calculated_emission",
+                        "activity_quantity",
+                        "activity_unit",
+                        "status",
                     ],
                     {
-                        limit: 5000,
+                        limit: 10000,
+                        order: "transaction_date asc, id asc",
                     }
                 ),
 
@@ -91,12 +115,13 @@ export class EcoPulseDashboard extends Component {
                         "reference",
                         "transaction_date",
                         "department_id",
+                        "source_module",
                         "scope",
-                        "carbon_emission",
+                        "calculated_emission",
                         "status",
                     ],
                     {
-                        limit: 6,
+                        limit: 8,
                         order: "transaction_date desc, id desc",
                     }
                 ),
@@ -118,7 +143,7 @@ export class EcoPulseDashboard extends Component {
                         "end_date",
                     ],
                     {
-                        limit: 8,
+                        limit: 10,
                         order: "end_date asc, id desc",
                     }
                 ),
@@ -133,13 +158,22 @@ export class EcoPulseDashboard extends Component {
             const goalRecords = results[6];
 
             let totalEmissions = 0;
+
             let scope1Total = 0;
             let scope2Total = 0;
             let scope3Total = 0;
 
+            let verifiedTransactions = 0;
+            let calculatedTransactions = 0;
+            let draftTransactions = 0;
+
+            const monthlyMap = {};
+            const departmentMap = {};
+            const sourceMap = {};
+
             for (const transaction of transactionRecords) {
                 const emission = Number(
-                    transaction.carbon_emission || 0
+                    transaction.calculated_emission || 0
                 );
 
                 totalEmissions += emission;
@@ -151,7 +185,63 @@ export class EcoPulseDashboard extends Component {
                 } else if (transaction.scope === "scope_3") {
                     scope3Total += emission;
                 }
+
+                if (transaction.status === "verified") {
+                    verifiedTransactions += 1;
+                } else if (transaction.status === "calculated") {
+                    calculatedTransactions += 1;
+                } else if (transaction.status === "draft") {
+                    draftTransactions += 1;
+                }
+
+                this.addMonthlyEmission(
+                    monthlyMap,
+                    transaction.transaction_date,
+                    emission
+                );
+
+                this.addDepartmentEmission(
+                    departmentMap,
+                    transaction.department_id,
+                    emission
+                );
+
+                this.addSourceEmission(
+                    sourceMap,
+                    transaction.source_module,
+                    emission
+                );
             }
+
+            const monthlyEmissions =
+                this.prepareMonthlyAnalytics(monthlyMap);
+
+            const departmentRanking =
+                this.prepareDepartmentRanking(departmentMap);
+
+            const sourceAnalytics =
+                this.prepareSourceAnalytics(sourceMap);
+
+            const highestMonth = monthlyEmissions.reduce(
+                (highest, month) => {
+                    if (!highest || month.total > highest.total) {
+                        return month;
+                    }
+
+                    return highest;
+                },
+                null
+            );
+
+            const topDepartment =
+                departmentRanking.length > 0
+                    ? departmentRanking[0]
+                    : null;
+
+            const topSource =
+                sourceAnalytics.length > 0
+                    ? sourceAnalytics[0]
+                    : null;
 
             let completedGoals = 0;
             let activeGoals = 0;
@@ -183,7 +273,7 @@ export class EcoPulseDashboard extends Component {
                         id: goal.id,
                         title: goal.name,
                         message:
-                            "This environmental goal requires immediate attention.",
+                            "This goal requires immediate attention.",
                         level: "high",
                     });
                 } else if (goal.risk_level === "medium") {
@@ -191,7 +281,7 @@ export class EcoPulseDashboard extends Component {
                         id: goal.id,
                         title: goal.name,
                         message:
-                            "Progress is currently below the expected level.",
+                            "Progress is below the expected level.",
                         level: "medium",
                     });
                 }
@@ -203,6 +293,9 @@ export class EcoPulseDashboard extends Component {
             this.state.emissionFactors = emissionFactors;
 
             this.state.totalEmissions = totalEmissions;
+            this.state.verifiedTransactions = verifiedTransactions;
+            this.state.calculatedTransactions = calculatedTransactions;
+            this.state.draftTransactions = draftTransactions;
 
             this.state.scope1Total = scope1Total;
             this.state.scope2Total = scope2Total;
@@ -242,7 +335,43 @@ export class EcoPulseDashboard extends Component {
                 : 0;
 
             this.state.goalRecords = goalRecords;
-            this.state.alerts = alerts.slice(0, 5);
+            this.state.alerts = alerts.slice(0, 6);
+
+            this.state.monthlyEmissions = monthlyEmissions;
+            this.state.monthlyMaximum = highestMonth
+                ? highestMonth.total
+                : 0;
+
+            this.state.highestEmissionMonth = highestMonth
+                ? highestMonth.label
+                : "No data";
+
+            this.state.highestEmissionMonthValue = highestMonth
+                ? highestMonth.total
+                : 0;
+
+            this.state.departmentRanking = departmentRanking;
+            this.state.departmentMaximum = topDepartment
+                ? topDepartment.total
+                : 0;
+
+            this.state.topDepartment = topDepartment
+                ? topDepartment.name
+                : "No data";
+
+            this.state.topDepartmentEmission = topDepartment
+                ? topDepartment.total
+                : 0;
+
+            this.state.sourceAnalytics = sourceAnalytics;
+
+            this.state.topSource = topSource
+                ? topSource.label
+                : "No data";
+
+            this.state.topSourceEmission = topSource
+                ? topSource.total
+                : 0;
 
             this.state.lastUpdated =
                 new Date().toLocaleTimeString([], {
@@ -265,6 +394,169 @@ export class EcoPulseDashboard extends Component {
         } finally {
             this.state.loading = false;
         }
+    }
+
+    addMonthlyEmission(monthlyMap, dateValue, emission) {
+        if (!dateValue) {
+            return;
+        }
+
+        const date = new Date(`${dateValue}T00:00:00`);
+
+        if (Number.isNaN(date.getTime())) {
+            return;
+        }
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(
+            2,
+            "0"
+        );
+
+        const key = `${year}-${month}`;
+
+        if (!monthlyMap[key]) {
+            monthlyMap[key] = {
+                key,
+                year,
+                month: Number(month),
+                total: 0,
+            };
+        }
+
+        monthlyMap[key].total += emission;
+    }
+
+    prepareMonthlyAnalytics(monthlyMap) {
+        const records = Object.values(monthlyMap)
+            .sort((first, second) => {
+                return first.key.localeCompare(second.key);
+            })
+            .slice(-12);
+
+        return records.map((record) => {
+            const date = new Date(
+                record.year,
+                record.month - 1,
+                1
+            );
+
+            return {
+                key: record.key,
+                label: date.toLocaleDateString("en-IN", {
+                    month: "short",
+                    year: "numeric",
+                }),
+                shortLabel: date.toLocaleDateString("en-IN", {
+                    month: "short",
+                }),
+                total: Number(record.total.toFixed(2)),
+            };
+        });
+    }
+
+    addDepartmentEmission(
+        departmentMap,
+        department,
+        emission
+    ) {
+        const departmentId =
+            Array.isArray(department) && department.length
+                ? department[0]
+                : 0;
+
+        const departmentName =
+            Array.isArray(department) && department.length > 1
+                ? department[1]
+                : "Not Assigned";
+
+        const key = String(departmentId);
+
+        if (!departmentMap[key]) {
+            departmentMap[key] = {
+                id: departmentId,
+                name: departmentName,
+                total: 0,
+                transactions: 0,
+            };
+        }
+
+        departmentMap[key].total += emission;
+        departmentMap[key].transactions += 1;
+    }
+
+    prepareDepartmentRanking(departmentMap) {
+        return Object.values(departmentMap)
+            .sort((first, second) => {
+                return second.total - first.total;
+            })
+            .slice(0, 8)
+            .map((department, index) => {
+                return {
+                    ...department,
+                    rank: index + 1,
+                    total: Number(department.total.toFixed(2)),
+                };
+            });
+    }
+
+    addSourceEmission(sourceMap, source, emission) {
+        const key = source || "manual";
+
+        if (!sourceMap[key]) {
+            sourceMap[key] = {
+                key,
+                label: this.getSourceLabel(key),
+                total: 0,
+                transactions: 0,
+            };
+        }
+
+        sourceMap[key].total += emission;
+        sourceMap[key].transactions += 1;
+    }
+
+    prepareSourceAnalytics(sourceMap) {
+        return Object.values(sourceMap)
+            .sort((first, second) => {
+                return second.total - first.total;
+            })
+            .map((source) => {
+                return {
+                    ...source,
+                    total: Number(source.total.toFixed(2)),
+                };
+            });
+    }
+
+    getMonthlyBarHeight(total) {
+        const maximum = Number(
+            this.state.monthlyMaximum || 0
+        );
+
+        if (maximum <= 0) {
+            return 4;
+        }
+
+        return Math.max(
+            4,
+            Math.round((Number(total || 0) / maximum) * 100)
+        );
+    }
+
+    getDepartmentBarWidth(total) {
+        const maximum = Number(
+            this.state.departmentMaximum || 0
+        );
+
+        if (maximum <= 0) {
+            return 0;
+        }
+
+        return Math.max(
+            2,
+            Math.round((Number(total || 0) / maximum) * 100)
+        );
     }
 
     async refreshDashboard() {
@@ -307,19 +599,55 @@ export class EcoPulseDashboard extends Component {
     }
 
     getStatusLabel(status) {
-        if (!status) {
-            return "Draft";
-        }
+        const labels = {
+            draft: "Draft",
+            calculated: "Calculated",
+            verified: "Verified",
+            cancelled: "Cancelled",
+        };
 
-        return status
-            .split("_")
-            .map((word) => {
-                return (
-                    word.charAt(0).toUpperCase() +
-                    word.slice(1)
-                );
-            })
-            .join(" ");
+        return labels[status] || "Unknown";
+    }
+
+    getStatusClass(status) {
+        const classes = {
+            draft: "eco_status_draft",
+            calculated: "eco_status_calculated",
+            verified: "eco_status_verified",
+            cancelled: "eco_status_cancelled",
+        };
+
+        return classes[status] || "eco_status_draft";
+    }
+
+    getSourceLabel(source) {
+        const labels = {
+            purchase: "Purchase",
+            fleet: "Fleet",
+            manufacturing: "Manufacturing",
+            expense: "Expense",
+            electricity: "Electricity",
+            travel: "Travel",
+            waste: "Waste",
+            manual: "Manual",
+        };
+
+        return labels[source] || "Manual";
+    }
+
+    getSourceIcon(source) {
+        const icons = {
+            purchase: "fa-shopping-cart",
+            fleet: "fa-truck",
+            manufacturing: "fa-industry",
+            expense: "fa-money",
+            electricity: "fa-bolt",
+            travel: "fa-plane",
+            waste: "fa-trash",
+            manual: "fa-pencil",
+        };
+
+        return icons[source] || "fa-leaf";
     }
 
     getGoalStatusLabel(status) {
