@@ -1,10 +1,14 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
+
 <templates xml:space="preserve">
 
     <t t-name="ecopulse_esg.EcoPulseDashboard">
+
         <div class="o_ecopulse_dashboard">
 
+            <!-- Header -->
             <section class="eco_dashboard_header">
+
                 <div>
                     <div class="eco_eyebrow">
                         ENVIRONMENTAL INTELLIGENCE PLATFORM
@@ -14,11 +18,12 @@
 
                     <p>
                         Track emissions, environmental goals, departments,
-                        and sustainability performance from one place.
+                        risks and sustainability performance from one place.
                     </p>
                 </div>
 
                 <div class="eco_header_actions">
+
                     <div class="eco_last_updated">
                         <i class="fa fa-clock-o"/>
                         Last updated:
@@ -31,21 +36,36 @@
                         type="button"
                         class="btn eco_refresh_button"
                         t-on-click="refreshDashboard">
+
                         <i class="fa fa-refresh me-2"/>
                         Refresh
                     </button>
+
                 </div>
+
             </section>
 
+
+            <!-- Loading -->
             <t t-if="state.loading">
+
                 <div class="eco_loading_panel">
                     <div class="eco_loader"/>
+
                     <h3>Preparing sustainability insights</h3>
-                    <p>Loading live ESG information...</p>
+
+                    <p>
+                        Loading live environmental and ESG information...
+                    </p>
                 </div>
+
             </t>
 
+
+            <!-- Main Dashboard -->
             <t t-else="">
+
+                <!-- KPI Cards -->
                 <section class="eco_kpi_grid">
 
                     <article
@@ -54,13 +74,16 @@
                         t-on-click="openCarbonTransactions">
 
                         <div class="eco_kpi_top">
+
                             <div class="eco_icon_box">
                                 <i class="fa fa-leaf"/>
                             </div>
+
                             <span class="eco_card_link">
                                 View details
                                 <i class="fa fa-arrow-right"/>
                             </span>
+
                         </div>
 
                         <div class="eco_kpi_label">
@@ -74,7 +97,9 @@
                         <div class="eco_kpi_unit">
                             kg CO₂e recorded
                         </div>
+
                     </article>
+
 
                     <article
                         class="eco_kpi_card"
@@ -82,13 +107,16 @@
                         t-on-click="openCarbonTransactions">
 
                         <div class="eco_kpi_top">
+
                             <div class="eco_icon_box eco_icon_blue">
                                 <i class="fa fa-exchange"/>
                             </div>
+
                             <span class="eco_card_link">
                                 Open
                                 <i class="fa fa-arrow-right"/>
                             </span>
+
                         </div>
 
                         <div class="eco_kpi_label">
@@ -102,7 +130,9 @@
                         <div class="eco_kpi_unit">
                             activity records
                         </div>
+
                     </article>
+
 
                     <article
                         class="eco_kpi_card"
@@ -110,13 +140,16 @@
                         t-on-click="openEnvironmentalGoals">
 
                         <div class="eco_kpi_top">
+
                             <div class="eco_icon_box eco_icon_orange">
                                 <i class="fa fa-bullseye"/>
                             </div>
+
                             <span class="eco_card_link">
                                 Open
                                 <i class="fa fa-arrow-right"/>
                             </span>
+
                         </div>
 
                         <div class="eco_kpi_label">
@@ -130,7 +163,9 @@
                         <div class="eco_kpi_unit">
                             sustainability targets
                         </div>
+
                     </article>
+
 
                     <article
                         class="eco_kpi_card"
@@ -138,13 +173,16 @@
                         t-on-click="openDepartments">
 
                         <div class="eco_kpi_top">
+
                             <div class="eco_icon_box eco_icon_purple">
                                 <i class="fa fa-building"/>
                             </div>
+
                             <span class="eco_card_link">
                                 Open
                                 <i class="fa fa-arrow-right"/>
                             </span>
+
                         </div>
 
                         <div class="eco_kpi_label">
@@ -158,29 +196,40 @@
                         <div class="eco_kpi_unit">
                             monitored business units
                         </div>
+
                     </article>
 
                 </section>
 
+
+                <!-- Scope and Quick Actions -->
                 <section class="eco_content_grid">
 
+                    <!-- Emission Scope -->
                     <article class="eco_panel">
+
                         <div class="eco_panel_header">
+
                             <div>
                                 <h2>Emission Scope Distribution</h2>
+
                                 <p>
-                                    Emissions across Scope 1, Scope 2,
-                                    and Scope 3.
+                                    Carbon emissions divided across
+                                    operational scopes.
                                 </p>
                             </div>
 
                             <div class="eco_panel_icon">
                                 <i class="fa fa-pie-chart"/>
                             </div>
+
                         </div>
 
+
                         <div class="eco_scope_item">
+
                             <div class="eco_scope_heading">
+
                                 <div>
                                     <span class="eco_scope_dot eco_scope_1"/>
                                     <strong>Scope 1</strong>
@@ -190,6 +239,7 @@
                                 <strong>
                                     <t t-esc="state.scope1Percent"/>%
                                 </strong>
+
                             </div>
 
                             <div class="eco_progress_track">
@@ -202,10 +252,14 @@
                                 <t t-esc="formatNumber(state.scope1Total)"/>
                                 kg CO₂e
                             </small>
+
                         </div>
 
+
                         <div class="eco_scope_item">
+
                             <div class="eco_scope_heading">
+
                                 <div>
                                     <span class="eco_scope_dot eco_scope_2"/>
                                     <strong>Scope 2</strong>
@@ -215,6 +269,7 @@
                                 <strong>
                                     <t t-esc="state.scope2Percent"/>%
                                 </strong>
+
                             </div>
 
                             <div class="eco_progress_track">
@@ -227,10 +282,14 @@
                                 <t t-esc="formatNumber(state.scope2Total)"/>
                                 kg CO₂e
                             </small>
+
                         </div>
 
+
                         <div class="eco_scope_item">
+
                             <div class="eco_scope_heading">
+
                                 <div>
                                     <span class="eco_scope_dot eco_scope_3"/>
                                     <strong>Scope 3</strong>
@@ -240,6 +299,7 @@
                                 <strong>
                                     <t t-esc="state.scope3Percent"/>%
                                 </strong>
+
                             </div>
 
                             <div class="eco_progress_track">
@@ -252,22 +312,32 @@
                                 <t t-esc="formatNumber(state.scope3Total)"/>
                                 kg CO₂e
                             </small>
+
                         </div>
+
                     </article>
 
+
+                    <!-- Quick Actions -->
                     <article class="eco_panel">
+
                         <div class="eco_panel_header">
+
                             <div>
                                 <h2>Quick Actions</h2>
+
                                 <p>
-                                    Manage sustainability information quickly.
+                                    Create and manage sustainability
+                                    information quickly.
                                 </p>
                             </div>
 
                             <div class="eco_panel_icon">
                                 <i class="fa fa-bolt"/>
                             </div>
+
                         </div>
+
 
                         <div class="eco_quick_actions">
 
@@ -282,11 +352,16 @@
 
                                 <span>
                                     <strong>Record Carbon Activity</strong>
-                                    <small>Add a new emission transaction</small>
+
+                                    <small>
+                                        Add a new emission transaction
+                                    </small>
                                 </span>
 
                                 <i class="fa fa-chevron-right"/>
+
                             </button>
+
 
                             <button
                                 type="button"
@@ -299,11 +374,16 @@
 
                                 <span>
                                     <strong>Create Environmental Goal</strong>
-                                    <small>Define a sustainability target</small>
+
+                                    <small>
+                                        Define a sustainability target
+                                    </small>
                                 </span>
 
                                 <i class="fa fa-chevron-right"/>
+
                             </button>
+
 
                             <button
                                 type="button"
@@ -316,11 +396,16 @@
 
                                 <span>
                                     <strong>Manage Emission Factors</strong>
-                                    <small>Configure calculation values</small>
+
+                                    <small>
+                                        Configure calculation values
+                                    </small>
                                 </span>
 
                                 <i class="fa fa-chevron-right"/>
+
                             </button>
+
 
                             <button
                                 type="button"
@@ -333,36 +418,326 @@
 
                                 <span>
                                     <strong>Department Performance</strong>
-                                    <small>Review departmental ESG data</small>
+
+                                    <small>
+                                        Review departmental ESG data
+                                    </small>
                                 </span>
 
                                 <i class="fa fa-chevron-right"/>
+
                             </button>
 
                         </div>
+
                     </article>
 
                 </section>
 
+
+                <!-- Goal Analytics -->
+                <section class="eco_goal_analytics">
+
+                    <article class="eco_panel">
+
+                        <div class="eco_panel_header">
+
+                            <div>
+                                <h2>Environmental Goal Performance</h2>
+
+                                <p>
+                                    Real-time progress and risk monitoring
+                                    for sustainability targets.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                class="btn eco_text_button"
+                                t-on-click="openEnvironmentalGoals">
+
+                                View all goals
+                                <i class="fa fa-arrow-right ms-2"/>
+
+                            </button>
+
+                        </div>
+
+
+                        <div class="eco_goal_summary_grid">
+
+                            <div class="eco_goal_summary">
+
+                                <span>Average Progress</span>
+
+                                <strong>
+                                    <t t-esc="state.averageGoalProgress"/>%
+                                </strong>
+
+                            </div>
+
+
+                            <div class="eco_goal_summary">
+
+                                <span>Active Goals</span>
+
+                                <strong>
+                                    <t t-esc="state.activeGoals"/>
+                                </strong>
+
+                            </div>
+
+
+                            <div class="eco_goal_summary eco_goal_summary_success">
+
+                                <span>Completed</span>
+
+                                <strong>
+                                    <t t-esc="state.completedGoals"/>
+                                </strong>
+
+                            </div>
+
+
+                            <div class="eco_goal_summary eco_goal_summary_risk">
+
+                                <span>At Risk</span>
+
+                                <strong>
+                                    <t t-esc="state.atRiskGoals"/>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <t t-if="state.goalRecords.length">
+
+                            <div class="eco_goal_list">
+
+                                <t
+                                    t-foreach="state.goalRecords"
+                                    t-as="goal"
+                                    t-key="goal.id">
+
+                                    <div class="eco_goal_item">
+
+                                        <div class="eco_goal_info">
+
+                                            <div class="eco_goal_title_row">
+
+                                                <strong>
+                                                    <t t-esc="goal.name"/>
+                                                </strong>
+
+                                                <span
+                                                    t-att-class="'eco_goal_status ' + getGoalStatusClass(goal.status)">
+
+                                                    <t t-esc="getGoalStatusLabel(goal.status)"/>
+
+                                                </span>
+
+                                            </div>
+
+
+                                            <div class="eco_goal_meta">
+
+                                                <span>
+                                                    <i class="fa fa-building-o me-1"/>
+
+                                                    <t t-esc="getDepartmentName(goal.department_id)"/>
+                                                </span>
+
+                                                <span>
+                                                    <i class="fa fa-calendar me-1"/>
+
+                                                    <t t-esc="goal.end_date || 'No deadline'"/>
+                                                </span>
+
+                                                <span>
+                                                    <i class="fa fa-line-chart me-1"/>
+
+                                                    <t t-esc="getMetricLabel(goal.metric_type)"/>
+                                                </span>
+
+                                            </div>
+
+
+                                            <div class="eco_goal_progress_track">
+
+                                                <div
+                                                    class="eco_goal_progress_fill"
+                                                    t-att-style="'width: ' + goal.progress_percentage + '%'"/>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="eco_goal_percentage">
+
+                                            <strong>
+                                                <t t-esc="formatNumber(goal.progress_percentage)"/>%
+                                            </strong>
+
+                                            <span>completed</span>
+
+                                        </div>
+
+                                    </div>
+
+                                </t>
+
+                            </div>
+
+                        </t>
+
+
+                        <t t-else="">
+
+                            <div class="eco_empty_state">
+
+                                <div class="eco_empty_icon">
+                                    <i class="fa fa-bullseye"/>
+                                </div>
+
+                                <h3>No environmental goals yet</h3>
+
+                                <p>
+                                    Create a sustainability target to begin
+                                    goal-performance analysis.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    class="btn eco_refresh_button"
+                                    t-on-click="createEnvironmentalGoal">
+
+                                    Create First Goal
+
+                                </button>
+
+                            </div>
+
+                        </t>
+
+                    </article>
+
+
+                    <!-- Sustainability Alerts -->
+                    <article class="eco_panel">
+
+                        <div class="eco_panel_header">
+
+                            <div>
+                                <h2>Sustainability Alerts</h2>
+
+                                <p>
+                                    Goals that require review or immediate
+                                    action.
+                                </p>
+                            </div>
+
+                            <div class="eco_panel_icon">
+                                <i class="fa fa-bell"/>
+                            </div>
+
+                        </div>
+
+
+                        <t t-if="state.alerts.length">
+
+                            <div class="eco_alert_list">
+
+                                <t
+                                    t-foreach="state.alerts"
+                                    t-as="alert"
+                                    t-key="alert.id">
+
+                                    <div
+                                        t-att-class="'eco_alert_item ' + getRiskClass(alert.level)">
+
+                                        <div class="eco_alert_icon">
+                                            <i class="fa fa-exclamation-triangle"/>
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                <t t-esc="alert.title"/>
+                                            </strong>
+
+                                            <p>
+                                                <t t-esc="alert.message"/>
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </t>
+
+                            </div>
+
+                        </t>
+
+
+                        <t t-else="">
+
+                            <div class="eco_no_alerts">
+
+                                <i class="fa fa-check-circle"/>
+
+                                <h3>All goals are on track</h3>
+
+                                <p>
+                                    No critical sustainability alerts were
+                                    detected.
+                                </p>
+
+                            </div>
+
+                        </t>
+
+                    </article>
+
+                </section>
+
+
+                <!-- Recent Transactions -->
                 <section class="eco_panel eco_recent_panel">
+
                     <div class="eco_panel_header">
+
                         <div>
                             <h2>Recent Carbon Transactions</h2>
-                            <p>Latest emission activity in EcoPulse ESG.</p>
+
+                            <p>
+                                Latest emission activity registered in
+                                EcoPulse ESG.
+                            </p>
                         </div>
 
                         <button
                             type="button"
                             class="btn eco_text_button"
                             t-on-click="openCarbonTransactions">
-                            View all
+
+                            View all transactions
                             <i class="fa fa-arrow-right ms-2"/>
+
                         </button>
+
                     </div>
 
+
                     <t t-if="state.recentTransactions.length">
+
                         <div class="table-responsive">
+
                             <table class="table eco_transaction_table">
+
                                 <thead>
                                     <tr>
                                         <th>Reference</th>
@@ -375,12 +750,14 @@
                                 </thead>
 
                                 <tbody>
+
                                     <t
                                         t-foreach="state.recentTransactions"
                                         t-as="transaction"
                                         t-key="transaction.id">
 
                                         <tr>
+
                                             <td>
                                                 <strong>
                                                     <t t-esc="transaction.reference || 'New'"/>
@@ -405,6 +782,7 @@
                                                 <strong>
                                                     <t t-esc="formatNumber(transaction.carbon_emission)"/>
                                                 </strong>
+
                                                 <small> kg CO₂e</small>
                                             </td>
 
@@ -413,15 +791,24 @@
                                                     <t t-esc="getStatusLabel(transaction.status)"/>
                                                 </span>
                                             </td>
+
                                         </tr>
+
                                     </t>
+
                                 </tbody>
+
                             </table>
+
                         </div>
+
                     </t>
 
+
                     <t t-else="">
+
                         <div class="eco_empty_state">
+
                             <div class="eco_empty_icon">
                                 <i class="fa fa-leaf"/>
                             </div>
@@ -429,45 +816,64 @@
                             <h3>No carbon transactions yet</h3>
 
                             <p>
-                                Add the first transaction to begin analysis.
+                                Add the first transaction to begin
+                                carbon-emission analysis.
                             </p>
 
                             <button
                                 type="button"
                                 class="btn eco_refresh_button"
                                 t-on-click="createCarbonTransaction">
+
                                 Add First Transaction
+
                             </button>
+
                         </div>
+
                     </t>
+
                 </section>
 
+
+                <!-- Footer -->
                 <section class="eco_footer_banner">
+
                     <div class="eco_footer_icon">
                         <i class="fa fa-globe"/>
                     </div>
 
                     <div>
+
                         <strong>
                             Building a measurable and sustainable future
                         </strong>
 
                         <span>
                             EcoPulse ESG converts environmental data into
-                            actionable insights.
+                            actionable organizational insights.
                         </span>
+
                     </div>
 
                     <div class="eco_factor_summary">
+
                         <strong>
                             <t t-esc="state.emissionFactors"/>
                         </strong>
-                        <span>Emission factors configured</span>
+
+                        <span>
+                            Emission factors configured
+                        </span>
+
                     </div>
+
                 </section>
+
             </t>
 
         </div>
+
     </t>
 
 </templates>

@@ -15,18 +15,31 @@ export class EcoPulseDashboard extends Component {
         this.state = useState({
             loading: true,
             lastUpdated: "",
+
             carbonTransactions: 0,
             environmentalGoals: 0,
             departments: 0,
             emissionFactors: 0,
+
             totalEmissions: 0,
+
             scope1Total: 0,
             scope2Total: 0,
             scope3Total: 0,
+
             scope1Percent: 0,
             scope2Percent: 0,
             scope3Percent: 0,
+
             recentTransactions: [],
+
+            completedGoals: 0,
+            activeGoals: 0,
+            atRiskGoals: 0,
+            averageGoalProgress: 0,
+
+            goalRecords: [],
+            alerts: [],
         });
 
         onWillStart(async () => {
@@ -43,26 +56,34 @@ export class EcoPulseDashboard extends Component {
                     "ecopulse.carbon.transaction",
                     []
                 ),
+
                 this.orm.searchCount(
                     "ecopulse.environmental.goal",
                     []
                 ),
+
                 this.orm.searchCount(
                     "ecopulse.department",
                     []
                 ),
+
                 this.orm.searchCount(
                     "ecopulse.emission.factor",
                     []
                 ),
+
                 this.orm.searchRead(
                     "ecopulse.carbon.transaction",
                     [],
-                    ["carbon_emission", "scope"],
+                    [
+                        "carbon_emission",
+                        "scope",
+                    ],
                     {
                         limit: 5000,
                     }
                 ),
+
                 this.orm.searchRead(
                     "ecopulse.carbon.transaction",
                     [],
@@ -79,6 +100,28 @@ export class EcoPulseDashboard extends Component {
                         order: "transaction_date desc, id desc",
                     }
                 ),
+
+                this.orm.searchRead(
+                    "ecopulse.environmental.goal",
+                    [],
+                    [
+                        "name",
+                        "department_id",
+                        "metric_type",
+                        "baseline_value",
+                        "target_value",
+                        "current_value",
+                        "progress_percentage",
+                        "status",
+                        "risk_level",
+                        "start_date",
+                        "end_date",
+                    ],
+                    {
+                        limit: 8,
+                        order: "end_date asc, id desc",
+                    }
+                ),
             ]);
 
             const carbonTransactions = results[0];
@@ -87,6 +130,7 @@ export class EcoPulseDashboard extends Component {
             const emissionFactors = results[3];
             const transactionRecords = results[4];
             const recentTransactions = results[5];
+            const goalRecords = results[6];
 
             let totalEmissions = 0;
             let scope1Total = 0;
@@ -109,11 +153,57 @@ export class EcoPulseDashboard extends Component {
                 }
             }
 
+            let completedGoals = 0;
+            let activeGoals = 0;
+            let atRiskGoals = 0;
+            let totalGoalProgress = 0;
+
+            const alerts = [];
+
+            for (const goal of goalRecords) {
+                const progress = Number(
+                    goal.progress_percentage || 0
+                );
+
+                totalGoalProgress += progress;
+
+                if (goal.status === "completed") {
+                    completedGoals += 1;
+                } else if (goal.status === "at_risk") {
+                    atRiskGoals += 1;
+                } else if (goal.status === "active") {
+                    activeGoals += 1;
+                }
+
+                if (
+                    goal.status === "at_risk" ||
+                    goal.risk_level === "high"
+                ) {
+                    alerts.push({
+                        id: goal.id,
+                        title: goal.name,
+                        message:
+                            "This environmental goal requires immediate attention.",
+                        level: "high",
+                    });
+                } else if (goal.risk_level === "medium") {
+                    alerts.push({
+                        id: goal.id,
+                        title: goal.name,
+                        message:
+                            "Progress is currently below the expected level.",
+                        level: "medium",
+                    });
+                }
+            }
+
             this.state.carbonTransactions = carbonTransactions;
             this.state.environmentalGoals = environmentalGoals;
             this.state.departments = departments;
             this.state.emissionFactors = emissionFactors;
+
             this.state.totalEmissions = totalEmissions;
+
             this.state.scope1Total = scope1Total;
             this.state.scope2Total = scope2Total;
             this.state.scope3Total = scope3Total;
@@ -141,13 +231,24 @@ export class EcoPulseDashboard extends Component {
 
             this.state.recentTransactions = recentTransactions;
 
-            this.state.lastUpdated = new Date().toLocaleTimeString(
-                [],
-                {
+            this.state.completedGoals = completedGoals;
+            this.state.activeGoals = activeGoals;
+            this.state.atRiskGoals = atRiskGoals;
+
+            this.state.averageGoalProgress = goalRecords.length
+                ? Math.round(
+                      totalGoalProgress / goalRecords.length
+                  )
+                : 0;
+
+            this.state.goalRecords = goalRecords;
+            this.state.alerts = alerts.slice(0, 5);
+
+            this.state.lastUpdated =
+                new Date().toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
-                }
-            );
+                });
         } catch (error) {
             console.error(
                 "EcoPulse dashboard loading error:",
@@ -219,6 +320,53 @@ export class EcoPulseDashboard extends Component {
                 );
             })
             .join(" ");
+    }
+
+    getGoalStatusLabel(status) {
+        const labels = {
+            draft: "Draft",
+            active: "Active",
+            completed: "Completed",
+            at_risk: "At Risk",
+            cancelled: "Cancelled",
+        };
+
+        return labels[status] || "Unknown";
+    }
+
+    getGoalStatusClass(status) {
+        const classes = {
+            draft: "eco_goal_draft",
+            active: "eco_goal_active",
+            completed: "eco_goal_completed",
+            at_risk: "eco_goal_risk",
+            cancelled: "eco_goal_cancelled",
+        };
+
+        return classes[status] || "eco_goal_draft";
+    }
+
+    getRiskClass(level) {
+        const classes = {
+            low: "eco_alert_low",
+            medium: "eco_alert_medium",
+            high: "eco_alert_high",
+        };
+
+        return classes[level] || "eco_alert_low";
+    }
+
+    getMetricLabel(metric) {
+        const labels = {
+            emission_reduction: "Emission Reduction",
+            renewable_energy: "Renewable Energy",
+            waste_reduction: "Waste Reduction",
+            water_conservation: "Water Conservation",
+            energy_efficiency: "Energy Efficiency",
+            other: "Other",
+        };
+
+        return labels[metric] || "Other";
     }
 
     openCarbonTransactions() {
