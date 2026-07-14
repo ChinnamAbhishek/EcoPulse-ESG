@@ -15,16 +15,22 @@
     ],
 
     "data": [
-        "security/security.xml",
-        "security/ir.model.access.csv",
-        "data/sequence_data.xml",
-        "views/environmental_views.xml",
-        "views/department_views.xml",
-        "views/dashboard_action.xml",
-        "views/menu_views.xml",
-        "data/demo_data.xml",
-    ],
+    "security/ecopulse_security.xml",
+    "security/ir.model.access.csv",
 
+    "data/sequence_data.xml",
+
+    "views/dashboard_action.xml",
+    "views/department_views.xml",
+    "views/emission_factor_views.xml",
+    "views/carbon_transaction_views.xml",
+    "views/environmental_goal_views.xml",
+
+    "views/esg_report_wizard_views.xml",
+    "report/esg_summary_report.xml",
+
+    "views/menu_views.xml",
+],
     "assets": {
         "web.assets_backend": [
             "ecopulse_esg/static/src/dashboard/dashboard.js",

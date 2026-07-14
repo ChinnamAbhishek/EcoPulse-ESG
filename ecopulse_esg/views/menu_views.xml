@@ -2,12 +2,13 @@
 
 <odoo>
 
-    <!-- Main EcoPulse App Menu -->
+    <!-- EcoPulse ESG Main Application Menu -->
     <menuitem
         id="menu_ecopulse_root"
         name="EcoPulse ESG"
         sequence="10"
-    />
+        groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
 
     <!-- Dashboard -->
     <menuitem
@@ -15,59 +16,93 @@
         name="Dashboard"
         parent="menu_ecopulse_root"
         action="action_ecopulse_dashboard"
-        sequence="1"
-    />
-
-    <!-- Environmental Main Menu -->
-    <menuitem
-        id="menu_ecopulse_environmental"
-        name="Environmental"
-        parent="menu_ecopulse_root"
         sequence="10"
-    />
+        groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- Carbon Management Section -->
+    <menuitem
+        id="menu_ecopulse_carbon_management"
+        name="Carbon Management"
+        parent="menu_ecopulse_root"
+        sequence="20"
+        groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
 
     <!-- Carbon Transactions -->
     <menuitem
-        id="menu_ecopulse_transactions"
+        id="menu_ecopulse_carbon_transactions"
         name="Carbon Transactions"
-        parent="menu_ecopulse_environmental"
+        parent="menu_ecopulse_carbon_management"
         action="action_ecopulse_carbon_transaction"
         sequence="10"
-    />
+        groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
 
-    <!-- Environmental Goals -->
-    <menuitem
-        id="menu_ecopulse_goals"
-        name="Environmental Goals"
-        parent="menu_ecopulse_environmental"
-        action="action_ecopulse_environmental_goal"
-        sequence="20"
-    />
-
-    <!-- Configuration Main Menu -->
-    <menuitem
-        id="menu_ecopulse_configuration"
-        name="Configuration"
-        parent="menu_ecopulse_root"
-        sequence="90"
-    />
-
-    <!-- Departments -->
-    <menuitem
-        id="menu_ecopulse_departments"
-        name="Departments"
-        parent="menu_ecopulse_configuration"
-        action="action_ecopulse_department"
-        sequence="10"
-    />
 
     <!-- Emission Factors -->
     <menuitem
         id="menu_ecopulse_emission_factors"
         name="Emission Factors"
-        parent="menu_ecopulse_configuration"
+        parent="menu_ecopulse_carbon_management"
         action="action_ecopulse_emission_factor"
         sequence="20"
-    />
+        groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- Sustainability Section -->
+    <menuitem
+        id="menu_ecopulse_sustainability"
+        name="Sustainability"
+        parent="menu_ecopulse_root"
+        sequence="30"
+        groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- Environmental Goals -->
+    <menuitem
+        id="menu_ecopulse_environmental_goals"
+        name="Environmental Goals"
+        parent="menu_ecopulse_sustainability"
+        action="action_ecopulse_environmental_goal"
+        sequence="10"
+        groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- Organization Section -->
+    <menuitem
+        id="menu_ecopulse_organization"
+        name="Organization"
+        parent="menu_ecopulse_root"
+        sequence="40"
+        groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- Departments -->
+    <menuitem
+        id="menu_ecopulse_departments"
+        name="Departments"
+        parent="menu_ecopulse_organization"
+        action="action_ecopulse_department"
+        sequence="10"
+        groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- Reports Section -->
+    <menuitem
+        id="menu_ecopulse_reports"
+        name="Reports"
+        parent="menu_ecopulse_root"
+        sequence="50"
+        groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- Generate Professional ESG Report -->
+    <menuitem
+        id="menu_ecopulse_esg_report"
+        name="Generate ESG Report"
+        parent="menu_ecopulse_reports"
+        action="action_ecopulse_esg_report_wizard"
+        sequence="10"
+        groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
 
 </odoo>

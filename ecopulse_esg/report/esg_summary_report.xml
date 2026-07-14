@@ -1,0 +1,1531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- PDF Report Action -->
+    <record
+        id="action_report_esg_summary"
+        model="ir.actions.report">
+
+        <field name="name">
+            EcoPulse ESG Summary Report
+        </field>
+
+        <field name="model">
+            ecopulse.esg.report.wizard
+        </field>
+
+        <field name="report_type">
+            qweb-pdf
+        </field>
+
+        <field name="report_name">
+            ecopulse_esg.report_esg_summary_document
+        </field>
+
+        <field name="report_file">
+            ecopulse_esg.report_esg_summary_document
+        </field>
+
+        <field name="print_report_name">
+            'EcoPulse_ESG_Report_%s_%s' % (
+                object.start_date or '',
+                object.end_date or ''
+            )
+        </field>
+
+    </record>
+
+
+    <!-- Main QWeb Report Template -->
+    <template id="report_esg_summary_document">
+
+        <t t-call="web.html_container">
+
+            <t t-call="web.external_layout">
+
+                <div class="page">
+
+                    <!-- Report Header -->
+                    <div
+                        style="
+                            padding: 22px;
+                            margin-bottom: 20px;
+                            border-radius: 12px;
+                            background-color: #0f7042;
+                            color: white;
+                        ">
+
+                        <table
+                            style="
+                                width: 100%;
+                                border-collapse: collapse;
+                            ">
+
+                            <tr>
+
+                                <td style="width: 70%;">
+
+                                    <div
+                                        style="
+                                            margin-bottom: 5px;
+                                            font-size: 11px;
+                                            font-weight: bold;
+                                            letter-spacing: 1px;
+                                        ">
+
+                                        ENVIRONMENTAL INTELLIGENCE REPORT
+
+                                    </div>
+
+                                    <h1
+                                        style="
+                                            margin: 0 0 7px 0;
+                                            color: white;
+                                            font-size: 28px;
+                                        ">
+
+                                        EcoPulse ESG Report
+
+                                    </h1>
+
+                                    <p
+                                        style="
+                                            margin: 0;
+                                            color: #e4f4eb;
+                                            font-size: 12px;
+                                        ">
+
+                                        Carbon emissions, environmental goals
+                                        and sustainability-performance analysis
+
+                                    </p>
+
+                                </td>
+
+                                <td
+                                    style="
+                                        width: 30%;
+                                        text-align: right;
+                                        vertical-align: middle;
+                                    ">
+
+                                    <div
+                                        style="
+                                            font-size: 11px;
+                                            color: #d6eddf;
+                                        ">
+
+                                        Generated On
+
+                                    </div>
+
+                                    <strong
+                                        style="
+                                            color: white;
+                                            font-size: 12px;
+                                        ">
+
+                                        <span
+                                            t-field="generated_on"
+                                            t-options="{
+                                                'widget': 'datetime'
+                                            }"/>
+
+                                    </strong>
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- Report Filters -->
+                    <div
+                        style="
+                            padding: 14px;
+                            margin-bottom: 18px;
+                            border: 1px solid #dce8e1;
+                            border-radius: 9px;
+                            background-color: #f5faf7;
+                        ">
+
+                        <table
+                            style="
+                                width: 100%;
+                                border-collapse: collapse;
+                                font-size: 11px;
+                            ">
+
+                            <tr>
+
+                                <td style="width: 25%; padding: 5px;">
+
+                                    <strong>Reporting Period</strong>
+
+                                    <br/>
+
+                                    <span t-field="wizard.start_date"/>
+                                    -
+                                    <span t-field="wizard.end_date"/>
+
+                                </td>
+
+                                <td style="width: 25%; padding: 5px;">
+
+                                    <strong>Department</strong>
+
+                                    <br/>
+
+                                    <span
+                                        t-if="wizard.department_id"
+                                        t-field="wizard.department_id.name"/>
+
+                                    <span t-else="">
+                                        All Departments
+                                    </span>
+
+                                </td>
+
+                                <td style="width: 25%; padding: 5px;">
+
+                                    <strong>Emission Scope</strong>
+
+                                    <br/>
+
+                                    <span t-if="wizard.scope">
+                                        <span
+                                            t-field="wizard.scope"/>
+                                    </span>
+
+                                    <span t-else="">
+                                        All Scopes
+                                    </span>
+
+                                </td>
+
+                                <td style="width: 25%; padding: 5px;">
+
+                                    <strong>Transaction Status</strong>
+
+                                    <br/>
+
+                                    <span
+                                        t-if="wizard.transaction_status"
+                                        t-field="wizard.transaction_status"/>
+
+                                    <span t-else="">
+                                        All Active Statuses
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- KPI Summary -->
+                    <h2
+                        style="
+                            margin: 0 0 12px 0;
+                            color: #183527;
+                            font-size: 18px;
+                        ">
+
+                        Executive Sustainability Summary
+
+                    </h2>
+
+                    <table
+                        style="
+                            width: 100%;
+                            margin-bottom: 20px;
+                            border-spacing: 8px;
+                            border-collapse: separate;
+                        ">
+
+                        <tr>
+
+                            <td
+                                style="
+                                    width: 25%;
+                                    padding: 15px;
+                                    border-radius: 9px;
+                                    background-color: #0f7042;
+                                    color: white;
+                                ">
+
+                                <div
+                                    style="
+                                        margin-bottom: 5px;
+                                        font-size: 10px;
+                                    ">
+
+                                    TOTAL EMISSIONS
+
+                                </div>
+
+                                <strong
+                                    style="
+                                        font-size: 22px;
+                                    ">
+
+                                    <span
+                                        t-esc="'{:,.2f}'.format(total_emission)"/>
+
+                                </strong>
+
+                                <div
+                                    style="
+                                        margin-top: 4px;
+                                        font-size: 10px;
+                                    ">
+
+                                    kg CO₂e
+
+                                </div>
+
+                            </td>
+
+                            <td
+                                style="
+                                    width: 25%;
+                                    padding: 15px;
+                                    border: 1px solid #dce8e1;
+                                    border-radius: 9px;
+                                    background-color: #f7faf8;
+                                ">
+
+                                <div
+                                    style="
+                                        margin-bottom: 5px;
+                                        color: #6f7d74;
+                                        font-size: 10px;
+                                    ">
+
+                                    TRANSACTIONS
+
+                                </div>
+
+                                <strong
+                                    style="
+                                        color: #183527;
+                                        font-size: 22px;
+                                    ">
+
+                                    <span t-esc="len(transactions)"/>
+
+                                </strong>
+
+                            </td>
+
+                            <td
+                                style="
+                                    width: 25%;
+                                    padding: 15px;
+                                    border: 1px solid #dce8e1;
+                                    border-radius: 9px;
+                                    background-color: #f7faf8;
+                                ">
+
+                                <div
+                                    style="
+                                        margin-bottom: 5px;
+                                        color: #6f7d74;
+                                        font-size: 10px;
+                                    ">
+
+                                    ENVIRONMENTAL GOALS
+
+                                </div>
+
+                                <strong
+                                    style="
+                                        color: #183527;
+                                        font-size: 22px;
+                                    ">
+
+                                    <span t-esc="len(goals)"/>
+
+                                </strong>
+
+                            </td>
+
+                            <td
+                                style="
+                                    width: 25%;
+                                    padding: 15px;
+                                    border: 1px solid #dce8e1;
+                                    border-radius: 9px;
+                                    background-color: #f7faf8;
+                                ">
+
+                                <div
+                                    style="
+                                        margin-bottom: 5px;
+                                        color: #6f7d74;
+                                        font-size: 10px;
+                                    ">
+
+                                    AVERAGE GOAL PROGRESS
+
+                                </div>
+
+                                <strong
+                                    style="
+                                        color: #16834f;
+                                        font-size: 22px;
+                                    ">
+
+                                    <span
+                                        t-esc="'{:,.2f}'.format(
+                                            average_goal_progress
+                                        )"/>
+
+                                    %
+
+                                </strong>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+
+                    <!-- Scope Distribution -->
+                    <h2
+                        style="
+                            margin: 0 0 10px 0;
+                            color: #183527;
+                            font-size: 17px;
+                        ">
+
+                        Emission Scope Distribution
+
+                    </h2>
+
+                    <table
+                        style="
+                            width: 100%;
+                            margin-bottom: 20px;
+                            border-collapse: collapse;
+                            font-size: 11px;
+                        ">
+
+                        <thead>
+
+                            <tr style="background-color: #edf7f1;">
+
+                                <th
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #dce8e1;
+                                        text-align: left;
+                                    ">
+
+                                    Scope
+
+                                </th>
+
+                                <th
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #dce8e1;
+                                        text-align: right;
+                                    ">
+
+                                    Emission
+
+                                </th>
+
+                                <th
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #dce8e1;
+                                        text-align: right;
+                                    ">
+
+                                    Percentage
+
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                    ">
+
+                                    Scope 1 — Direct Emissions
+
+                                </td>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                        text-align: right;
+                                    ">
+
+                                    <span
+                                        t-esc="'{:,.2f}'.format(
+                                            scope_totals['scope_1']
+                                        )"/>
+
+                                    kg CO₂e
+
+                                </td>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                        text-align: right;
+                                    ">
+
+                                    <span
+                                        t-esc="'{:,.2f}'.format(
+                                            scope_totals[
+                                                'scope_1_percentage'
+                                            ]
+                                        )"/>
+
+                                    %
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                    ">
+
+                                    Scope 2 — Purchased Energy
+
+                                </td>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                        text-align: right;
+                                    ">
+
+                                    <span
+                                        t-esc="'{:,.2f}'.format(
+                                            scope_totals['scope_2']
+                                        )"/>
+
+                                    kg CO₂e
+
+                                </td>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                        text-align: right;
+                                    ">
+
+                                    <span
+                                        t-esc="'{:,.2f}'.format(
+                                            scope_totals[
+                                                'scope_2_percentage'
+                                            ]
+                                        )"/>
+
+                                    %
+
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                    ">
+
+                                    Scope 3 — Value-Chain Emissions
+
+                                </td>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                        text-align: right;
+                                    ">
+
+                                    <span
+                                        t-esc="'{:,.2f}'.format(
+                                            scope_totals['scope_3']
+                                        )"/>
+
+                                    kg CO₂e
+
+                                </td>
+
+                                <td
+                                    style="
+                                        padding: 9px;
+                                        border: 1px solid #e1e8e4;
+                                        text-align: right;
+                                    ">
+
+                                    <span
+                                        t-esc="'{:,.2f}'.format(
+                                            scope_totals[
+                                                'scope_3_percentage'
+                                            ]
+                                        )"/>
+
+                                    %
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- Transaction Status -->
+                    <h2
+                        style="
+                            margin: 0 0 10px 0;
+                            color: #183527;
+                            font-size: 17px;
+                        ">
+
+                        Transaction Status Summary
+
+                    </h2>
+
+                    <table
+                        style="
+                            width: 100%;
+                            margin-bottom: 20px;
+                            border-spacing: 7px;
+                            border-collapse: separate;
+                        ">
+
+                        <tr>
+
+                            <td
+                                style="
+                                    padding: 12px;
+                                    border-radius: 8px;
+                                    background-color: #fff6e8;
+                                    text-align: center;
+                                ">
+
+                                <div style="font-size: 10px;">
+                                    Draft
+                                </div>
+
+                                <strong
+                                    style="
+                                        color: #a66b12;
+                                        font-size: 20px;
+                                    ">
+
+                                    <span t-esc="status_counts['draft']"/>
+
+                                </strong>
+
+                            </td>
+
+                            <td
+                                style="
+                                    padding: 12px;
+                                    border-radius: 8px;
+                                    background-color: #eaf4ff;
+                                    text-align: center;
+                                ">
+
+                                <div style="font-size: 10px;">
+                                    Calculated
+                                </div>
+
+                                <strong
+                                    style="
+                                        color: #316cae;
+                                        font-size: 20px;
+                                    ">
+
+                                    <span
+                                        t-esc="status_counts['calculated']"/>
+
+                                </strong>
+
+                            </td>
+
+                            <td
+                                style="
+                                    padding: 12px;
+                                    border-radius: 8px;
+                                    background-color: #e9f7ef;
+                                    text-align: center;
+                                ">
+
+                                <div style="font-size: 10px;">
+                                    Verified
+                                </div>
+
+                                <strong
+                                    style="
+                                        color: #137446;
+                                        font-size: 20px;
+                                    ">
+
+                                    <span
+                                        t-esc="status_counts['verified']"/>
+
+                                </strong>
+
+                            </td>
+
+                            <td
+                                style="
+                                    padding: 12px;
+                                    border-radius: 8px;
+                                    background-color: #f1f1f1;
+                                    text-align: center;
+                                ">
+
+                                <div style="font-size: 10px;">
+                                    Cancelled
+                                </div>
+
+                                <strong
+                                    style="
+                                        color: #666666;
+                                        font-size: 20px;
+                                    ">
+
+                                    <span
+                                        t-esc="status_counts['cancelled']"/>
+
+                                </strong>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+
+                    <!-- Monthly Emissions -->
+                    <h2
+                        style="
+                            margin: 0 0 10px 0;
+                            color: #183527;
+                            font-size: 17px;
+                        ">
+
+                        Monthly Emission Analysis
+
+                    </h2>
+
+                    <table
+                        style="
+                            width: 100%;
+                            margin-bottom: 20px;
+                            border-collapse: collapse;
+                            font-size: 10px;
+                        ">
+
+                        <thead>
+
+                            <tr style="background-color: #edf7f1;">
+
+                                <th
+                                    style="
+                                        padding: 8px;
+                                        border: 1px solid #dce8e1;
+                                        text-align: left;
+                                    ">
+
+                                    Month
+
+                                </th>
+
+                                <th
+                                    style="
+                                        padding: 8px;
+                                        border: 1px solid #dce8e1;
+                                        text-align: right;
+                                    ">
+
+                                    Carbon Emission
+
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <t
+                                t-foreach="monthly_emissions"
+                                t-as="month">
+
+                                <tr>
+
+                                    <td
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #e1e8e4;
+                                        ">
+
+                                        <span t-esc="month['label']"/>
+
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #e1e8e4;
+                                            text-align: right;
+                                        ">
+
+                                        <span
+                                            t-esc="'{:,.2f}'.format(
+                                                month['total']
+                                            )"/>
+
+                                        kg CO₂e
+
+                                    </td>
+
+                                </tr>
+
+                            </t>
+
+                            <tr t-if="not monthly_emissions">
+
+                                <td
+                                    colspan="2"
+                                    style="
+                                        padding: 15px;
+                                        border: 1px solid #e1e8e4;
+                                        color: #777777;
+                                        text-align: center;
+                                    ">
+
+                                    No monthly emission data available.
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- Department Analysis -->
+                    <t t-if="wizard.include_department_analysis">
+
+                        <h2
+                            style="
+                                margin: 0 0 10px 0;
+                                color: #183527;
+                                font-size: 17px;
+                            ">
+
+                            Department Performance Analysis
+
+                        </h2>
+
+                        <table
+                            style="
+                                width: 100%;
+                                margin-bottom: 20px;
+                                border-collapse: collapse;
+                                font-size: 10px;
+                            ">
+
+                            <thead>
+
+                                <tr style="background-color: #edf7f1;">
+
+                                    <th
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: left;
+                                        ">
+
+                                        Rank
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: left;
+                                        ">
+
+                                        Department
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: right;
+                                        ">
+
+                                        Transactions
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: right;
+                                        ">
+
+                                        Emission
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <t
+                                    t-foreach="department_ranking"
+                                    t-as="department">
+
+                                    <tr>
+
+                                        <td
+                                            style="
+                                                padding: 8px;
+                                                border: 1px solid #e1e8e4;
+                                            ">
+
+                                            <span
+                                                t-esc="department_index + 1"/>
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 8px;
+                                                border: 1px solid #e1e8e4;
+                                            ">
+
+                                            <span
+                                                t-esc="department['name']"/>
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 8px;
+                                                border: 1px solid #e1e8e4;
+                                                text-align: right;
+                                            ">
+
+                                            <span
+                                                t-esc="department[
+                                                    'transactions'
+                                                ]"/>
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 8px;
+                                                border: 1px solid #e1e8e4;
+                                                text-align: right;
+                                            ">
+
+                                            <span
+                                                t-esc="'{:,.2f}'.format(
+                                                    department['total']
+                                                )"/>
+
+                                            kg CO₂e
+
+                                        </td>
+
+                                    </tr>
+
+                                </t>
+
+                            </tbody>
+
+                        </table>
+
+                    </t>
+
+
+                    <!-- Source Analysis -->
+                    <t t-if="wizard.include_source_analysis">
+
+                        <h2
+                            style="
+                                margin: 0 0 10px 0;
+                                color: #183527;
+                                font-size: 17px;
+                            ">
+
+                            Emission Source Analysis
+
+                        </h2>
+
+                        <table
+                            style="
+                                width: 100%;
+                                margin-bottom: 20px;
+                                border-collapse: collapse;
+                                font-size: 10px;
+                            ">
+
+                            <thead>
+
+                                <tr style="background-color: #edf7f1;">
+
+                                    <th
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: left;
+                                        ">
+
+                                        Source
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: right;
+                                        ">
+
+                                        Transactions
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 8px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: right;
+                                        ">
+
+                                        Emission
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <t
+                                    t-foreach="source_analysis"
+                                    t-as="source">
+
+                                    <tr>
+
+                                        <td
+                                            style="
+                                                padding: 8px;
+                                                border: 1px solid #e1e8e4;
+                                            ">
+
+                                            <span t-esc="source['label']"/>
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 8px;
+                                                border: 1px solid #e1e8e4;
+                                                text-align: right;
+                                            ">
+
+                                            <span
+                                                t-esc="source[
+                                                    'transactions'
+                                                ]"/>
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 8px;
+                                                border: 1px solid #e1e8e4;
+                                                text-align: right;
+                                            ">
+
+                                            <span
+                                                t-esc="'{:,.2f}'.format(
+                                                    source['total']
+                                                )"/>
+
+                                            kg CO₂e
+
+                                        </td>
+
+                                    </tr>
+
+                                </t>
+
+                            </tbody>
+
+                        </table>
+
+                    </t>
+
+
+                    <!-- Environmental Goals -->
+                    <t t-if="wizard.include_goals">
+
+                        <h2
+                            style="
+                                margin: 0 0 10px 0;
+                                color: #183527;
+                                font-size: 17px;
+                            ">
+
+                            Environmental Goal Performance
+
+                        </h2>
+
+                        <table
+                            style="
+                                width: 100%;
+                                margin-bottom: 20px;
+                                border-collapse: collapse;
+                                font-size: 9px;
+                            ">
+
+                            <thead>
+
+                                <tr style="background-color: #edf7f1;">
+
+                                    <th
+                                        style="
+                                            padding: 7px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: left;
+                                        ">
+
+                                        Goal
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 7px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: left;
+                                        ">
+
+                                        Department
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 7px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: right;
+                                        ">
+
+                                        Progress
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 7px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: left;
+                                        ">
+
+                                        Status
+
+                                    </th>
+
+                                    <th
+                                        style="
+                                            padding: 7px;
+                                            border: 1px solid #dce8e1;
+                                            text-align: left;
+                                        ">
+
+                                        Deadline
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <t t-foreach="goals" t-as="goal">
+
+                                    <tr>
+
+                                        <td
+                                            style="
+                                                padding: 7px;
+                                                border: 1px solid #e1e8e4;
+                                            ">
+
+                                            <span t-field="goal.name"/>
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 7px;
+                                                border: 1px solid #e1e8e4;
+                                            ">
+
+                                            <span
+                                                t-field="goal.department_id.name"/>
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 7px;
+                                                border: 1px solid #e1e8e4;
+                                                text-align: right;
+                                            ">
+
+                                            <span
+                                                t-esc="'{:,.2f}'.format(
+                                                    goal.progress_percentage
+                                                )"/>
+
+                                            %
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 7px;
+                                                border: 1px solid #e1e8e4;
+                                            ">
+
+                                            <span t-field="goal.status"/>
+
+                                        </td>
+
+                                        <td
+                                            style="
+                                                padding: 7px;
+                                                border: 1px solid #e1e8e4;
+                                            ">
+
+                                            <span t-field="goal.end_date"/>
+
+                                        </td>
+
+                                    </tr>
+
+                                </t>
+
+                                <tr t-if="not goals">
+
+                                    <td
+                                        colspan="5"
+                                        style="
+                                            padding: 15px;
+                                            border: 1px solid #e1e8e4;
+                                            color: #777777;
+                                            text-align: center;
+                                        ">
+
+                                        No environmental goals available.
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+
+                        <div
+                            style="
+                                padding: 13px;
+                                margin-bottom: 20px;
+                                border-radius: 8px;
+                                background-color: #f5faf7;
+                                font-size: 10px;
+                            ">
+
+                            <strong>Goal Summary:</strong>
+
+                            <span t-esc="active_goals"/>
+                            active,
+
+                            <span t-esc="completed_goals"/>
+                            completed and
+
+                            <span t-esc="at_risk_goals"/>
+                            at risk.
+
+                        </div>
+
+                    </t>
+
+
+                    <!-- Detailed Transactions -->
+                    <h2
+                        style="
+                            margin: 0 0 10px 0;
+                            color: #183527;
+                            font-size: 17px;
+                        ">
+
+                        Carbon Transaction Details
+
+                    </h2>
+
+                    <table
+                        style="
+                            width: 100%;
+                            border-collapse: collapse;
+                            font-size: 8px;
+                        ">
+
+                        <thead>
+
+                            <tr style="background-color: #0f7042; color: white;">
+
+                                <th style="padding: 6px; text-align: left;">
+                                    Reference
+                                </th>
+
+                                <th style="padding: 6px; text-align: left;">
+                                    Date
+                                </th>
+
+                                <th style="padding: 6px; text-align: left;">
+                                    Department
+                                </th>
+
+                                <th style="padding: 6px; text-align: left;">
+                                    Source
+                                </th>
+
+                                <th style="padding: 6px; text-align: left;">
+                                    Scope
+                                </th>
+
+                                <th style="padding: 6px; text-align: right;">
+                                    Quantity
+                                </th>
+
+                                <th style="padding: 6px; text-align: right;">
+                                    Emission
+                                </th>
+
+                                <th style="padding: 6px; text-align: left;">
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <t
+                                t-foreach="transactions"
+                                t-as="transaction">
+
+                                <tr>
+
+                                    <td
+                                        style="
+                                            padding: 6px;
+                                            border: 1px solid #e1e8e4;
+                                        ">
+
+                                        <span
+                                            t-field="transaction.reference"/>
+
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 6px;
+                                            border: 1px solid #e1e8e4;
+                                        ">
+
+                                        <span
+                                            t-field="transaction.transaction_date"/>
+
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 6px;
+                                            border: 1px solid #e1e8e4;
+                                        ">
+
+                                        <span
+                                            t-field="transaction.department_id.name"/>
+
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 6px;
+                                            border: 1px solid #e1e8e4;
+                                        ">
+
+                                        <span
+                                            t-field="transaction.source_module"/>
+
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 6px;
+                                            border: 1px solid #e1e8e4;
+                                        ">
+
+                                        <span t-field="transaction.scope"/>
+
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 6px;
+                                            border: 1px solid #e1e8e4;
+                                            text-align: right;
+                                        ">
+
+                                        <span
+                                            t-esc="'{:,.2f}'.format(
+                                                transaction.activity_quantity
+                                            )"/>
+
+                                        <span
+                                            t-field="transaction.activity_unit"/>
+
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 6px;
+                                            border: 1px solid #e1e8e4;
+                                            text-align: right;
+                                        ">
+
+                                        <span
+                                            t-esc="'{:,.2f}'.format(
+                                                transaction.calculated_emission
+                                            )"/>
+
+                                        kg CO₂e
+
+                                    </td>
+
+                                    <td
+                                        style="
+                                            padding: 6px;
+                                            border: 1px solid #e1e8e4;
+                                        ">
+
+                                        <span t-field="transaction.status"/>
+
+                                    </td>
+
+                                </tr>
+
+                            </t>
+
+                            <tr t-if="not transactions">
+
+                                <td
+                                    colspan="8"
+                                    style="
+                                        padding: 16px;
+                                        border: 1px solid #e1e8e4;
+                                        color: #777777;
+                                        text-align: center;
+                                    ">
+
+                                    No transactions matched the report filters.
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- Report Footer Message -->
+                    <div
+                        style="
+                            padding: 14px;
+                            margin-top: 20px;
+                            border-top: 2px solid #16834f;
+                            color: #64736a;
+                            font-size: 9px;
+                            text-align: center;
+                        ">
+
+                        Generated by EcoPulse ESG —
+                        Odoo-Based Environmental Sustainability
+                        Management Platform
+
+                    </div>
+
+                </div>
+
+            </t>
+
+        </t>
+
+    </template>
+
+</odoo>
