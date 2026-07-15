@@ -48,35 +48,21 @@ Main Features
         "mail",
         "hr",
     ],
-
-    "data": [
-        # Security groups
-        "security/security.xml",
-
-        # Access rights
-        "security/ir.model.access.csv",
-
-        # Initial sequence
-        "data/sequence_data.xml",
-
-        # Dashboard action
-        "views/dashboard_action.xml",
-
-        # Department views
-        "views/department_views.xml",
-
-        # Combined environmental views
-        "views/environmental_views.xml",
-
-        # ESG report wizard
-        "views/esg_report_wizard_views.xml",
-
-        # ESG PDF report
-        "report/esg_summary_report.xml",
-
-        # Menus
-        "views/menu_views.xml",
-    ],
+"data": [
+    "security/security.xml",
+    "security/ir.model.access.csv",
+    "data/sequence_data.xml",
+    "views/dashboard_action.xml",
+    "views/department_views.xml",
+    "views/environmental_views.xml",
+    "views/carbon_trust_score_views.xml",
+    "views/carbon_reduction_simulator_views.xml",
+    "views/carbon_budget_views.xml",
+    "views/esg_report_wizard_views.xml",
+    "report/esg_summary_report.xml",
+    "views/menu_views.xml",
+],
+ 
 
     "assets": {
         "web.assets_backend": [

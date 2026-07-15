@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- =====================================================
+         CARBON REDUCTION SIMULATOR FORM VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_reduction_simulator_form"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.reduction.simulator.form</field>
+
+        <field name="model">ecopulse.carbon.reduction.simulator</field>
+
+        <field name="arch" type="xml">
+
+            <form string="What-if Carbon Reduction Simulator">
+
+                <sheet>
+
+                    <div class="oe_title">
+
+                        <label for="name"/>
+
+                        <h1>
+                            <field
+                                name="name"
+                                placeholder="Enter scenario name..."/>
+                        </h1>
+
+                        <p class="text-muted">
+                            Analyse historical carbon emissions and estimate
+                            how proposed sustainability actions can reduce
+                            future emissions.
+                        </p>
+
+                    </div>
+
+                    <!-- Simulation Filters -->
+                    <group string="Simulation Period and Filters">
+
+                        <group>
+
+                            <field name="start_date"/>
+
+                            <field name="end_date"/>
+
+                            <field
+                                name="department_id"
+                                options="{
+                                    'no_create': True,
+                                    'no_create_edit': True
+                                }"
+                                placeholder="All Departments"/>
+
+                        </group>
+
+                        <group>
+
+                            <field
+                                name="scope"
+                                placeholder="All Emission Scopes"/>
+
+                            <field name="include_draft"/>
+
+                        </group>
+
+                    </group>
+
+                    <!-- Reduction Inputs -->
+                    <group string="Proposed Carbon Reduction Targets">
+
+                        <group string="Operational Reductions">
+
+                            <field
+                                name="electricity_reduction_percent"
+                                widget="percentage"/>
+
+                            <field
+                                name="fuel_reduction_percent"
+                                widget="percentage"/>
+
+                            <field
+                                name="travel_reduction_percent"
+                                widget="percentage"/>
+
+                        </group>
+
+                        <group string="Value-Chain Reductions">
+
+                            <field
+                                name="waste_reduction_percent"
+                                widget="percentage"/>
+
+                            <field
+                                name="supplier_reduction_percent"
+                                widget="percentage"/>
+
+                            <field
+                                name="general_reduction_percent"
+                                widget="percentage"/>
+
+                        </group>
+
+                    </group>
+
+                    <!-- Information -->
+                    <div
+                        class="alert alert-info"
+                        role="alert"
+                        invisible="simulation_completed">
+
+                        <strong>How it works</strong>
+
+                        <br/>
+
+                        EcoPulse groups existing carbon transactions into
+                        electricity, fuel, travel, waste, supplier and other
+                        categories. It then applies the proposed reduction
+                        percentages and calculates projected emission savings.
+
+                    </div>
+
+                    <!-- Simulation Results -->
+                    <group
+                        string="Simulation Results"
+                        invisible="not simulation_completed">
+
+                        <group string="Emission Forecast">
+
+                            <field
+                                name="baseline_emission"
+                                readonly="1"/>
+
+                            <field
+                                name="projected_emission"
+                                readonly="1"/>
+
+                            <field
+                                name="emission_savings"
+                                readonly="1"/>
+
+                            <field
+                                name="overall_reduction_percent"
+                                readonly="1"
+                                widget="progressbar"/>
+
+                        </group>
+
+                        <group string="Scenario Evaluation">
+
+                            <field
+                                name="transaction_count"
+                                readonly="1"/>
+
+                            <field
+                                name="scenario_rating"
+                                readonly="1"
+                                decoration-success="scenario_rating in ('strong', 'excellent')"
+                                decoration-warning="scenario_rating == 'moderate'"
+                                decoration-danger="scenario_rating == 'minimal'"/>
+
+                            <field
+                                name="simulation_completed"
+                                readonly="1"/>
+
+                        </group>
+
+                    </group>
+
+                    <!-- Category Baselines -->
+                    <group
+                        string="Emission Category Baselines"
+                        invisible="not simulation_completed">
+
+                        <group>
+
+                            <field
+                                name="electricity_baseline"
+                                readonly="1"/>
+
+                            <field
+                                name="fuel_baseline"
+                                readonly="1"/>
+
+                            <field
+                                name="travel_baseline"
+                                readonly="1"/>
+
+                        </group>
+
+                        <group>
+
+                            <field
+                                name="waste_baseline"
+                                readonly="1"/>
+
+                            <field
+                                name="supplier_baseline"
+                                readonly="1"/>
+
+                            <field
+                                name="general_baseline"
+                                readonly="1"/>
+
+                        </group>
+
+                    </group>
+
+                    <!-- Detailed Results -->
+                    <notebook invisible="not simulation_completed">
+
+                        <page string="Simulation Summary">
+
+                            <field
+                                name="scenario_summary"
+                                readonly="1"
+                                nolabel="1"/>
+
+                        </page>
+
+                        <page string="Smart Recommendations">
+
+                            <field
+                                name="recommendation_text"
+                                readonly="1"
+                                nolabel="1"/>
+
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+
+                <footer>
+
+                    <button
+                        name="action_run_simulation"
+                        string="Run Simulation"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-line-chart"/>
+
+                    <button
+                        name="action_reset_simulation"
+                        string="Reset Scenario"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-refresh"
+                        invisible="not simulation_completed"/>
+
+                    <button
+                        string="Close"
+                        special="cancel"
+                        class="btn-secondary"/>
+
+                </footer>
+
+            </form>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         CARBON REDUCTION SIMULATOR ACTION
+         ===================================================== -->
+
+    <record
+        id="action_ecopulse_carbon_reduction_simulator"
+        model="ir.actions.act_window">
+
+        <field name="name">Carbon Reduction Simulator</field>
+
+        <field name="res_model">ecopulse.carbon.reduction.simulator</field>
+
+        <field name="view_mode">form</field>
+
+        <field
+            name="view_id"
+            ref="view_ecopulse_carbon_reduction_simulator_form"/>
+
+        <field name="target">new</field>
+
+        <field
+            name="context"
+            eval="{
+                'default_name': 'Carbon Reduction Scenario',
+                'default_include_draft': False
+            }"/>
+
+    </record>
+
+</odoo>

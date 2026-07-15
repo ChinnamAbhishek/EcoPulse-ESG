@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- =====================================================
+         CARBON BUDGET LIST VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_budget_list"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.budget.list</field>
+
+        <field name="model">ecopulse.carbon.budget</field>
+
+        <field name="arch" type="xml">
+
+            <list
+                string="Department Carbon Budgets"
+                decoration-success="budget_status == 'safe'"
+                decoration-warning="budget_status == 'warning'"
+                decoration-danger="budget_status in ('exceeded', 'critical')">
+
+                <field name="name"/>
+
+                <field name="department_id"/>
+
+                <field name="start_date"/>
+
+                <field name="end_date"/>
+
+                <field name="budget_emission"/>
+
+                <field name="actual_emission"/>
+
+                <field name="remaining_budget"/>
+
+                <field
+                    name="budget_usage_percent"
+                    widget="progressbar"/>
+
+                <field name="transaction_count"/>
+
+                <field
+                    name="budget_status"
+                    decoration-success="budget_status == 'safe'"
+                    decoration-warning="budget_status == 'warning'"
+                    decoration-danger="budget_status in ('exceeded', 'critical')"/>
+
+            </list>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         CARBON BUDGET FORM VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_budget_form"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.budget.form</field>
+
+        <field name="model">ecopulse.carbon.budget</field>
+
+        <field name="arch" type="xml">
+
+            <form string="Department Carbon Budget">
+
+                <header>
+
+                    <button
+                        name="action_refresh_budget"
+                        string="Refresh Budget"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-refresh"/>
+
+                    <button
+                        name="action_view_transactions"
+                        string="View Transactions"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-list"/>
+
+                    <field
+                        name="budget_status"
+                        widget="statusbar"
+                        statusbar_visible="safe,warning,exceeded,critical"/>
+
+                </header>
+
+                <sheet>
+
+                    <div class="oe_button_box" name="button_box">
+
+                        <button
+                            name="action_view_transactions"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-exchange">
+
+                            <field
+                                name="transaction_count"
+                                widget="statinfo"
+                                string="Transactions"/>
+
+                        </button>
+
+                    </div>
+
+                    <div class="oe_title">
+
+                        <label for="name"/>
+
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+
+                    </div>
+
+                    <group>
+
+                        <group string="Budget Configuration">
+
+                            <field name="department_id"/>
+
+                            <field name="start_date"/>
+
+                            <field name="end_date"/>
+
+                            <field name="budget_emission"/>
+
+                            <field name="warning_threshold_percent"/>
+
+                            <field name="include_draft_transactions"/>
+
+                            <field name="active"/>
+
+                        </group>
+
+                        <group string="Budget Performance">
+
+                            <field
+                                name="actual_emission"
+                                readonly="1"/>
+
+                            <field
+                                name="remaining_budget"
+                                readonly="1"/>
+
+                            <field
+                                name="exceeded_emission"
+                                readonly="1"/>
+
+                            <field
+                                name="budget_usage_percent"
+                                readonly="1"
+                                widget="progressbar"/>
+
+                            <field
+                                name="transaction_count"
+                                readonly="1"/>
+
+                            <field
+                                name="budget_status"
+                                readonly="1"
+                                decoration-success="budget_status == 'safe'"
+                                decoration-warning="budget_status == 'warning'"
+                                decoration-danger="budget_status in ('exceeded', 'critical')"/>
+
+                        </group>
+
+                    </group>
+
+                    <group string="Automatic Budget Alert">
+
+                        <field
+                            name="alert_message"
+                            readonly="1"
+                            nolabel="1"/>
+
+                    </group>
+
+                    <div
+                        class="alert alert-success"
+                        role="alert"
+                        invisible="budget_status != 'safe'">
+
+                        <strong>Budget is under control.</strong>
+
+                        <br/>
+
+                        The department is currently operating within its
+                        assigned carbon allowance.
+
+                    </div>
+
+                    <div
+                        class="alert alert-warning"
+                        role="alert"
+                        invisible="budget_status != 'warning'">
+
+                        <strong>Carbon budget warning.</strong>
+
+                        <br/>
+
+                        The department is approaching its assigned emission
+                        limit. Preventive action is recommended.
+
+                    </div>
+
+                    <div
+                        class="alert alert-danger"
+                        role="alert"
+                        invisible="budget_status not in ('exceeded', 'critical')">
+
+                        <strong>Carbon budget exceeded.</strong>
+
+                        <br/>
+
+                        Immediate emission-reduction action and management
+                        review are required.
+
+                    </div>
+
+                </sheet>
+
+                <chatter/>
+
+            </form>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         CARBON BUDGET SEARCH VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_budget_search"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.budget.search</field>
+
+        <field name="model">ecopulse.carbon.budget</field>
+
+        <field name="arch" type="xml">
+
+            <search string="Search Carbon Budgets">
+
+                <field name="name"/>
+
+                <field name="department_id"/>
+
+                <field name="budget_status"/>
+
+                <field name="start_date"/>
+
+                <field name="end_date"/>
+
+                <filter
+                    name="filter_safe"
+                    string="Within Budget"
+                    domain="[('budget_status', '=', 'safe')]"/>
+
+                <filter
+                    name="filter_warning"
+                    string="Warning"
+                    domain="[('budget_status', '=', 'warning')]"/>
+
+                <filter
+                    name="filter_exceeded"
+                    string="Exceeded"
+                    domain="[('budget_status', '=', 'exceeded')]"/>
+
+                <filter
+                    name="filter_critical"
+                    string="Critical"
+                    domain="[('budget_status', '=', 'critical')]"/>
+
+                <filter
+                    name="filter_active"
+                    string="Active"
+                    domain="[('active', '=', True)]"/>
+
+                <filter
+                    name="filter_archived"
+                    string="Archived"
+                    domain="[('active', '=', False)]"/>
+
+                <filter
+                    name="group_by_department"
+                    string="Group by Department"
+                    context="{'group_by': 'department_id'}"/>
+
+                <filter
+                    name="group_by_status"
+                    string="Group by Status"
+                    context="{'group_by': 'budget_status'}"/>
+
+                <filter
+                    name="group_by_start_month"
+                    string="Group by Start Month"
+                    context="{'group_by': 'start_date:month'}"/>
+
+            </search>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         CARBON BUDGET GRAPH VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_budget_graph"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.budget.graph</field>
+
+        <field name="model">ecopulse.carbon.budget</field>
+
+        <field name="arch" type="xml">
+
+            <graph
+                string="Carbon Budget Performance"
+                type="bar">
+
+                <field name="department_id"/>
+
+                <field
+                    name="budget_emission"
+                    type="measure"/>
+
+                <field
+                    name="actual_emission"
+                    type="measure"/>
+
+            </graph>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         CARBON BUDGET PIVOT VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_budget_pivot"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.budget.pivot</field>
+
+        <field name="model">ecopulse.carbon.budget</field>
+
+        <field name="arch" type="xml">
+
+            <pivot string="Carbon Budget Analysis">
+
+                <field
+                    name="department_id"
+                    type="row"/>
+
+                <field
+                    name="budget_status"
+                    type="col"/>
+
+                <field
+                    name="budget_emission"
+                    type="measure"/>
+
+                <field
+                    name="actual_emission"
+                    type="measure"/>
+
+                <field
+                    name="remaining_budget"
+                    type="measure"/>
+
+            </pivot>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         CARBON BUDGET WINDOW ACTION
+         ===================================================== -->
+
+    <record
+        id="action_ecopulse_carbon_budget"
+        model="ir.actions.act_window">
+
+        <field name="name">Carbon Budgets</field>
+
+        <field name="res_model">ecopulse.carbon.budget</field>
+
+        <field name="view_mode">list,form,graph,pivot</field>
+
+        <field
+            name="search_view_id"
+            ref="view_ecopulse_carbon_budget_search"/>
+
+        <field
+            name="context"
+            eval="{
+                'search_default_filter_active': 1
+            }"/>
+
+        <field name="help" type="html">
+
+            <p class="o_view_nocontent_smiling_face">
+                Create your first department carbon budget
+            </p>
+
+            <p>
+                Assign a carbon allowance to each department and monitor
+                actual emissions, usage percentage and overspending alerts.
+            </p>
+
+        </field>
+
+    </record>
+
+</odoo>

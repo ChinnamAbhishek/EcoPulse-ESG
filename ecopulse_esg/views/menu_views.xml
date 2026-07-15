@@ -2,7 +2,10 @@
 
 <odoo>
 
-    <!-- EcoPulse ESG Main Application Menu -->
+    <!-- =====================================================
+         ECOPULSE ESG MAIN APPLICATION MENU
+         ===================================================== -->
+
     <menuitem
         id="menu_ecopulse_root"
         name="EcoPulse ESG"
@@ -10,7 +13,10 @@
         groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
 
 
-    <!-- Dashboard -->
+    <!-- =====================================================
+         DASHBOARD
+         ===================================================== -->
+
     <menuitem
         id="menu_ecopulse_dashboard"
         name="Dashboard"
@@ -20,7 +26,10 @@
         groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
 
 
-    <!-- Carbon Management Section -->
+    <!-- =====================================================
+         CARBON MANAGEMENT SECTION
+         ===================================================== -->
+
     <menuitem
         id="menu_ecopulse_carbon_management"
         name="Carbon Management"
@@ -49,7 +58,10 @@
         groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
 
 
-    <!-- Sustainability Section -->
+    <!-- =====================================================
+         SUSTAINABILITY SECTION
+         ===================================================== -->
+
     <menuitem
         id="menu_ecopulse_sustainability"
         name="Sustainability"
@@ -68,7 +80,20 @@
         groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
 
 
-    <!-- Organization Section -->
+    <!-- What-if Carbon Reduction Simulator -->
+    <menuitem
+        id="menu_ecopulse_carbon_reduction_simulator"
+        name="Carbon Reduction Simulator"
+        parent="menu_ecopulse_sustainability"
+        action="action_ecopulse_carbon_reduction_simulator"
+        sequence="20"
+        groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- =====================================================
+         ORGANIZATION SECTION
+         ===================================================== -->
+
     <menuitem
         id="menu_ecopulse_organization"
         name="Organization"
@@ -87,7 +112,10 @@
         groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
 
 
-    <!-- Reports Section -->
+    <!-- =====================================================
+         REPORTS SECTION
+         ===================================================== -->
+
     <menuitem
         id="menu_ecopulse_reports"
         name="Reports"

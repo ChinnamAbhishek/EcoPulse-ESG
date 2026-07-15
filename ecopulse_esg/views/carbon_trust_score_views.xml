@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- =====================================================
+         CARBON TRUST SCORE FORM VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_transaction_trust_form"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.transaction.trust.form</field>
+
+        <field name="model">ecopulse.carbon.transaction</field>
+
+        <field
+            name="inherit_id"
+            ref="ecopulse_esg.view_ecopulse_carbon_transaction_form"/>
+
+        <field name="arch" type="xml">
+
+            <!-- Trust score and risk indicators -->
+            <xpath expr="//sheet/group[1]" position="after">
+
+                <group string="Carbon Trust Intelligence">
+
+                    <group string="Trust Assessment">
+
+                        <field
+                            name="carbon_trust_score"
+                            readonly="1"
+                            widget="progressbar"/>
+
+                        <field
+                            name="carbon_trust_level"
+                            readonly="1"
+                            decoration-success="carbon_trust_level in ('high', 'verified')"
+                            decoration-warning="carbon_trust_level == 'medium'"
+                            decoration-danger="carbon_trust_level in ('low', 'very_low')"/>
+
+                        <field
+                            name="greenwashing_risk_score"
+                            readonly="1"
+                            widget="progressbar"/>
+
+                        <field
+                            name="greenwashing_risk_level"
+                            readonly="1"
+                            decoration-success="greenwashing_risk_level == 'low'"
+                            decoration-warning="greenwashing_risk_level == 'medium'"
+                            decoration-danger="greenwashing_risk_level in ('high', 'critical')"/>
+
+                        <field
+                            name="requires_manual_review"
+                            readonly="1"/>
+
+                        <field
+                            name="suspicious_reduction_percent"
+                            readonly="1"/>
+
+                    </group>
+
+                    <group string="Evidence Status">
+
+                        <field name="evidence_status"/>
+
+                        <field name="evidence_reference"/>
+
+                        <field name="evidence_attachment_count"/>
+
+                        <field
+                            name="evidence_verified_by_id"
+                            readonly="1"/>
+
+                        <field
+                            name="evidence_verified_date"
+                            readonly="1"/>
+
+                    </group>
+
+                </group>
+
+            </xpath>
+
+
+            <!-- Detailed trust analysis notebook -->
+            <xpath expr="//sheet" position="inside">
+
+                <notebook>
+
+                    <page string="Trust &amp; Greenwashing Analysis">
+
+                        <group>
+
+                            <group string="Emission Factor Reliability">
+
+                                <field name="factor_source_type"/>
+
+                                <field name="factor_source_reference"/>
+
+                                <field name="factor_publication_year"/>
+
+                            </group>
+
+                            <group string="Reduction Analysis">
+
+                                <field name="previous_emission_value"/>
+
+                                <field name="manual_adjustment_percent"/>
+
+                                <field
+                                    name="suspicious_reduction_percent"
+                                    readonly="1"/>
+
+                            </group>
+
+                        </group>
+
+                        <group string="Reduction Explanation">
+
+                            <field
+                                name="reduction_explanation"
+                                nolabel="1"
+                                placeholder="Explain the reason and evidence for a major emission reduction..."/>
+
+                        </group>
+
+                        <group string="Automatic Trust Analysis">
+
+                            <field
+                                name="trust_analysis_reasons"
+                                readonly="1"
+                                nolabel="1"/>
+
+                        </group>
+
+                    </page>
+
+                </notebook>
+
+            </xpath>
+
+
+            <!-- Evidence verification buttons -->
+            <xpath
+                expr="//form/header/field[@name='status']"
+                position="before">
+
+                <button
+                    name="action_verify_evidence"
+                    string="Verify Evidence"
+                    type="object"
+                    class="btn-secondary"
+                    icon="fa-check-circle"
+                    invisible="evidence_status == 'verified'"
+                    groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                <button
+                    name="action_reset_evidence_verification"
+                    string="Reset Evidence"
+                    type="object"
+                    icon="fa-undo"
+                    invisible="evidence_status != 'verified'"
+                    groups="ecopulse_esg.group_ecopulse_manager"/>
+
+            </xpath>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         CARBON TRUST SCORE LIST VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_transaction_trust_list"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.transaction.trust.list</field>
+
+        <field name="model">ecopulse.carbon.transaction</field>
+
+        <field
+            name="inherit_id"
+            ref="ecopulse_esg.view_ecopulse_carbon_transaction_list"/>
+
+        <field name="arch" type="xml">
+
+            <xpath
+                expr="//field[@name='calculated_emission']"
+                position="after">
+
+                <field
+                    name="carbon_trust_score"
+                    string="Trust Score"
+                    optional="show"/>
+
+                <field
+                    name="carbon_trust_level"
+                    string="Trust Level"
+                    optional="show"
+                    decoration-success="carbon_trust_level in ('high', 'verified')"
+                    decoration-warning="carbon_trust_level == 'medium'"
+                    decoration-danger="carbon_trust_level in ('low', 'very_low')"/>
+
+                <field
+                    name="greenwashing_risk_score"
+                    string="Risk Score"
+                    optional="hide"/>
+
+                <field
+                    name="greenwashing_risk_level"
+                    string="Greenwashing Risk"
+                    optional="show"
+                    decoration-success="greenwashing_risk_level == 'low'"
+                    decoration-warning="greenwashing_risk_level == 'medium'"
+                    decoration-danger="greenwashing_risk_level in ('high', 'critical')"/>
+
+                <field
+                    name="evidence_status"
+                    string="Evidence"
+                    optional="show"
+                    decoration-success="evidence_status == 'verified'"
+                    decoration-warning="evidence_status in ('partial', 'submitted')"
+                    decoration-danger="evidence_status == 'missing'"/>
+
+                <field
+                    name="requires_manual_review"
+                    string="Review Required"
+                    optional="show"/>
+
+            </xpath>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         CARBON TRUST SCORE SEARCH VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_transaction_trust_search"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.transaction.trust.search</field>
+
+        <field name="model">ecopulse.carbon.transaction</field>
+
+        <field
+            name="inherit_id"
+            ref="ecopulse_esg.view_ecopulse_carbon_transaction_search"/>
+
+        <field name="arch" type="xml">
+
+            <xpath expr="//search" position="inside">
+
+                <field name="carbon_trust_score"/>
+
+                <field name="carbon_trust_level"/>
+
+                <field name="greenwashing_risk_level"/>
+
+                <field name="evidence_status"/>
+
+                <filter
+                    name="filter_manual_review"
+                    string="Manual Review Required"
+                    domain="[('requires_manual_review', '=', True)]"/>
+
+                <filter
+                    name="filter_high_greenwashing_risk"
+                    string="High Greenwashing Risk"
+                    domain="[('greenwashing_risk_level', 'in', ['high', 'critical'])]"/>
+
+                <filter
+                    name="filter_low_trust"
+                    string="Low Trust Data"
+                    domain="[('carbon_trust_level', 'in', ['low', 'very_low'])]"/>
+
+                <filter
+                    name="filter_verified_trust"
+                    string="Verified Trust"
+                    domain="[('carbon_trust_level', '=', 'verified')]"/>
+
+                <filter
+                    name="filter_missing_evidence"
+                    string="Missing Evidence"
+                    domain="[('evidence_status', '=', 'missing')]"/>
+
+                <filter
+                    name="filter_verified_evidence"
+                    string="Verified Evidence"
+                    domain="[('evidence_status', '=', 'verified')]"/>
+
+                <filter
+                    name="group_by_trust_level"
+                    string="Group by Trust Level"
+                    context="{'group_by': 'carbon_trust_level'}"/>
+
+                <filter
+                    name="group_by_risk_level"
+                    string="Group by Greenwashing Risk"
+                    context="{'group_by': 'greenwashing_risk_level'}"/>
+
+                <filter
+                    name="group_by_evidence_status"
+                    string="Group by Evidence Status"
+                    context="{'group_by': 'evidence_status'}"/>
+
+                <filter
+                    name="group_by_manual_review"
+                    string="Group by Manual Review"
+                    context="{'group_by': 'requires_manual_review'}"/>
+
+            </xpath>
+
+        </field>
+
+    </record>
+
+</odoo>
