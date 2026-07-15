@@ -1,6 +1,11 @@
-from odoo import api, fields, models
-from odoo.exceptions import ValidationError
+# -*- coding: utf-8 -*-
 
+from collections import defaultdict
+from datetime import datetime
+
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
+from . import esg_report_wizard
 
 class EcoPulseESGReportWizard(models.TransientModel):
     _name = "ecopulse.esg.report.wizard"
@@ -8,23 +13,23 @@ class EcoPulseESGReportWizard(models.TransientModel):
 
     start_date = fields.Date(
         string="Start Date",
-        default=lambda self: fields.Date.start_of(
-            fields.Date.context_today(self),
-            "year",
-        ),
         required=True,
+        default=lambda self: fields.Date.context_today(self).replace(
+            month=1,
+            day=1,
+        ),
     )
 
     end_date = fields.Date(
         string="End Date",
-        default=fields.Date.context_today,
         required=True,
+        default=fields.Date.context_today,
     )
 
     department_id = fields.Many2one(
         comodel_name="ecopulse.department",
         string="Department",
-        ondelete="set null",
+        help="Leave empty to include all departments.",
     )
 
     scope = fields.Selection(
@@ -34,6 +39,7 @@ class EcoPulseESGReportWizard(models.TransientModel):
             ("scope_3", "Scope 3"),
         ],
         string="Emission Scope",
+        help="Leave empty to include all emission scopes.",
     )
 
     transaction_status = fields.Selection(
@@ -44,11 +50,16 @@ class EcoPulseESGReportWizard(models.TransientModel):
             ("cancelled", "Cancelled"),
         ],
         string="Transaction Status",
+        help="Leave empty to include all permitted transaction statuses.",
     )
 
     include_cancelled = fields.Boolean(
         string="Include Cancelled Transactions",
         default=False,
+        help=(
+            "When enabled, cancelled transactions are included when "
+            "no particular transaction status is selected."
+        ),
     )
 
     include_goals = fields.Boolean(
@@ -75,16 +86,23 @@ class EcoPulseESGReportWizard(models.TransientModel):
                 and wizard.start_date > wizard.end_date
             ):
                 raise ValidationError(
-                    "Start date cannot be later than end date."
+                    _("Start Date cannot be later than End Date.")
                 )
 
     def _get_transaction_domain(self):
         self.ensure_one()
 
-        domain = [
-            ("transaction_date", ">=", self.start_date),
-            ("transaction_date", "<=", self.end_date),
-        ]
+        domain = []
+
+        if self.start_date:
+            domain.append(
+                ("transaction_date", ">=", self.start_date)
+            )
+
+        if self.end_date:
+            domain.append(
+                ("transaction_date", "<=", self.end_date)
+            )
 
         if self.department_id:
             domain.append(
@@ -92,284 +110,159 @@ class EcoPulseESGReportWizard(models.TransientModel):
             )
 
         if self.scope:
-            domain.append(("scope", "=", self.scope))
+            domain.append(
+                ("scope", "=", self.scope)
+            )
 
         if self.transaction_status:
             domain.append(
                 ("status", "=", self.transaction_status)
             )
         elif not self.include_cancelled:
-            domain.append(("status", "!=", "cancelled"))
+            domain.append(
+                ("status", "!=", "cancelled")
+            )
+
+        return domain
+
+    def _get_goal_domain(self):
+        self.ensure_one()
+
+        domain = []
+
+        if self.department_id:
+            domain.append(
+                ("department_id", "=", self.department_id.id)
+            )
+
+        if self.start_date:
+            domain.extend(
+                [
+                    "|",
+                    ("end_date", "=", False),
+                    ("end_date", ">=", self.start_date),
+                ]
+            )
+
+        if self.end_date:
+            domain.extend(
+                [
+                    "|",
+                    ("start_date", "=", False),
+                    ("start_date", "<=", self.end_date),
+                ]
+            )
 
         return domain
 
     def action_print_report(self):
         self.ensure_one()
 
-        data = {
-            "wizard_id": self.id,
-            "start_date": fields.Date.to_string(
-                self.start_date
-            ),
-            "end_date": fields.Date.to_string(
-                self.end_date
-            ),
-            "department_id": (
-                self.department_id.id
-                if self.department_id
-                else False
-            ),
-            "scope": self.scope or False,
-            "transaction_status": (
-                self.transaction_status or False
-            ),
-            "include_cancelled": self.include_cancelled,
-            "include_goals": self.include_goals,
-            "include_department_analysis": (
-                self.include_department_analysis
-            ),
-            "include_source_analysis": (
-                self.include_source_analysis
-            ),
-        }
+        if self.start_date > self.end_date:
+            raise UserError(
+                _("Start Date cannot be later than End Date.")
+            )
 
-        return self.env.ref(
-            "ecopulse_esg.action_report_esg_summary"
-        ).report_action(
-            self,
-            data=data,
+        report_action = self.env.ref(
+            "ecopulse_esg.action_report_esg_summary",
+            raise_if_not_found=False,
         )
+
+        if not report_action:
+            raise UserError(
+                _(
+                    "The ESG PDF report action was not found. "
+                    "Please upgrade the EcoPulse ESG module."
+                )
+            )
+
+        return report_action.report_action(self)
 
 
 class EcoPulseESGSummaryReport(models.AbstractModel):
-    _name = (
-        "report.ecopulse_esg."
-        "report_esg_summary_document"
-    )
+    _name = "report.ecopulse_esg.report_esg_summary_document"
     _description = "EcoPulse ESG Summary PDF Report"
 
     @api.model
-    def _get_report_values(
-        self,
-        docids,
-        data=None,
-    ):
-        data = data or {}
-
-        wizard_id = data.get("wizard_id")
-
+    def _get_report_values(self, docids, data=None):
         wizard = self.env[
             "ecopulse.esg.report.wizard"
-        ].browse(wizard_id).exists()
+        ].browse(docids[:1])
 
-        if not wizard:
-            wizard = self.env[
-                "ecopulse.esg.report.wizard"
-            ].browse(docids).exists()[:1]
-
-        if not wizard:
-            raise ValidationError(
-                "The ESG report wizard could not be found."
+        if not wizard.exists():
+            raise UserError(
+                _("The ESG report wizard record was not found.")
             )
 
-        domain = wizard._get_transaction_domain()
+        wizard.ensure_one()
+
+        transaction_domain = wizard._get_transaction_domain()
 
         transactions = self.env[
             "ecopulse.carbon.transaction"
         ].search(
-            domain,
+            transaction_domain,
             order="transaction_date asc, id asc",
         )
 
         goals = self.env[
             "ecopulse.environmental.goal"
-        ]
+        ].browse()
 
         if wizard.include_goals:
-            goal_domain = []
-
-            if wizard.department_id:
-                goal_domain.append(
-                    (
-                        "department_id",
-                        "=",
-                        wizard.department_id.id,
-                    )
-                )
-
-            goals = goals.search(
-                goal_domain,
+            goals = self.env[
+                "ecopulse.environmental.goal"
+            ].search(
+                wizard._get_goal_domain(),
                 order="end_date asc, id asc",
             )
 
-        total_emission = 0.0
-        scope_totals = {
-            "scope_1": 0.0,
-            "scope_2": 0.0,
-            "scope_3": 0.0,
-        }
-
-        status_counts = {
-            "draft": 0,
-            "calculated": 0,
-            "verified": 0,
-            "cancelled": 0,
-        }
-
-        monthly_map = {}
-        department_map = {}
-        source_map = {}
-
-        for transaction in transactions:
-            emission = (
-                transaction.calculated_emission or 0.0
-            )
-
-            total_emission += emission
-
-            if transaction.scope in scope_totals:
-                scope_totals[
-                    transaction.scope
-                ] += emission
-
-            if transaction.status in status_counts:
-                status_counts[
-                    transaction.status
-                ] += 1
-
-            if transaction.transaction_date:
-                month_key = (
-                    transaction.transaction_date.strftime(
-                        "%Y-%m"
-                    )
-                )
-
-                month_label = (
-                    transaction.transaction_date.strftime(
-                        "%b %Y"
-                    )
-                )
-
-                if month_key not in monthly_map:
-                    monthly_map[month_key] = {
-                        "key": month_key,
-                        "label": month_label,
-                        "total": 0.0,
-                    }
-
-                monthly_map[
-                    month_key
-                ]["total"] += emission
-
-            department = transaction.department_id
-
-            department_key = department.id or 0
-            department_name = (
-                department.name
-                if department
-                else "Not Assigned"
-            )
-
-            if department_key not in department_map:
-                department_map[department_key] = {
-                    "id": department_key,
-                    "name": department_name,
-                    "total": 0.0,
-                    "transactions": 0,
-                }
-
-            department_map[
-                department_key
-            ]["total"] += emission
-
-            department_map[
-                department_key
-            ]["transactions"] += 1
-
-            source_key = (
-                transaction.source_module or "manual"
-            )
-
-            source_label = dict(
-                transaction._fields[
-                    "source_module"
-                ].selection
-            ).get(
-                source_key,
-                "Manual",
-            )
-
-            if source_key not in source_map:
-                source_map[source_key] = {
-                    "key": source_key,
-                    "label": source_label,
-                    "total": 0.0,
-                    "transactions": 0,
-                }
-
-            source_map[source_key]["total"] += emission
-            source_map[
-                source_key
-            ]["transactions"] += 1
-
-        monthly_emissions = sorted(
-            monthly_map.values(),
-            key=lambda item: item["key"],
+        summary = self._prepare_summary(
+            transactions=transactions,
+            goals=goals,
         )
 
-        department_ranking = sorted(
-            department_map.values(),
-            key=lambda item: item["total"],
-            reverse=True,
+        scope_analysis = self._prepare_scope_analysis(
+            transactions
         )
 
-        source_analysis = sorted(
-            source_map.values(),
-            key=lambda item: item["total"],
-            reverse=True,
+        status_analysis = self._prepare_status_analysis(
+            transactions
         )
 
-        for scope_key in scope_totals:
-            if total_emission:
-                scope_totals[
-                    f"{scope_key}_percentage"
-                ] = round(
-                    (
-                        scope_totals[scope_key]
-                        / total_emission
-                    )
-                    * 100,
-                    2,
-                )
-            else:
-                scope_totals[
-                    f"{scope_key}_percentage"
-                ] = 0.0
-
-        completed_goals = goals.filtered(
-            lambda goal: goal.status == "completed"
+        monthly_analysis = self._prepare_monthly_analysis(
+            transactions
         )
 
-        active_goals = goals.filtered(
-            lambda goal: goal.status == "active"
-        )
+        department_analysis = []
 
-        at_risk_goals = goals.filtered(
-            lambda goal: goal.status == "at_risk"
-        )
-
-        average_goal_progress = (
-            sum(
-                goals.mapped(
-                    "progress_percentage"
+        if wizard.include_department_analysis:
+            department_analysis = (
+                self._prepare_department_analysis(
+                    transactions
                 )
             )
-            / len(goals)
-            if goals
-            else 0.0
-        )
 
-        company = self.env.company
+        source_analysis = []
+
+        if wizard.include_source_analysis:
+            source_analysis = (
+                self._prepare_source_analysis(
+                    transactions
+                )
+            )
+
+        goal_analysis = []
+
+        if wizard.include_goals:
+            goal_analysis = self._prepare_goal_analysis(
+                goals
+            )
+
+        generated_on = fields.Datetime.context_timestamp(
+            self,
+            fields.Datetime.now(),
+        )
 
         return {
             "doc_ids": wizard.ids,
@@ -377,31 +270,604 @@ class EcoPulseESGSummaryReport(models.AbstractModel):
                 "ecopulse.esg.report.wizard"
             ),
             "docs": wizard,
-            "company": company,
+
             "wizard": wizard,
             "transactions": transactions,
             "goals": goals,
-            "total_emission": round(
-                total_emission,
+
+            "summary": summary,
+            "scope_analysis": scope_analysis,
+            "status_analysis": status_analysis,
+            "monthly_analysis": monthly_analysis,
+            "department_analysis": department_analysis,
+            "source_analysis": source_analysis,
+            "goal_analysis": goal_analysis,
+
+            "generated_on": generated_on,
+            "generated_on_display": (
+                generated_on.strftime(
+                    "%d %B %Y, %I:%M %p"
+                )
+                if generated_on
+                else ""
+            ),
+
+            "company": self.env.company,
+            "currency": self.env.company.currency_id,
+
+            "format_number": self._format_number,
+            "get_scope_label": self._get_scope_label,
+            "get_status_label": self._get_status_label,
+            "get_source_label": self._get_source_label,
+            "get_goal_status_label": (
+                self._get_goal_status_label
+            ),
+            "get_metric_label": self._get_metric_label,
+        }
+
+    def _prepare_summary(self, transactions, goals):
+        total_emissions = sum(
+            float(
+                transaction.calculated_emission or 0.0
+            )
+            for transaction in transactions
+            if transaction.status != "cancelled"
+        )
+
+        verified_transactions = transactions.filtered(
+            lambda transaction: (
+                transaction.status == "verified"
+            )
+        )
+
+        calculated_transactions = transactions.filtered(
+            lambda transaction: (
+                transaction.status == "calculated"
+            )
+        )
+
+        draft_transactions = transactions.filtered(
+            lambda transaction: (
+                transaction.status == "draft"
+            )
+        )
+
+        cancelled_transactions = transactions.filtered(
+            lambda transaction: (
+                transaction.status == "cancelled"
+            )
+        )
+
+        active_goals = goals.filtered(
+            lambda goal: goal.status == "active"
+        )
+
+        completed_goals = goals.filtered(
+            lambda goal: goal.status == "completed"
+        )
+
+        at_risk_goals = goals.filtered(
+            lambda goal: (
+                goal.status == "at_risk"
+                or goal.risk_level == "high"
+            )
+        )
+
+        average_goal_progress = 0.0
+
+        if goals:
+            average_goal_progress = sum(
+                float(goal.progress_percentage or 0.0)
+                for goal in goals
+            ) / len(goals)
+
+        unique_departments = transactions.mapped(
+            "department_id"
+        )
+
+        return {
+            "transaction_count": len(transactions),
+
+            "total_emissions": round(
+                total_emissions,
                 2,
             ),
-            "scope_totals": scope_totals,
-            "status_counts": status_counts,
-            "monthly_emissions": monthly_emissions,
-            "department_ranking": (
-                department_ranking
+
+            "verified_count": len(
+                verified_transactions
             ),
-            "source_analysis": source_analysis,
-            "completed_goals": len(
+
+            "calculated_count": len(
+                calculated_transactions
+            ),
+
+            "draft_count": len(
+                draft_transactions
+            ),
+
+            "cancelled_count": len(
+                cancelled_transactions
+            ),
+
+            "department_count": len(
+                unique_departments
+            ),
+
+            "goal_count": len(goals),
+
+            "active_goal_count": len(
+                active_goals
+            ),
+
+            "completed_goal_count": len(
                 completed_goals
             ),
-            "active_goals": len(active_goals),
-            "at_risk_goals": len(
+
+            "at_risk_goal_count": len(
                 at_risk_goals
             ),
+
             "average_goal_progress": round(
                 average_goal_progress,
                 2,
             ),
-            "generated_on": fields.Datetime.now(),
         }
+
+    def _prepare_scope_analysis(self, transactions):
+        scope_totals = {
+            "scope_1": {
+                "key": "scope_1",
+                "label": "Scope 1",
+                "description": "Direct emissions",
+                "transaction_count": 0,
+                "total": 0.0,
+                "percentage": 0.0,
+            },
+            "scope_2": {
+                "key": "scope_2",
+                "label": "Scope 2",
+                "description": "Purchased energy emissions",
+                "transaction_count": 0,
+                "total": 0.0,
+                "percentage": 0.0,
+            },
+            "scope_3": {
+                "key": "scope_3",
+                "label": "Scope 3",
+                "description": "Value-chain emissions",
+                "transaction_count": 0,
+                "total": 0.0,
+                "percentage": 0.0,
+            },
+        }
+
+        total_emissions = 0.0
+
+        for transaction in transactions:
+            if transaction.status == "cancelled":
+                continue
+
+            scope = transaction.scope
+
+            if scope not in scope_totals:
+                continue
+
+            emission = float(
+                transaction.calculated_emission or 0.0
+            )
+
+            scope_totals[scope][
+                "transaction_count"
+            ] += 1
+
+            scope_totals[scope]["total"] += emission
+
+            total_emissions += emission
+
+        for scope_data in scope_totals.values():
+            scope_data["total"] = round(
+                scope_data["total"],
+                2,
+            )
+
+            if total_emissions:
+                scope_data["percentage"] = round(
+                    (
+                        scope_data["total"]
+                        / total_emissions
+                    )
+                    * 100,
+                    2,
+                )
+
+        return list(scope_totals.values())
+
+    def _prepare_status_analysis(self, transactions):
+        status_data = {
+            "draft": {
+                "key": "draft",
+                "label": "Draft",
+                "count": 0,
+                "total": 0.0,
+            },
+            "calculated": {
+                "key": "calculated",
+                "label": "Calculated",
+                "count": 0,
+                "total": 0.0,
+            },
+            "verified": {
+                "key": "verified",
+                "label": "Verified",
+                "count": 0,
+                "total": 0.0,
+            },
+            "cancelled": {
+                "key": "cancelled",
+                "label": "Cancelled",
+                "count": 0,
+                "total": 0.0,
+            },
+        }
+
+        for transaction in transactions:
+            status = transaction.status or "draft"
+
+            if status not in status_data:
+                continue
+
+            status_data[status]["count"] += 1
+
+            status_data[status]["total"] += float(
+                transaction.calculated_emission or 0.0
+            )
+
+        result = []
+
+        for item in status_data.values():
+            item["total"] = round(
+                item["total"],
+                2,
+            )
+
+            result.append(item)
+
+        return result
+
+    def _prepare_monthly_analysis(self, transactions):
+        monthly_totals = defaultdict(
+            lambda: {
+                "transaction_count": 0,
+                "total": 0.0,
+            }
+        )
+
+        for transaction in transactions:
+            if (
+                transaction.status == "cancelled"
+                or not transaction.transaction_date
+            ):
+                continue
+
+            month_key = transaction.transaction_date.strftime(
+                "%Y-%m"
+            )
+
+            monthly_totals[month_key][
+                "transaction_count"
+            ] += 1
+
+            monthly_totals[month_key]["total"] += float(
+                transaction.calculated_emission or 0.0
+            )
+
+        result = []
+
+        for month_key in sorted(monthly_totals):
+            year, month = month_key.split("-")
+
+            month_date = datetime(
+                int(year),
+                int(month),
+                1,
+            )
+
+            values = monthly_totals[month_key]
+
+            result.append(
+                {
+                    "key": month_key,
+                    "label": month_date.strftime(
+                        "%B %Y"
+                    ),
+                    "short_label": month_date.strftime(
+                        "%b %Y"
+                    ),
+                    "transaction_count": values[
+                        "transaction_count"
+                    ],
+                    "total": round(
+                        values["total"],
+                        2,
+                    ),
+                }
+            )
+
+        return result
+
+    def _prepare_department_analysis(
+        self,
+        transactions,
+    ):
+        department_totals = defaultdict(
+            lambda: {
+                "department_id": False,
+                "name": "Not Assigned",
+                "transaction_count": 0,
+                "total": 0.0,
+            }
+        )
+
+        for transaction in transactions:
+            if transaction.status == "cancelled":
+                continue
+
+            department = transaction.department_id
+
+            department_key = (
+                department.id
+                if department
+                else 0
+            )
+
+            department_totals[department_key][
+                "department_id"
+            ] = (
+                department.id
+                if department
+                else False
+            )
+
+            department_totals[department_key][
+                "name"
+            ] = (
+                department.display_name
+                if department
+                else "Not Assigned"
+            )
+
+            department_totals[department_key][
+                "transaction_count"
+            ] += 1
+
+            department_totals[department_key][
+                "total"
+            ] += float(
+                transaction.calculated_emission or 0.0
+            )
+
+        result = []
+
+        for department_data in department_totals.values():
+            department_data["total"] = round(
+                department_data["total"],
+                2,
+            )
+
+            result.append(department_data)
+
+        result.sort(
+            key=lambda item: item["total"],
+            reverse=True,
+        )
+
+        for index, department_data in enumerate(
+            result,
+            start=1,
+        ):
+            department_data["rank"] = index
+
+        return result
+
+    def _prepare_source_analysis(
+        self,
+        transactions,
+    ):
+        source_totals = defaultdict(
+            lambda: {
+                "key": "manual",
+                "label": "Manual",
+                "transaction_count": 0,
+                "total": 0.0,
+            }
+        )
+
+        for transaction in transactions:
+            if transaction.status == "cancelled":
+                continue
+
+            source_key = (
+                transaction.source_module
+                or "manual"
+            )
+
+            source_totals[source_key]["key"] = (
+                source_key
+            )
+
+            source_totals[source_key]["label"] = (
+                self._get_source_label(source_key)
+            )
+
+            source_totals[source_key][
+                "transaction_count"
+            ] += 1
+
+            source_totals[source_key]["total"] += float(
+                transaction.calculated_emission or 0.0
+            )
+
+        result = []
+
+        for source_data in source_totals.values():
+            source_data["total"] = round(
+                source_data["total"],
+                2,
+            )
+
+            result.append(source_data)
+
+        result.sort(
+            key=lambda item: item["total"],
+            reverse=True,
+        )
+
+        return result
+
+    def _prepare_goal_analysis(self, goals):
+        result = []
+
+        for goal in goals:
+            result.append(
+                {
+                    "id": goal.id,
+                    "name": goal.name,
+                    "department": (
+                        goal.department_id.display_name
+                        if goal.department_id
+                        else "Not Assigned"
+                    ),
+                    "metric_type": goal.metric_type,
+                    "metric_label": self._get_metric_label(
+                        goal.metric_type
+                    ),
+                    "baseline_value": float(
+                        goal.baseline_value or 0.0
+                    ),
+                    "target_value": float(
+                        goal.target_value or 0.0
+                    ),
+                    "current_value": float(
+                        goal.current_value or 0.0
+                    ),
+                    "progress_percentage": round(
+                        float(
+                            goal.progress_percentage
+                            or 0.0
+                        ),
+                        2,
+                    ),
+                    "status": goal.status,
+                    "status_label": (
+                        self._get_goal_status_label(
+                            goal.status
+                        )
+                    ),
+                    "risk_level": goal.risk_level,
+                    "start_date": goal.start_date,
+                    "end_date": goal.end_date,
+                }
+            )
+
+        return result
+
+    @api.model
+    def _format_number(self, value):
+        try:
+            return "{:,.2f}".format(
+                float(value or 0.0)
+            )
+        except (TypeError, ValueError):
+            return "0.00"
+
+    @api.model
+    def _get_scope_label(self, scope):
+        labels = {
+            "scope_1": "Scope 1",
+            "scope_2": "Scope 2",
+            "scope_3": "Scope 3",
+        }
+
+        return labels.get(
+            scope,
+            "Unspecified",
+        )
+
+    @api.model
+    def _get_status_label(self, status):
+        labels = {
+            "draft": "Draft",
+            "calculated": "Calculated",
+            "verified": "Verified",
+            "cancelled": "Cancelled",
+        }
+
+        return labels.get(
+            status,
+            "Unknown",
+        )
+
+    @api.model
+    def _get_source_label(self, source):
+        labels = {
+            "purchase": "Purchase",
+            "fleet": "Fleet",
+            "manufacturing": "Manufacturing",
+            "expense": "Expense",
+            "electricity": "Electricity",
+            "travel": "Travel",
+            "waste": "Waste",
+            "manual": "Manual",
+        }
+
+        return labels.get(
+            source,
+            str(source or "Manual").replace(
+                "_",
+                " ",
+            ).title(),
+        )
+
+    @api.model
+    def _get_goal_status_label(self, status):
+        labels = {
+            "draft": "Draft",
+            "active": "Active",
+            "completed": "Completed",
+            "at_risk": "At Risk",
+            "cancelled": "Cancelled",
+        }
+
+        return labels.get(
+            status,
+            "Unknown",
+        )
+
+    @api.model
+    def _get_metric_label(self, metric):
+        labels = {
+            "emission_reduction": (
+                "Emission Reduction"
+            ),
+            "renewable_energy": (
+                "Renewable Energy"
+            ),
+            "waste_reduction": (
+                "Waste Reduction"
+            ),
+            "water_conservation": (
+                "Water Conservation"
+            ),
+            "energy_efficiency": (
+                "Energy Efficiency"
+            ),
+            "other": "Other",
+        }
+
+        return labels.get(
+            metric,
+            str(metric or "Other").replace(
+                "_",
+                " ",
+            ).title(),
+        )

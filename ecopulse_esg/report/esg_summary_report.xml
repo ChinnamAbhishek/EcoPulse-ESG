@@ -2,1525 +2,1400 @@
 
 <odoo>
 
-    <!-- PDF Report Action -->
-    <record
-        id="action_report_esg_summary"
-        model="ir.actions.report">
+    <!-- =====================================================
+         PDF PAPER FORMAT
+         ===================================================== -->
 
-        <field name="name">
-            EcoPulse ESG Summary Report
-        </field>
+    <record id="paperformat_ecopulse_esg_report" model="report.paperformat">
 
-        <field name="model">
-            ecopulse.esg.report.wizard
-        </field>
+        <field name="name">EcoPulse ESG Report</field>
 
-        <field name="report_type">
-            qweb-pdf
-        </field>
+        <field name="default" eval="False"/>
 
-        <field name="report_name">
-            ecopulse_esg.report_esg_summary_document
-        </field>
+        <field name="format">A4</field>
 
-        <field name="report_file">
-            ecopulse_esg.report_esg_summary_document
-        </field>
+        <field name="orientation">Portrait</field>
 
-        <field name="print_report_name">
-            'EcoPulse_ESG_Report_%s_%s' % (
-                object.start_date or '',
-                object.end_date or ''
-            )
-        </field>
+        <field name="margin_top">18</field>
+
+        <field name="margin_bottom">16</field>
+
+        <field name="margin_left">12</field>
+
+        <field name="margin_right">12</field>
+
+        <field name="header_line" eval="False"/>
+
+        <field name="header_spacing">8</field>
+
+        <field name="dpi">90</field>
 
     </record>
 
 
-    <!-- Main QWeb Report Template -->
+    <!-- =====================================================
+         PDF REPORT ACTION
+         ===================================================== -->
+
+    <record id="action_report_esg_summary" model="ir.actions.report">
+
+        <field name="name">EcoPulse ESG Summary Report</field>
+
+        <field name="model">ecopulse.esg.report.wizard</field>
+
+        <field name="report_type">qweb-pdf</field>
+
+        <field name="report_name">ecopulse_esg.report_esg_summary_document</field>
+
+        <field name="report_file">ecopulse_esg.report_esg_summary_document</field>
+
+        <field
+            name="paperformat_id"
+            ref="paperformat_ecopulse_esg_report"/>
+
+        <field name="print_report_name">'EcoPulse_ESG_Report_%s_%s' % (object.start_date or '', object.end_date or '')</field>
+
+    </record>
+
+
+    <!-- =====================================================
+         MAIN QWEB REPORT TEMPLATE
+         ===================================================== -->
+
     <template id="report_esg_summary_document">
 
         <t t-call="web.html_container">
 
-            <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="wizard">
 
-                <div class="page">
+                <t t-call="web.basic_layout">
+                    <div class="page">
 
-                    <!-- Report Header -->
-                    <div
-                        style="
-                            padding: 22px;
-                            margin-bottom: 20px;
-                            border-radius: 12px;
-                            background-color: #0f7042;
-                            color: white;
-                        ">
+                        <style>
 
-                        <table
-                            style="
+                            .eco_report {
+                                font-family: Arial, Helvetica, sans-serif;
+                                color: #263b30;
+                                font-size: 10px;
+                                line-height: 1.45;
+                            }
+
+                            .eco_report * {
+                                box-sizing: border-box;
+                            }
+
+                            .eco_cover {
+                                padding: 28px;
+                                margin-bottom: 20px;
+                                border-radius: 14px;
+                                background: #126b42;
+                                color: #ffffff;
+                            }
+
+                            .eco_cover_label {
+                                margin-bottom: 10px;
+                                color: #c9ead8;
+                                font-size: 9px;
+                                font-weight: bold;
+                                letter-spacing: 1.4px;
+                                text-transform: uppercase;
+                            }
+
+                            .eco_cover_title {
+                                margin: 0 0 8px;
+                                color: #ffffff;
+                                font-size: 29px;
+                                font-weight: bold;
+                            }
+
+                            .eco_cover_subtitle {
+                                margin: 0 0 22px;
+                                color: #dcf5e7;
+                                font-size: 12px;
+                            }
+
+                            .eco_meta_table {
+                                width: 100%;
+                                border-collapse: separate;
+                                border-spacing: 7px;
+                            }
+
+                            .eco_meta_table td {
+                                width: 33.33%;
+                                padding: 10px;
+                                border: 1px solid rgba(255, 255, 255, 0.22);
+                                border-radius: 7px;
+                                background: rgba(255, 255, 255, 0.08);
+                                vertical-align: top;
+                            }
+
+                            .eco_meta_label {
+                                display: block;
+                                margin-bottom: 3px;
+                                color: #c9ead8;
+                                font-size: 7px;
+                                font-weight: bold;
+                                text-transform: uppercase;
+                            }
+
+                            .eco_meta_value {
+                                color: #ffffff;
+                                font-size: 10px;
+                                font-weight: bold;
+                            }
+
+                            .eco_filter_box {
+                                padding: 13px;
+                                margin-bottom: 20px;
+                                border: 1px solid #d4e6dc;
+                                border-radius: 9px;
+                                background: #eff8f3;
+                            }
+
+                            .eco_filter_table {
                                 width: 100%;
                                 border-collapse: collapse;
-                            ">
+                            }
 
-                            <tr>
+                            .eco_filter_table td {
+                                width: 25%;
+                                padding: 5px 9px;
+                                vertical-align: top;
+                            }
 
-                                <td style="width: 70%;">
+                            .eco_filter_label {
+                                display: block;
+                                margin-bottom: 3px;
+                                color: #748179;
+                                font-size: 7px;
+                                font-weight: bold;
+                                text-transform: uppercase;
+                            }
 
-                                    <div
-                                        style="
-                                            margin-bottom: 5px;
-                                            font-size: 11px;
-                                            font-weight: bold;
-                                            letter-spacing: 1px;
-                                        ">
+                            .eco_filter_value {
+                                color: #183527;
+                                font-size: 9px;
+                                font-weight: bold;
+                            }
 
-                                        ENVIRONMENTAL INTELLIGENCE REPORT
+                            .eco_section {
+                                margin-bottom: 22px;
+                            }
 
-                                    </div>
+                            .eco_section_header {
+                                padding-bottom: 7px;
+                                margin-bottom: 12px;
+                                border-bottom: 2px solid #16834f;
+                            }
 
-                                    <h1
-                                        style="
-                                            margin: 0 0 7px 0;
-                                            color: white;
-                                            font-size: 28px;
-                                        ">
+                            .eco_section_title {
+                                margin: 0;
+                                color: #153d29;
+                                font-size: 16px;
+                                font-weight: bold;
+                            }
 
-                                        EcoPulse ESG Report
+                            .eco_section_subtitle {
+                                margin: 3px 0 0;
+                                color: #77847c;
+                                font-size: 8px;
+                            }
 
-                                    </h1>
+                            .eco_summary_table {
+                                width: 100%;
+                                border-collapse: separate;
+                                border-spacing: 7px;
+                            }
 
-                                    <p
-                                        style="
-                                            margin: 0;
-                                            color: #e4f4eb;
-                                            font-size: 12px;
-                                        ">
+                            .eco_summary_table td {
+                                width: 25%;
+                                padding: 13px;
+                                border: 1px solid #dce8e1;
+                                border-radius: 8px;
+                                background: #f8fbf9;
+                                vertical-align: top;
+                            }
 
-                                        Carbon emissions, environmental goals
-                                        and sustainability-performance analysis
+                            .eco_summary_table td.eco_primary {
+                                border-color: #16834f;
+                                background: #16834f;
+                            }
 
+                            .eco_summary_label {
+                                display: block;
+                                margin-bottom: 6px;
+                                color: #748179;
+                                font-size: 7px;
+                                font-weight: bold;
+                                text-transform: uppercase;
+                            }
+
+                            .eco_summary_value {
+                                display: block;
+                                color: #183527;
+                                font-size: 20px;
+                                font-weight: bold;
+                            }
+
+                            .eco_summary_unit {
+                                display: block;
+                                margin-top: 3px;
+                                color: #87928b;
+                                font-size: 7px;
+                            }
+
+                            .eco_primary .eco_summary_label,
+                            .eco_primary .eco_summary_value,
+                            .eco_primary .eco_summary_unit {
+                                color: #ffffff;
+                            }
+
+                            .eco_data_table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                page-break-inside: auto;
+                            }
+
+                            .eco_data_table thead {
+                                display: table-header-group;
+                            }
+
+                            .eco_data_table tr {
+                                page-break-inside: avoid;
+                            }
+
+                            .eco_data_table th {
+                                padding: 8px;
+                                border: 1px solid #cfe0d6;
+                                background: #eaf5ef;
+                                color: #19452f;
+                                font-size: 7px;
+                                font-weight: bold;
+                                text-align: left;
+                                text-transform: uppercase;
+                            }
+
+                            .eco_data_table td {
+                                padding: 8px;
+                                border: 1px solid #e1e9e4;
+                                color: #344b3f;
+                                font-size: 8px;
+                                vertical-align: middle;
+                            }
+
+                            .eco_data_table tbody tr:nth-child(even) {
+                                background: #fafcfb;
+                            }
+
+                            .eco_scope_table {
+                                width: 100%;
+                                border-collapse: separate;
+                                border-spacing: 7px;
+                            }
+
+                            .eco_scope_table td {
+                                width: 33.33%;
+                                padding: 14px;
+                                border: 1px solid #dce8e1;
+                                border-radius: 8px;
+                                vertical-align: top;
+                            }
+
+                            .eco_scope_1 {
+                                background: #edf9f2;
+                            }
+
+                            .eco_scope_2 {
+                                background: #eef5fc;
+                            }
+
+                            .eco_scope_3 {
+                                background: #fff7eb;
+                            }
+
+                            .eco_scope_title {
+                                display: block;
+                                color: #203d2e;
+                                font-size: 12px;
+                                font-weight: bold;
+                            }
+
+                            .eco_scope_description {
+                                display: block;
+                                min-height: 24px;
+                                margin-top: 3px;
+                                color: #7b8880;
+                                font-size: 7px;
+                            }
+
+                            .eco_scope_value {
+                                display: block;
+                                margin-top: 10px;
+                                color: #183527;
+                                font-size: 18px;
+                                font-weight: bold;
+                            }
+
+                            .eco_scope_unit {
+                                color: #7b8880;
+                                font-size: 7px;
+                            }
+
+                            .eco_scope_percentage {
+                                display: block;
+                                margin-top: 7px;
+                                color: #16834f;
+                                font-size: 9px;
+                                font-weight: bold;
+                            }
+
+                            .eco_status {
+                                display: inline-block;
+                                padding: 3px 7px;
+                                border-radius: 10px;
+                                font-size: 7px;
+                                font-weight: bold;
+                            }
+
+                            .eco_status_draft {
+                                background: #fff3dc;
+                                color: #946015;
+                            }
+
+                            .eco_status_calculated {
+                                background: #eaf3fc;
+                                color: #31699e;
+                            }
+
+                            .eco_status_verified {
+                                background: #e5f6ed;
+                                color: #126f42;
+                            }
+
+                            .eco_status_cancelled {
+                                background: #eeeeee;
+                                color: #666666;
+                            }
+
+                            .eco_text_right {
+                                text-align: right !important;
+                            }
+
+                            .eco_text_center {
+                                text-align: center !important;
+                            }
+
+                            .eco_bold {
+                                font-weight: bold;
+                            }
+
+                            .eco_green {
+                                color: #16834f;
+                            }
+
+                            .eco_muted {
+                                color: #7d8982;
+                            }
+
+                            .eco_empty {
+                                padding: 22px;
+                                border: 1px dashed #cad8d0;
+                                border-radius: 8px;
+                                background: #fafcfb;
+                                color: #7c8981;
+                                text-align: center;
+                            }
+
+                            .eco_page_break {
+                                page-break-before: always;
+                            }
+
+                            .eco_footer {
+                                padding-top: 11px;
+                                margin-top: 24px;
+                                border-top: 1px solid #dce5e0;
+                                color: #7d8982;
+                                font-size: 7px;
+                                text-align: center;
+                            }
+
+                        </style>
+
+
+                        <div class="eco_report">
+
+                            <!-- Report Cover -->
+                            <section class="eco_cover">
+
+                                <div class="eco_cover_label">
+                                    Environmental Intelligence Platform
+                                </div>
+
+                                <h1 class="eco_cover_title">
+                                    EcoPulse ESG Report
+                                </h1>
+
+                                <p class="eco_cover_subtitle">
+                                    Carbon-emission analysis, environmental
+                                    goal monitoring and departmental
+                                    sustainability intelligence.
+                                </p>
+
+                                <table class="eco_meta_table">
+
+                                    <tr>
+
+                                        <td>
+
+                                            <span class="eco_meta_label">
+                                                Organization
+                                            </span>
+
+                                            <span class="eco_meta_value">
+                                                <t t-esc="company.name"/>
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_meta_label">
+                                                Reporting Period
+                                            </span>
+
+                                            <span class="eco_meta_value">
+
+                                                <span t-field="wizard.start_date"/>
+
+                                                <span> to </span>
+
+                                                <span t-field="wizard.end_date"/>
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_meta_label">
+                                                Generated On
+                                            </span>
+
+                                            <span class="eco_meta_value">
+                                                <t t-esc="generated_on_display"/>
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+                            </section>
+
+
+                            <!-- Applied Filters -->
+                            <section class="eco_filter_box">
+
+                                <table class="eco_filter_table">
+
+                                    <tr>
+
+                                        <td>
+
+                                            <span class="eco_filter_label">
+                                                Department
+                                            </span>
+
+                                            <span class="eco_filter_value">
+
+                                                <t t-if="wizard.department_id">
+                                                    <span t-field="wizard.department_id"/>
+                                                </t>
+
+                                                <t t-else="">
+                                                    All Departments
+                                                </t>
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_filter_label">
+                                                Scope
+                                            </span>
+
+                                            <span class="eco_filter_value">
+
+                                                <t t-if="wizard.scope">
+                                                    <t t-esc="get_scope_label(wizard.scope)"/>
+                                                </t>
+
+                                                <t t-else="">
+                                                    All Scopes
+                                                </t>
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_filter_label">
+                                                Status
+                                            </span>
+
+                                            <span class="eco_filter_value">
+
+                                                <t t-if="wizard.transaction_status">
+                                                    <t t-esc="get_status_label(wizard.transaction_status)"/>
+                                                </t>
+
+                                                <t t-else="">
+                                                    All Statuses
+                                                </t>
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_filter_label">
+                                                Cancelled Records
+                                            </span>
+
+                                            <span class="eco_filter_value">
+
+                                                <t t-if="wizard.include_cancelled">
+                                                    Included
+                                                </t>
+
+                                                <t t-else="">
+                                                    Excluded
+                                                </t>
+
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+                            </section>
+
+
+                            <!-- Executive Summary -->
+                            <section class="eco_section">
+
+                                <div class="eco_section_header">
+
+                                    <h2 class="eco_section_title">
+                                        Executive Summary
+                                    </h2>
+
+                                    <p class="eco_section_subtitle">
+                                        Main sustainability indicators for
+                                        the selected reporting period.
                                     </p>
 
-                                </td>
+                                </div>
 
-                                <td
-                                    style="
-                                        width: 30%;
-                                        text-align: right;
-                                        vertical-align: middle;
-                                    ">
+                                <table class="eco_summary_table">
 
-                                    <div
-                                        style="
-                                            font-size: 11px;
-                                            color: #d6eddf;
-                                        ">
+                                    <tr>
 
-                                        Generated On
+                                        <td class="eco_primary">
+
+                                            <span class="eco_summary_label">
+                                                Total Emissions
+                                            </span>
+
+                                            <span class="eco_summary_value">
+                                                <t t-esc="format_number(summary['total_emissions'])"/>
+                                            </span>
+
+                                            <span class="eco_summary_unit">
+                                                kg CO₂e
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_summary_label">
+                                                Transactions
+                                            </span>
+
+                                            <span class="eco_summary_value">
+                                                <t t-esc="summary['transaction_count']"/>
+                                            </span>
+
+                                            <span class="eco_summary_unit">
+                                                Matching records
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_summary_label">
+                                                Departments
+                                            </span>
+
+                                            <span class="eco_summary_value">
+                                                <t t-esc="summary['department_count']"/>
+                                            </span>
+
+                                            <span class="eco_summary_unit">
+                                                Reporting departments
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_summary_label">
+                                                Environmental Goals
+                                            </span>
+
+                                            <span class="eco_summary_value">
+                                                <t t-esc="summary['goal_count']"/>
+                                            </span>
+
+                                            <span class="eco_summary_unit">
+                                                Matching goals
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                        <td>
+
+                                            <span class="eco_summary_label">
+                                                Verified
+                                            </span>
+
+                                            <span class="eco_summary_value">
+                                                <t t-esc="summary['verified_count']"/>
+                                            </span>
+
+                                            <span class="eco_summary_unit">
+                                                Transactions
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_summary_label">
+                                                Calculated
+                                            </span>
+
+                                            <span class="eco_summary_value">
+                                                <t t-esc="summary['calculated_count']"/>
+                                            </span>
+
+                                            <span class="eco_summary_unit">
+                                                Transactions
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_summary_label">
+                                                Goals At Risk
+                                            </span>
+
+                                            <span class="eco_summary_value">
+                                                <t t-esc="summary['at_risk_goal_count']"/>
+                                            </span>
+
+                                            <span class="eco_summary_unit">
+                                                Require attention
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span class="eco_summary_label">
+                                                Average Progress
+                                            </span>
+
+                                            <span class="eco_summary_value">
+
+                                                <t t-esc="format_number(summary['average_goal_progress'])"/>
+
+                                                <span>%</span>
+
+                                            </span>
+
+                                            <span class="eco_summary_unit">
+                                                Across goals
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                </table>
+
+                            </section>
+
+
+                            <!-- Scope Analysis -->
+                            <section class="eco_section">
+
+                                <div class="eco_section_header">
+
+                                    <h2 class="eco_section_title">
+                                        Emission Scope Analysis
+                                    </h2>
+
+                                    <p class="eco_section_subtitle">
+                                        Distribution across Scope 1,
+                                        Scope 2 and Scope 3.
+                                    </p>
+
+                                </div>
+
+                                <table class="eco_scope_table">
+
+                                    <tr>
+
+                                        <t
+                                            t-foreach="scope_analysis"
+                                            t-as="scope_item">
+
+                                            <td
+                                                t-att-class="
+                                                    'eco_scope_1'
+                                                    if scope_item['key'] == 'scope_1'
+                                                    else (
+                                                        'eco_scope_2'
+                                                        if scope_item['key'] == 'scope_2'
+                                                        else 'eco_scope_3'
+                                                    )
+                                                ">
+
+                                                <span class="eco_scope_title">
+                                                    <t t-esc="scope_item['label']"/>
+                                                </span>
+
+                                                <span class="eco_scope_description">
+                                                    <t t-esc="scope_item['description']"/>
+                                                </span>
+
+                                                <span class="eco_scope_value">
+                                                    <t t-esc="format_number(scope_item['total'])"/>
+                                                </span>
+
+                                                <span class="eco_scope_unit">
+                                                    kg CO₂e
+                                                </span>
+
+                                                <span class="eco_scope_percentage">
+
+                                                    <t t-esc="format_number(scope_item['percentage'])"/>
+
+                                                    <span>% of total</span>
+
+                                                </span>
+
+                                                <div
+                                                    style="margin-top: 6px;
+                                                           color: #748179;
+                                                           font-size: 7px;">
+
+                                                    <t t-esc="scope_item['transaction_count']"/>
+
+                                                    <span> transactions</span>
+
+                                                </div>
+
+                                            </td>
+
+                                        </t>
+
+                                    </tr>
+
+                                </table>
+
+                            </section>
+
+
+                            <!-- Monthly Analysis -->
+                            <section class="eco_section">
+
+                                <div class="eco_section_header">
+
+                                    <h2 class="eco_section_title">
+                                        Monthly Emission Analysis
+                                    </h2>
+
+                                    <p class="eco_section_subtitle">
+                                        Month-wise carbon-emission totals.
+                                    </p>
+
+                                </div>
+
+                                <t t-if="monthly_analysis">
+
+                                    <table class="eco_data_table">
+
+                                        <thead>
+
+                                            <tr>
+
+                                                <th>Month</th>
+
+                                                <th class="eco_text_center">
+                                                    Transactions
+                                                </th>
+
+                                                <th class="eco_text_right">
+                                                    Emissions
+                                                </th>
+
+                                                <th class="eco_text_right">
+                                                    Unit
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody>
+
+                                            <t
+                                                t-foreach="monthly_analysis"
+                                                t-as="month_item">
+
+                                                <tr>
+
+                                                    <td class="eco_bold">
+                                                        <t t-esc="month_item['label']"/>
+                                                    </td>
+
+                                                    <td class="eco_text_center">
+                                                        <t t-esc="month_item['transaction_count']"/>
+                                                    </td>
+
+                                                    <td class="eco_text_right eco_bold eco_green">
+                                                        <t t-esc="format_number(month_item['total'])"/>
+                                                    </td>
+
+                                                    <td class="eco_text_right eco_muted">
+                                                        kg CO₂e
+                                                    </td>
+
+                                                </tr>
+
+                                            </t>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </t>
+
+                                <t t-else="">
+
+                                    <div class="eco_empty">
+                                        No monthly emission data is available.
+                                    </div>
+
+                                </t>
+
+                            </section>
+
+
+                            <!-- Department Analysis -->
+                            <t t-if="wizard.include_department_analysis">
+
+                                <section class="eco_section">
+
+                                    <div class="eco_section_header">
+
+                                        <h2 class="eco_section_title">
+                                            Department Emission Analysis
+                                        </h2>
+
+                                        <p class="eco_section_subtitle">
+                                            Departments ranked by total
+                                            carbon emissions.
+                                        </p>
 
                                     </div>
 
-                                    <strong
-                                        style="
-                                            color: white;
-                                            font-size: 12px;
-                                        ">
+                                    <t t-if="department_analysis">
 
-                                        <span
-                                            t-field="generated_on"
-                                            t-options="{
-                                                'widget': 'datetime'
-                                            }"/>
+                                        <table class="eco_data_table">
 
-                                    </strong>
+                                            <thead>
 
-                                </td>
+                                                <tr>
 
-                            </tr>
+                                                    <th class="eco_text_center">
+                                                        Rank
+                                                    </th>
 
-                        </table>
+                                                    <th>Department</th>
 
-                    </div>
+                                                    <th class="eco_text_center">
+                                                        Transactions
+                                                    </th>
 
+                                                    <th class="eco_text_right">
+                                                        Emissions
+                                                    </th>
 
-                    <!-- Report Filters -->
-                    <div
-                        style="
-                            padding: 14px;
-                            margin-bottom: 18px;
-                            border: 1px solid #dce8e1;
-                            border-radius: 9px;
-                            background-color: #f5faf7;
-                        ">
+                                                    <th class="eco_text_right">
+                                                        Unit
+                                                    </th>
 
-                        <table
-                            style="
-                                width: 100%;
-                                border-collapse: collapse;
-                                font-size: 11px;
-                            ">
+                                                </tr>
 
-                            <tr>
+                                            </thead>
 
-                                <td style="width: 25%; padding: 5px;">
+                                            <tbody>
 
-                                    <strong>Reporting Period</strong>
+                                                <t
+                                                    t-foreach="department_analysis"
+                                                    t-as="department_item">
 
-                                    <br/>
+                                                    <tr>
 
-                                    <span t-field="wizard.start_date"/>
-                                    -
-                                    <span t-field="wizard.end_date"/>
+                                                        <td class="eco_text_center eco_bold">
+                                                            <t t-esc="department_item['rank']"/>
+                                                        </td>
 
-                                </td>
+                                                        <td class="eco_bold">
+                                                            <t t-esc="department_item['name']"/>
+                                                        </td>
 
-                                <td style="width: 25%; padding: 5px;">
+                                                        <td class="eco_text_center">
+                                                            <t t-esc="department_item['transaction_count']"/>
+                                                        </td>
 
-                                    <strong>Department</strong>
+                                                        <td class="eco_text_right eco_bold eco_green">
+                                                            <t t-esc="format_number(department_item['total'])"/>
+                                                        </td>
 
-                                    <br/>
+                                                        <td class="eco_text_right eco_muted">
+                                                            kg CO₂e
+                                                        </td>
 
-                                    <span
-                                        t-if="wizard.department_id"
-                                        t-field="wizard.department_id.name"/>
+                                                    </tr>
 
-                                    <span t-else="">
-                                        All Departments
-                                    </span>
+                                                </t>
 
-                                </td>
+                                            </tbody>
 
-                                <td style="width: 25%; padding: 5px;">
+                                        </table>
 
-                                    <strong>Emission Scope</strong>
+                                    </t>
 
-                                    <br/>
+                                    <t t-else="">
 
-                                    <span t-if="wizard.scope">
-                                        <span
-                                            t-field="wizard.scope"/>
-                                    </span>
+                                        <div class="eco_empty">
+                                            No department analysis is available.
+                                        </div>
 
-                                    <span t-else="">
-                                        All Scopes
-                                    </span>
+                                    </t>
 
-                                </td>
-
-                                <td style="width: 25%; padding: 5px;">
-
-                                    <strong>Transaction Status</strong>
-
-                                    <br/>
-
-                                    <span
-                                        t-if="wizard.transaction_status"
-                                        t-field="wizard.transaction_status"/>
-
-                                    <span t-else="">
-                                        All Active Statuses
-                                    </span>
-
-                                </td>
-
-                            </tr>
-
-                        </table>
-
-                    </div>
-
-
-                    <!-- KPI Summary -->
-                    <h2
-                        style="
-                            margin: 0 0 12px 0;
-                            color: #183527;
-                            font-size: 18px;
-                        ">
-
-                        Executive Sustainability Summary
-
-                    </h2>
-
-                    <table
-                        style="
-                            width: 100%;
-                            margin-bottom: 20px;
-                            border-spacing: 8px;
-                            border-collapse: separate;
-                        ">
-
-                        <tr>
-
-                            <td
-                                style="
-                                    width: 25%;
-                                    padding: 15px;
-                                    border-radius: 9px;
-                                    background-color: #0f7042;
-                                    color: white;
-                                ">
-
-                                <div
-                                    style="
-                                        margin-bottom: 5px;
-                                        font-size: 10px;
-                                    ">
-
-                                    TOTAL EMISSIONS
-
-                                </div>
-
-                                <strong
-                                    style="
-                                        font-size: 22px;
-                                    ">
-
-                                    <span
-                                        t-esc="'{:,.2f}'.format(total_emission)"/>
-
-                                </strong>
-
-                                <div
-                                    style="
-                                        margin-top: 4px;
-                                        font-size: 10px;
-                                    ">
-
-                                    kg CO₂e
-
-                                </div>
-
-                            </td>
-
-                            <td
-                                style="
-                                    width: 25%;
-                                    padding: 15px;
-                                    border: 1px solid #dce8e1;
-                                    border-radius: 9px;
-                                    background-color: #f7faf8;
-                                ">
-
-                                <div
-                                    style="
-                                        margin-bottom: 5px;
-                                        color: #6f7d74;
-                                        font-size: 10px;
-                                    ">
-
-                                    TRANSACTIONS
-
-                                </div>
-
-                                <strong
-                                    style="
-                                        color: #183527;
-                                        font-size: 22px;
-                                    ">
-
-                                    <span t-esc="len(transactions)"/>
-
-                                </strong>
-
-                            </td>
-
-                            <td
-                                style="
-                                    width: 25%;
-                                    padding: 15px;
-                                    border: 1px solid #dce8e1;
-                                    border-radius: 9px;
-                                    background-color: #f7faf8;
-                                ">
-
-                                <div
-                                    style="
-                                        margin-bottom: 5px;
-                                        color: #6f7d74;
-                                        font-size: 10px;
-                                    ">
-
-                                    ENVIRONMENTAL GOALS
-
-                                </div>
-
-                                <strong
-                                    style="
-                                        color: #183527;
-                                        font-size: 22px;
-                                    ">
-
-                                    <span t-esc="len(goals)"/>
-
-                                </strong>
-
-                            </td>
-
-                            <td
-                                style="
-                                    width: 25%;
-                                    padding: 15px;
-                                    border: 1px solid #dce8e1;
-                                    border-radius: 9px;
-                                    background-color: #f7faf8;
-                                ">
-
-                                <div
-                                    style="
-                                        margin-bottom: 5px;
-                                        color: #6f7d74;
-                                        font-size: 10px;
-                                    ">
-
-                                    AVERAGE GOAL PROGRESS
-
-                                </div>
-
-                                <strong
-                                    style="
-                                        color: #16834f;
-                                        font-size: 22px;
-                                    ">
-
-                                    <span
-                                        t-esc="'{:,.2f}'.format(
-                                            average_goal_progress
-                                        )"/>
-
-                                    %
-
-                                </strong>
-
-                            </td>
-
-                        </tr>
-
-                    </table>
-
-
-                    <!-- Scope Distribution -->
-                    <h2
-                        style="
-                            margin: 0 0 10px 0;
-                            color: #183527;
-                            font-size: 17px;
-                        ">
-
-                        Emission Scope Distribution
-
-                    </h2>
-
-                    <table
-                        style="
-                            width: 100%;
-                            margin-bottom: 20px;
-                            border-collapse: collapse;
-                            font-size: 11px;
-                        ">
-
-                        <thead>
-
-                            <tr style="background-color: #edf7f1;">
-
-                                <th
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #dce8e1;
-                                        text-align: left;
-                                    ">
-
-                                    Scope
-
-                                </th>
-
-                                <th
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #dce8e1;
-                                        text-align: right;
-                                    ">
-
-                                    Emission
-
-                                </th>
-
-                                <th
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #dce8e1;
-                                        text-align: right;
-                                    ">
-
-                                    Percentage
-
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <tr>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                    ">
-
-                                    Scope 1 — Direct Emissions
-
-                                </td>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                        text-align: right;
-                                    ">
-
-                                    <span
-                                        t-esc="'{:,.2f}'.format(
-                                            scope_totals['scope_1']
-                                        )"/>
-
-                                    kg CO₂e
-
-                                </td>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                        text-align: right;
-                                    ">
-
-                                    <span
-                                        t-esc="'{:,.2f}'.format(
-                                            scope_totals[
-                                                'scope_1_percentage'
-                                            ]
-                                        )"/>
-
-                                    %
-
-                                </td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                    ">
-
-                                    Scope 2 — Purchased Energy
-
-                                </td>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                        text-align: right;
-                                    ">
-
-                                    <span
-                                        t-esc="'{:,.2f}'.format(
-                                            scope_totals['scope_2']
-                                        )"/>
-
-                                    kg CO₂e
-
-                                </td>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                        text-align: right;
-                                    ">
-
-                                    <span
-                                        t-esc="'{:,.2f}'.format(
-                                            scope_totals[
-                                                'scope_2_percentage'
-                                            ]
-                                        )"/>
-
-                                    %
-
-                                </td>
-
-                            </tr>
-
-                            <tr>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                    ">
-
-                                    Scope 3 — Value-Chain Emissions
-
-                                </td>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                        text-align: right;
-                                    ">
-
-                                    <span
-                                        t-esc="'{:,.2f}'.format(
-                                            scope_totals['scope_3']
-                                        )"/>
-
-                                    kg CO₂e
-
-                                </td>
-
-                                <td
-                                    style="
-                                        padding: 9px;
-                                        border: 1px solid #e1e8e4;
-                                        text-align: right;
-                                    ">
-
-                                    <span
-                                        t-esc="'{:,.2f}'.format(
-                                            scope_totals[
-                                                'scope_3_percentage'
-                                            ]
-                                        )"/>
-
-                                    %
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-
-                    <!-- Transaction Status -->
-                    <h2
-                        style="
-                            margin: 0 0 10px 0;
-                            color: #183527;
-                            font-size: 17px;
-                        ">
-
-                        Transaction Status Summary
-
-                    </h2>
-
-                    <table
-                        style="
-                            width: 100%;
-                            margin-bottom: 20px;
-                            border-spacing: 7px;
-                            border-collapse: separate;
-                        ">
-
-                        <tr>
-
-                            <td
-                                style="
-                                    padding: 12px;
-                                    border-radius: 8px;
-                                    background-color: #fff6e8;
-                                    text-align: center;
-                                ">
-
-                                <div style="font-size: 10px;">
-                                    Draft
-                                </div>
-
-                                <strong
-                                    style="
-                                        color: #a66b12;
-                                        font-size: 20px;
-                                    ">
-
-                                    <span t-esc="status_counts['draft']"/>
-
-                                </strong>
-
-                            </td>
-
-                            <td
-                                style="
-                                    padding: 12px;
-                                    border-radius: 8px;
-                                    background-color: #eaf4ff;
-                                    text-align: center;
-                                ">
-
-                                <div style="font-size: 10px;">
-                                    Calculated
-                                </div>
-
-                                <strong
-                                    style="
-                                        color: #316cae;
-                                        font-size: 20px;
-                                    ">
-
-                                    <span
-                                        t-esc="status_counts['calculated']"/>
-
-                                </strong>
-
-                            </td>
-
-                            <td
-                                style="
-                                    padding: 12px;
-                                    border-radius: 8px;
-                                    background-color: #e9f7ef;
-                                    text-align: center;
-                                ">
-
-                                <div style="font-size: 10px;">
-                                    Verified
-                                </div>
-
-                                <strong
-                                    style="
-                                        color: #137446;
-                                        font-size: 20px;
-                                    ">
-
-                                    <span
-                                        t-esc="status_counts['verified']"/>
-
-                                </strong>
-
-                            </td>
-
-                            <td
-                                style="
-                                    padding: 12px;
-                                    border-radius: 8px;
-                                    background-color: #f1f1f1;
-                                    text-align: center;
-                                ">
-
-                                <div style="font-size: 10px;">
-                                    Cancelled
-                                </div>
-
-                                <strong
-                                    style="
-                                        color: #666666;
-                                        font-size: 20px;
-                                    ">
-
-                                    <span
-                                        t-esc="status_counts['cancelled']"/>
-
-                                </strong>
-
-                            </td>
-
-                        </tr>
-
-                    </table>
-
-
-                    <!-- Monthly Emissions -->
-                    <h2
-                        style="
-                            margin: 0 0 10px 0;
-                            color: #183527;
-                            font-size: 17px;
-                        ">
-
-                        Monthly Emission Analysis
-
-                    </h2>
-
-                    <table
-                        style="
-                            width: 100%;
-                            margin-bottom: 20px;
-                            border-collapse: collapse;
-                            font-size: 10px;
-                        ">
-
-                        <thead>
-
-                            <tr style="background-color: #edf7f1;">
-
-                                <th
-                                    style="
-                                        padding: 8px;
-                                        border: 1px solid #dce8e1;
-                                        text-align: left;
-                                    ">
-
-                                    Month
-
-                                </th>
-
-                                <th
-                                    style="
-                                        padding: 8px;
-                                        border: 1px solid #dce8e1;
-                                        text-align: right;
-                                    ">
-
-                                    Carbon Emission
-
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <t
-                                t-foreach="monthly_emissions"
-                                t-as="month">
-
-                                <tr>
-
-                                    <td
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #e1e8e4;
-                                        ">
-
-                                        <span t-esc="month['label']"/>
-
-                                    </td>
-
-                                    <td
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #e1e8e4;
-                                            text-align: right;
-                                        ">
-
-                                        <span
-                                            t-esc="'{:,.2f}'.format(
-                                                month['total']
-                                            )"/>
-
-                                        kg CO₂e
-
-                                    </td>
-
-                                </tr>
+                                </section>
 
                             </t>
 
-                            <tr t-if="not monthly_emissions">
 
-                                <td
-                                    colspan="2"
-                                    style="
-                                        padding: 15px;
-                                        border: 1px solid #e1e8e4;
-                                        color: #777777;
-                                        text-align: center;
-                                    ">
+                            <!-- Source Analysis -->
+                            <t t-if="wizard.include_source_analysis">
 
-                                    No monthly emission data available.
+                                <section class="eco_section">
 
-                                </td>
+                                    <div class="eco_section_header">
 
-                            </tr>
+                                        <h2 class="eco_section_title">
+                                            Emission Source Analysis
+                                        </h2>
 
-                        </tbody>
+                                        <p class="eco_section_subtitle">
+                                            Carbon totals grouped by source.
+                                        </p>
 
-                    </table>
+                                    </div>
+
+                                    <t t-if="source_analysis">
+
+                                        <table class="eco_data_table">
+
+                                            <thead>
+
+                                                <tr>
+
+                                                    <th>Source</th>
+
+                                                    <th class="eco_text_center">
+                                                        Transactions
+                                                    </th>
+
+                                                    <th class="eco_text_right">
+                                                        Emissions
+                                                    </th>
+
+                                                    <th class="eco_text_right">
+                                                        Unit
+                                                    </th>
+
+                                                </tr>
+
+                                            </thead>
+
+                                            <tbody>
+
+                                                <t
+                                                    t-foreach="source_analysis"
+                                                    t-as="source_item">
+
+                                                    <tr>
+
+                                                        <td class="eco_bold">
+                                                            <t t-esc="source_item['label']"/>
+                                                        </td>
+
+                                                        <td class="eco_text_center">
+                                                            <t t-esc="source_item['transaction_count']"/>
+                                                        </td>
+
+                                                        <td class="eco_text_right eco_bold eco_green">
+                                                            <t t-esc="format_number(source_item['total'])"/>
+                                                        </td>
+
+                                                        <td class="eco_text_right eco_muted">
+                                                            kg CO₂e
+                                                        </td>
+
+                                                    </tr>
+
+                                                </t>
+
+                                            </tbody>
+
+                                        </table>
+
+                                    </t>
+
+                                    <t t-else="">
+
+                                        <div class="eco_empty">
+                                            No emission source analysis is available.
+                                        </div>
+
+                                    </t>
+
+                                </section>
+
+                            </t>
 
 
-                    <!-- Department Analysis -->
-                    <t t-if="wizard.include_department_analysis">
+                            <!-- Goal Analysis -->
+                            <t t-if="wizard.include_goals">
 
-                        <h2
-                            style="
-                                margin: 0 0 10px 0;
-                                color: #183527;
-                                font-size: 17px;
-                            ">
+                                <section class="eco_section eco_page_break">
 
-                            Department Performance Analysis
+                                    <div class="eco_section_header">
 
-                        </h2>
+                                        <h2 class="eco_section_title">
+                                            Environmental Goal Performance
+                                        </h2>
 
-                        <table
-                            style="
-                                width: 100%;
-                                margin-bottom: 20px;
-                                border-collapse: collapse;
-                                font-size: 10px;
-                            ">
+                                        <p class="eco_section_subtitle">
+                                            Goal progress, status and risk level.
+                                        </p>
 
-                            <thead>
+                                    </div>
 
-                                <tr style="background-color: #edf7f1;">
+                                    <t t-if="goal_analysis">
 
-                                    <th
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: left;
-                                        ">
+                                        <table class="eco_data_table">
 
-                                        Rank
+                                            <thead>
 
-                                    </th>
+                                                <tr>
 
-                                    <th
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: left;
-                                        ">
+                                                    <th>Goal</th>
 
-                                        Department
+                                                    <th>Department</th>
 
-                                    </th>
+                                                    <th>Metric</th>
 
-                                    <th
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: right;
-                                        ">
+                                                    <th class="eco_text_center">
+                                                        Progress
+                                                    </th>
 
-                                        Transactions
+                                                    <th>Status</th>
 
-                                    </th>
+                                                    <th>Risk</th>
 
-                                    <th
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: right;
-                                        ">
+                                                    <th>End Date</th>
 
-                                        Emission
+                                                </tr>
 
-                                    </th>
+                                            </thead>
 
-                                </tr>
+                                            <tbody>
 
-                            </thead>
+                                                <t
+                                                    t-foreach="goal_analysis"
+                                                    t-as="goal_item">
 
-                            <tbody>
+                                                    <tr>
 
-                                <t
-                                    t-foreach="department_ranking"
-                                    t-as="department">
+                                                        <td class="eco_bold">
+                                                            <t t-esc="goal_item['name']"/>
+                                                        </td>
 
-                                    <tr>
+                                                        <td>
+                                                            <t t-esc="goal_item['department']"/>
+                                                        </td>
 
-                                        <td
-                                            style="
-                                                padding: 8px;
-                                                border: 1px solid #e1e8e4;
-                                            ">
+                                                        <td>
+                                                            <t t-esc="goal_item['metric_label']"/>
+                                                        </td>
 
-                                            <span
-                                                t-esc="department_index + 1"/>
+                                                        <td class="eco_text_center eco_bold">
 
-                                        </td>
+                                                            <t t-esc="format_number(goal_item['progress_percentage'])"/>
 
-                                        <td
-                                            style="
-                                                padding: 8px;
-                                                border: 1px solid #e1e8e4;
-                                            ">
+                                                            <span>%</span>
 
-                                            <span
-                                                t-esc="department['name']"/>
+                                                        </td>
 
-                                        </td>
+                                                        <td>
+                                                            <t t-esc="goal_item['status_label']"/>
+                                                        </td>
 
-                                        <td
-                                            style="
-                                                padding: 8px;
-                                                border: 1px solid #e1e8e4;
-                                                text-align: right;
-                                            ">
+                                                        <td>
 
-                                            <span
-                                                t-esc="department[
-                                                    'transactions'
-                                                ]"/>
+                                                            <t t-if="goal_item['risk_level']">
+                                                                <t t-esc="goal_item['risk_level'].replace('_', ' ').title()"/>
+                                                            </t>
 
-                                        </td>
+                                                            <t t-else="">
+                                                                Low
+                                                            </t>
 
-                                        <td
-                                            style="
-                                                padding: 8px;
-                                                border: 1px solid #e1e8e4;
-                                                text-align: right;
-                                            ">
+                                                        </td>
 
-                                            <span
-                                                t-esc="'{:,.2f}'.format(
-                                                    department['total']
-                                                )"/>
+                                                        <td>
 
-                                            kg CO₂e
+                                                            <t t-if="goal_item['end_date']">
+                                                                <t t-esc="goal_item['end_date']"/>
+                                                            </t>
 
-                                        </td>
+                                                            <t t-else="">
+                                                                No deadline
+                                                            </t>
 
-                                    </tr>
+                                                        </td>
+
+                                                    </tr>
+
+                                                </t>
+
+                                            </tbody>
+
+                                        </table>
+
+                                    </t>
+
+                                    <t t-else="">
+
+                                        <div class="eco_empty">
+                                            No environmental goals are available.
+                                        </div>
+
+                                    </t>
+
+                                </section>
+
+                            </t>
+
+
+                            <!-- Transaction Details -->
+                            <section class="eco_section">
+
+                                <div class="eco_section_header">
+
+                                    <h2 class="eco_section_title">
+                                        Carbon Transaction Details
+                                    </h2>
+
+                                    <p class="eco_section_subtitle">
+                                        Transactions included in this report.
+                                    </p>
+
+                                </div>
+
+                                <t t-if="transactions">
+
+                                    <table class="eco_data_table">
+
+                                        <thead>
+
+                                            <tr>
+
+                                                <th>Reference</th>
+
+                                                <th>Date</th>
+
+                                                <th>Department</th>
+
+                                                <th>Source</th>
+
+                                                <th>Scope</th>
+
+                                                <th class="eco_text_right">
+                                                    Quantity
+                                                </th>
+
+                                                <th class="eco_text_right">
+                                                    Emissions
+                                                </th>
+
+                                                <th>Status</th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody>
+
+                                            <t
+                                                t-foreach="transactions"
+                                                t-as="transaction">
+
+                                                <tr>
+
+                                                    <td class="eco_bold">
+                                                        <span t-field="transaction.reference"/>
+                                                    </td>
+
+                                                    <td>
+                                                        <span t-field="transaction.transaction_date"/>
+                                                    </td>
+
+                                                    <td>
+
+                                                        <t t-if="transaction.department_id">
+                                                            <span t-field="transaction.department_id"/>
+                                                        </t>
+
+                                                        <t t-else="">
+                                                            Not Assigned
+                                                        </t>
+
+                                                    </td>
+
+                                                    <td>
+                                                        <t t-esc="get_source_label(transaction.source_module)"/>
+                                                    </td>
+
+                                                    <td>
+                                                        <t t-esc="get_scope_label(transaction.scope)"/>
+                                                    </td>
+
+                                                    <td class="eco_text_right">
+
+                                                        <t t-esc="format_number(transaction.activity_quantity)"/>
+
+                                                        <span>
+                                                            <t t-esc="transaction.activity_unit or ''"/>
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td class="eco_text_right eco_bold">
+
+                                                        <t t-esc="format_number(transaction.calculated_emission)"/>
+
+                                                        <span class="eco_muted">
+                                                            kg CO₂e
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        <span
+                                                            t-att-class="'eco_status eco_status_' + (transaction.status or 'draft')">
+
+                                                            <t t-esc="get_status_label(transaction.status)"/>
+
+                                                        </span>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            </t>
+
+                                        </tbody>
+
+                                    </table>
 
                                 </t>
 
-                            </tbody>
+                                <t t-else="">
 
-                        </table>
-
-                    </t>
-
-
-                    <!-- Source Analysis -->
-                    <t t-if="wizard.include_source_analysis">
-
-                        <h2
-                            style="
-                                margin: 0 0 10px 0;
-                                color: #183527;
-                                font-size: 17px;
-                            ">
-
-                            Emission Source Analysis
-
-                        </h2>
-
-                        <table
-                            style="
-                                width: 100%;
-                                margin-bottom: 20px;
-                                border-collapse: collapse;
-                                font-size: 10px;
-                            ">
-
-                            <thead>
-
-                                <tr style="background-color: #edf7f1;">
-
-                                    <th
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: left;
-                                        ">
-
-                                        Source
-
-                                    </th>
-
-                                    <th
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: right;
-                                        ">
-
-                                        Transactions
-
-                                    </th>
-
-                                    <th
-                                        style="
-                                            padding: 8px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: right;
-                                        ">
-
-                                        Emission
-
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody>
-
-                                <t
-                                    t-foreach="source_analysis"
-                                    t-as="source">
-
-                                    <tr>
-
-                                        <td
-                                            style="
-                                                padding: 8px;
-                                                border: 1px solid #e1e8e4;
-                                            ">
-
-                                            <span t-esc="source['label']"/>
-
-                                        </td>
-
-                                        <td
-                                            style="
-                                                padding: 8px;
-                                                border: 1px solid #e1e8e4;
-                                                text-align: right;
-                                            ">
-
-                                            <span
-                                                t-esc="source[
-                                                    'transactions'
-                                                ]"/>
-
-                                        </td>
-
-                                        <td
-                                            style="
-                                                padding: 8px;
-                                                border: 1px solid #e1e8e4;
-                                                text-align: right;
-                                            ">
-
-                                            <span
-                                                t-esc="'{:,.2f}'.format(
-                                                    source['total']
-                                                )"/>
-
-                                            kg CO₂e
-
-                                        </td>
-
-                                    </tr>
+                                    <div class="eco_empty">
+                                        No carbon transactions matched
+                                        the selected filters.
+                                    </div>
 
                                 </t>
 
-                            </tbody>
-
-                        </table>
-
-                    </t>
+                            </section>
 
 
-                    <!-- Environmental Goals -->
-                    <t t-if="wizard.include_goals">
+                            <!-- Footer -->
+                            <footer class="eco_footer">
 
-                        <h2
-                            style="
-                                margin: 0 0 10px 0;
-                                color: #183527;
-                                font-size: 17px;
-                            ">
+                                <div>
+                                    EcoPulse ESG — Environmental Sustainability
+                                    Management Platform
+                                </div>
 
-                            Environmental Goal Performance
+                                <div style="margin-top: 3px;">
 
-                        </h2>
+                                    Generated for
 
-                        <table
-                            style="
-                                width: 100%;
-                                margin-bottom: 20px;
-                                border-collapse: collapse;
-                                font-size: 9px;
-                            ">
+                                    <strong>
+                                        <t t-esc="company.name"/>
+                                    </strong>
 
-                            <thead>
+                                    on
 
-                                <tr style="background-color: #edf7f1;">
+                                    <t t-esc="generated_on_display"/>
 
-                                    <th
-                                        style="
-                                            padding: 7px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: left;
-                                        ">
+                                </div>
 
-                                        Goal
-
-                                    </th>
-
-                                    <th
-                                        style="
-                                            padding: 7px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: left;
-                                        ">
-
-                                        Department
-
-                                    </th>
-
-                                    <th
-                                        style="
-                                            padding: 7px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: right;
-                                        ">
-
-                                        Progress
-
-                                    </th>
-
-                                    <th
-                                        style="
-                                            padding: 7px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: left;
-                                        ">
-
-                                        Status
-
-                                    </th>
-
-                                    <th
-                                        style="
-                                            padding: 7px;
-                                            border: 1px solid #dce8e1;
-                                            text-align: left;
-                                        ">
-
-                                        Deadline
-
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody>
-
-                                <t t-foreach="goals" t-as="goal">
-
-                                    <tr>
-
-                                        <td
-                                            style="
-                                                padding: 7px;
-                                                border: 1px solid #e1e8e4;
-                                            ">
-
-                                            <span t-field="goal.name"/>
-
-                                        </td>
-
-                                        <td
-                                            style="
-                                                padding: 7px;
-                                                border: 1px solid #e1e8e4;
-                                            ">
-
-                                            <span
-                                                t-field="goal.department_id.name"/>
-
-                                        </td>
-
-                                        <td
-                                            style="
-                                                padding: 7px;
-                                                border: 1px solid #e1e8e4;
-                                                text-align: right;
-                                            ">
-
-                                            <span
-                                                t-esc="'{:,.2f}'.format(
-                                                    goal.progress_percentage
-                                                )"/>
-
-                                            %
-
-                                        </td>
-
-                                        <td
-                                            style="
-                                                padding: 7px;
-                                                border: 1px solid #e1e8e4;
-                                            ">
-
-                                            <span t-field="goal.status"/>
-
-                                        </td>
-
-                                        <td
-                                            style="
-                                                padding: 7px;
-                                                border: 1px solid #e1e8e4;
-                                            ">
-
-                                            <span t-field="goal.end_date"/>
-
-                                        </td>
-
-                                    </tr>
-
-                                </t>
-
-                                <tr t-if="not goals">
-
-                                    <td
-                                        colspan="5"
-                                        style="
-                                            padding: 15px;
-                                            border: 1px solid #e1e8e4;
-                                            color: #777777;
-                                            text-align: center;
-                                        ">
-
-                                        No environmental goals available.
-
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-
-                        <div
-                            style="
-                                padding: 13px;
-                                margin-bottom: 20px;
-                                border-radius: 8px;
-                                background-color: #f5faf7;
-                                font-size: 10px;
-                            ">
-
-                            <strong>Goal Summary:</strong>
-
-                            <span t-esc="active_goals"/>
-                            active,
-
-                            <span t-esc="completed_goals"/>
-                            completed and
-
-                            <span t-esc="at_risk_goals"/>
-                            at risk.
+                            </footer>
 
                         </div>
 
-                    </t>
-
-
-                    <!-- Detailed Transactions -->
-                    <h2
-                        style="
-                            margin: 0 0 10px 0;
-                            color: #183527;
-                            font-size: 17px;
-                        ">
-
-                        Carbon Transaction Details
-
-                    </h2>
-
-                    <table
-                        style="
-                            width: 100%;
-                            border-collapse: collapse;
-                            font-size: 8px;
-                        ">
-
-                        <thead>
-
-                            <tr style="background-color: #0f7042; color: white;">
-
-                                <th style="padding: 6px; text-align: left;">
-                                    Reference
-                                </th>
-
-                                <th style="padding: 6px; text-align: left;">
-                                    Date
-                                </th>
-
-                                <th style="padding: 6px; text-align: left;">
-                                    Department
-                                </th>
-
-                                <th style="padding: 6px; text-align: left;">
-                                    Source
-                                </th>
-
-                                <th style="padding: 6px; text-align: left;">
-                                    Scope
-                                </th>
-
-                                <th style="padding: 6px; text-align: right;">
-                                    Quantity
-                                </th>
-
-                                <th style="padding: 6px; text-align: right;">
-                                    Emission
-                                </th>
-
-                                <th style="padding: 6px; text-align: left;">
-                                    Status
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            <t
-                                t-foreach="transactions"
-                                t-as="transaction">
-
-                                <tr>
-
-                                    <td
-                                        style="
-                                            padding: 6px;
-                                            border: 1px solid #e1e8e4;
-                                        ">
-
-                                        <span
-                                            t-field="transaction.reference"/>
-
-                                    </td>
-
-                                    <td
-                                        style="
-                                            padding: 6px;
-                                            border: 1px solid #e1e8e4;
-                                        ">
-
-                                        <span
-                                            t-field="transaction.transaction_date"/>
-
-                                    </td>
-
-                                    <td
-                                        style="
-                                            padding: 6px;
-                                            border: 1px solid #e1e8e4;
-                                        ">
-
-                                        <span
-                                            t-field="transaction.department_id.name"/>
-
-                                    </td>
-
-                                    <td
-                                        style="
-                                            padding: 6px;
-                                            border: 1px solid #e1e8e4;
-                                        ">
-
-                                        <span
-                                            t-field="transaction.source_module"/>
-
-                                    </td>
-
-                                    <td
-                                        style="
-                                            padding: 6px;
-                                            border: 1px solid #e1e8e4;
-                                        ">
-
-                                        <span t-field="transaction.scope"/>
-
-                                    </td>
-
-                                    <td
-                                        style="
-                                            padding: 6px;
-                                            border: 1px solid #e1e8e4;
-                                            text-align: right;
-                                        ">
-
-                                        <span
-                                            t-esc="'{:,.2f}'.format(
-                                                transaction.activity_quantity
-                                            )"/>
-
-                                        <span
-                                            t-field="transaction.activity_unit"/>
-
-                                    </td>
-
-                                    <td
-                                        style="
-                                            padding: 6px;
-                                            border: 1px solid #e1e8e4;
-                                            text-align: right;
-                                        ">
-
-                                        <span
-                                            t-esc="'{:,.2f}'.format(
-                                                transaction.calculated_emission
-                                            )"/>
-
-                                        kg CO₂e
-
-                                    </td>
-
-                                    <td
-                                        style="
-                                            padding: 6px;
-                                            border: 1px solid #e1e8e4;
-                                        ">
-
-                                        <span t-field="transaction.status"/>
-
-                                    </td>
-
-                                </tr>
-
-                            </t>
-
-                            <tr t-if="not transactions">
-
-                                <td
-                                    colspan="8"
-                                    style="
-                                        padding: 16px;
-                                        border: 1px solid #e1e8e4;
-                                        color: #777777;
-                                        text-align: center;
-                                    ">
-
-                                    No transactions matched the report filters.
-
-                                </td>
-
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-
-                    <!-- Report Footer Message -->
-                    <div
-                        style="
-                            padding: 14px;
-                            margin-top: 20px;
-                            border-top: 2px solid #16834f;
-                            color: #64736a;
-                            font-size: 9px;
-                            text-align: center;
-                        ">
-
-                        Generated by EcoPulse ESG —
-                        Odoo-Based Environmental Sustainability
-                        Management Platform
-
                     </div>
 
-                </div>
+                </t>
 
             </t>
 

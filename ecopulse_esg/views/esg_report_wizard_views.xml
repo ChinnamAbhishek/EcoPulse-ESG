@@ -2,17 +2,12 @@
 
 <odoo>
 
-    <record
-        id="view_ecopulse_esg_report_wizard_form"
-        model="ir.ui.view">
+    <!-- ESG Report Wizard Form View -->
+    <record id="view_ecopulse_esg_report_wizard_form" model="ir.ui.view">
 
-        <field name="name">
-            ecopulse.esg.report.wizard.form
-        </field>
+        <field name="name">ecopulse.esg.report.wizard.form</field>
 
-        <field name="model">
-            ecopulse.esg.report.wizard
-        </field>
+        <field name="model">ecopulse.esg.report.wizard</field>
 
         <field name="arch" type="xml">
 
@@ -21,53 +16,92 @@
                 <sheet>
 
                     <div class="oe_title">
-                        <h1>Professional ESG Report</h1>
 
-                        <p>
-                            Select the reporting period and filters to
-                            generate a detailed sustainability PDF report.
+                        <h1>Generate ESG Report</h1>
+
+                        <p class="text-muted">
+                            Select the reporting period and report filters.
+                            EcoPulse ESG will generate a professional
+                            environmental sustainability PDF report.
                         </p>
+
                     </div>
 
-                    <group>
+                    <!-- Reporting Period -->
+                    <group string="Reporting Period">
 
-                        <group string="Reporting Period">
+                        <group>
 
-                            <field name="start_date"/>
+                            <field name="start_date" required="1"/>
 
-                            <field name="end_date"/>
+                            <field name="end_date" required="1"/>
 
                         </group>
 
-                        <group string="Transaction Filters">
+                        <group>
 
-                            <field name="department_id"/>
-
-                            <field name="scope"/>
-
-                            <field name="transaction_status"/>
+                            <field
+                                name="department_id"
+                                options="{'no_create': True, 'no_create_edit': True}"
+                                placeholder="All Departments"/>
 
                         </group>
 
                     </group>
 
-                    <group string="Report Options">
+                    <!-- Carbon Transaction Filters -->
+                    <group string="Carbon Transaction Filters">
 
-                        <field name="include_cancelled"/>
+                        <group>
 
-                        <field name="include_goals"/>
+                            <field
+                                name="scope"
+                                placeholder="All Emission Scopes"/>
 
-                        <field name="include_department_analysis"/>
+                            <field
+                                name="transaction_status"
+                                placeholder="All Transaction Statuses"/>
 
-                        <field name="include_source_analysis"/>
+                        </group>
+
+                        <group>
+
+                            <field name="include_cancelled"/>
+
+                        </group>
 
                     </group>
 
+                    <!-- Report Sections -->
+                    <group string="Report Content">
+
+                        <group>
+
+                            <field name="include_goals"/>
+
+                            <field name="include_department_analysis"/>
+
+                        </group>
+
+                        <group>
+
+                            <field name="include_source_analysis"/>
+
+                        </group>
+
+                    </group>
+
+                    <!-- Information Message -->
                     <div class="alert alert-info" role="alert">
 
-                        The report will include carbon-emission totals,
-                        scope distribution, transaction status,
-                        monthly analysis and selected ESG insights.
+                        <strong>Report Information</strong>
+
+                        <br/>
+
+                        Carbon-emission totals exclude cancelled
+                        transactions. Cancelled records can still appear
+                        in the status analysis when they are included
+                        through the selected filters.
 
                     </div>
 
@@ -77,8 +111,8 @@
 
                     <button
                         name="action_print_report"
-                        type="object"
                         string="Generate PDF"
+                        type="object"
                         class="btn-primary"
                         icon="fa-file-pdf-o"/>
 
@@ -95,29 +129,31 @@
 
     </record>
 
-
+    <!-- ESG Report Wizard Window Action -->
     <record
         id="action_ecopulse_esg_report_wizard"
         model="ir.actions.act_window">
 
-        <field name="name">
-            Generate ESG Report
-        </field>
+        <field name="name">Generate ESG Report</field>
 
-        <field name="res_model">
-            ecopulse.esg.report.wizard
-        </field>
+        <field name="res_model">ecopulse.esg.report.wizard</field>
 
-        <field name="view_mode">
-            form
-        </field>
+        <field name="view_mode">form</field>
 
-        <field name="view_id"
-               ref="view_ecopulse_esg_report_wizard_form"/>
+        <field
+            name="view_id"
+            ref="view_ecopulse_esg_report_wizard_form"/>
 
-        <field name="target">
-            new
-        </field>
+        <field name="target">new</field>
+
+        <field
+            name="context"
+            eval="{
+                'default_include_goals': True,
+                'default_include_department_analysis': True,
+                'default_include_source_analysis': True,
+                'default_include_cancelled': False
+            }"/>
 
     </record>
 
