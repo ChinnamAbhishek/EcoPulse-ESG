@@ -9,7 +9,8 @@
             <!-- Dashboard Header -->
             <section class="eco_dashboard_header">
 
-                <div>
+                <div class="eco_header_content">
+
                     <div class="eco_eyebrow">
                         ENVIRONMENTAL INTELLIGENCE PLATFORM
                     </div>
@@ -21,17 +22,35 @@
                         departments, risks and sustainability performance
                         from one centralized dashboard.
                     </p>
+
                 </div>
 
                 <div class="eco_header_actions">
 
                     <div class="eco_last_updated">
+
                         <i class="fa fa-clock-o"/>
-                        Last updated:
+
+                        <span>
+                            Last updated:
+                        </span>
+
                         <strong>
                             <t t-esc="state.lastUpdated || '—'"/>
                         </strong>
+
                     </div>
+
+                    <button
+                        type="button"
+                        class="btn eco_report_button"
+                        t-on-click="openESGReportWizard">
+
+                        <i class="fa fa-file-pdf-o me-2"/>
+
+                        Generate ESG Report
+
+                    </button>
 
                     <button
                         type="button"
@@ -39,6 +58,7 @@
                         t-on-click="refreshDashboard">
 
                         <i class="fa fa-refresh me-2"/>
+
                         Refresh
 
                     </button>
@@ -81,12 +101,14 @@
                             </div>
 
                             <div>
+
                                 <h2>Interactive ESG Filters</h2>
 
                                 <p>
                                     Filter transactions and instantly
                                     update dashboard analytics.
                                 </p>
+
                             </div>
 
                         </div>
@@ -94,11 +116,13 @@
                         <div class="eco_filter_header_actions">
 
                             <div class="eco_filtered_count">
+
                                 <span>Matching Records</span>
 
                                 <strong>
                                     <t t-esc="state.filteredTransactionCount"/>
                                 </strong>
+
                             </div>
 
                             <button
@@ -107,6 +131,7 @@
                                 t-on-click="exportFilteredTransactions">
 
                                 <i class="fa fa-download me-2"/>
+
                                 Export CSV
 
                             </button>
@@ -122,8 +147,11 @@
                         <div class="eco_filter_field">
 
                             <label for="eco_filter_start_date">
+
                                 <i class="fa fa-calendar-o me-1"/>
+
                                 Start Date
+
                             </label>
 
                             <input
@@ -139,8 +167,11 @@
                         <div class="eco_filter_field">
 
                             <label for="eco_filter_end_date">
+
                                 <i class="fa fa-calendar-check-o me-1"/>
+
                                 End Date
+
                             </label>
 
                             <input
@@ -152,12 +183,15 @@
                         </div>
 
 
-                        <!-- Department -->
+                        <!-- Department Filter -->
                         <div class="eco_filter_field">
 
                             <label for="eco_filter_department">
+
                                 <i class="fa fa-building-o me-1"/>
+
                                 Department
+
                             </label>
 
                             <select
@@ -175,7 +209,9 @@
                                     t-key="department.id">
 
                                     <option t-att-value="department.id">
+
                                         <t t-esc="department.name"/>
+
                                     </option>
 
                                 </t>
@@ -185,12 +221,15 @@
                         </div>
 
 
-                        <!-- Scope -->
+                        <!-- Scope Filter -->
                         <div class="eco_filter_field">
 
                             <label for="eco_filter_scope">
+
                                 <i class="fa fa-pie-chart me-1"/>
+
                                 Emission Scope
+
                             </label>
 
                             <select
@@ -219,12 +258,15 @@
                         </div>
 
 
-                        <!-- Status -->
+                        <!-- Status Filter -->
                         <div class="eco_filter_field">
 
                             <label for="eco_filter_status">
+
                                 <i class="fa fa-check-square-o me-1"/>
+
                                 Transaction Status
+
                             </label>
 
                             <select
@@ -266,6 +308,7 @@
                                 t-on-click="applyFilters">
 
                                 <i class="fa fa-check me-2"/>
+
                                 Apply Filters
 
                             </button>
@@ -276,6 +319,7 @@
                                 t-on-click="resetFilters">
 
                                 <i class="fa fa-undo me-2"/>
+
                                 Reset
 
                             </button>
@@ -285,15 +329,18 @@
                     </div>
 
 
+                    <!-- Active Filter Banner -->
                     <t t-if="state.filtersApplied">
 
                         <div class="eco_active_filter_banner">
 
                             <div>
+
                                 <i class="fa fa-info-circle me-2"/>
 
                                 Dashboard analytics are showing filtered
                                 transaction data.
+
                             </div>
 
                             <button
@@ -312,7 +359,7 @@
                 </section>
 
 
-                <!-- Main KPI Cards -->
+                <!-- Primary KPI Cards -->
                 <section class="eco_kpi_grid">
 
                     <article
@@ -327,8 +374,11 @@
                             </div>
 
                             <span class="eco_card_link">
+
                                 View details
+
                                 <i class="fa fa-arrow-right"/>
+
                             </span>
 
                         </div>
@@ -338,7 +388,9 @@
                         </div>
 
                         <div class="eco_kpi_value">
+
                             <t t-esc="formatNumber(state.totalEmissions)"/>
+
                         </div>
 
                         <div class="eco_kpi_unit">
@@ -360,8 +412,11 @@
                             </div>
 
                             <span class="eco_card_link">
+
                                 Open
+
                                 <i class="fa fa-arrow-right"/>
+
                             </span>
 
                         </div>
@@ -371,7 +426,9 @@
                         </div>
 
                         <div class="eco_kpi_value">
+
                             <t t-esc="state.filteredTransactionCount"/>
+
                         </div>
 
                         <div class="eco_kpi_unit">
@@ -393,8 +450,11 @@
                             </div>
 
                             <span class="eco_card_link">
+
                                 Open
+
                                 <i class="fa fa-arrow-right"/>
+
                             </span>
 
                         </div>
@@ -404,7 +464,9 @@
                         </div>
 
                         <div class="eco_kpi_value">
+
                             <t t-esc="state.environmentalGoals"/>
+
                         </div>
 
                         <div class="eco_kpi_unit">
@@ -426,8 +488,11 @@
                             </div>
 
                             <span class="eco_card_link">
+
                                 Open
+
                                 <i class="fa fa-arrow-right"/>
+
                             </span>
 
                         </div>
@@ -437,7 +502,9 @@
                         </div>
 
                         <div class="eco_kpi_value">
+
                             <t t-esc="state.departments"/>
+
                         </div>
 
                         <div class="eco_kpi_unit">
@@ -449,7 +516,7 @@
                 </section>
 
 
-                <!-- Transaction Status -->
+                <!-- Transaction Status Summary -->
                 <section class="eco_status_summary_grid">
 
                     <div class="eco_status_summary_card">
@@ -459,11 +526,13 @@
                         </div>
 
                         <div>
+
                             <span>Verified Transactions</span>
 
                             <strong>
                                 <t t-esc="state.verifiedTransactions"/>
                             </strong>
+
                         </div>
 
                     </div>
@@ -476,11 +545,13 @@
                         </div>
 
                         <div>
+
                             <span>Calculated Transactions</span>
 
                             <strong>
                                 <t t-esc="state.calculatedTransactions"/>
                             </strong>
+
                         </div>
 
                     </div>
@@ -493,11 +564,13 @@
                         </div>
 
                         <div>
+
                             <span>Draft Transactions</span>
 
                             <strong>
                                 <t t-esc="state.draftTransactions"/>
                             </strong>
+
                         </div>
 
                     </div>
@@ -510,11 +583,13 @@
                         </div>
 
                         <div>
+
                             <span>Emission Factors</span>
 
                             <strong>
                                 <t t-esc="state.emissionFactors"/>
                             </strong>
+
                         </div>
 
                     </div>
@@ -522,20 +597,23 @@
                 </section>
 
 
-                <!-- Monthly Analytics -->
+                <!-- Monthly Analytics and Department Ranking -->
                 <section class="eco_analytics_grid">
 
+                    <!-- Monthly Emission Trend -->
                     <article class="eco_panel eco_monthly_panel">
 
                         <div class="eco_panel_header">
 
                             <div>
+
                                 <h2>Monthly Emission Trend</h2>
 
                                 <p>
                                     Monthly carbon totals calculated from
-                                    the selected transaction records.
+                                    selected transaction records.
                                 </p>
+
                             </div>
 
                             <div class="eco_panel_icon">
@@ -550,20 +628,27 @@
                             <div class="eco_chart_summary">
 
                                 <div>
+
                                     <span>Highest Emission Month</span>
 
                                     <strong>
                                         <t t-esc="state.highestEmissionMonth"/>
                                     </strong>
+
                                 </div>
 
                                 <div>
+
                                     <span>Emission Recorded</span>
 
                                     <strong>
+
                                         <t t-esc="formatNumber(state.highestEmissionMonthValue)"/>
+
                                         kg CO₂e
+
                                     </strong>
+
                                 </div>
 
                             </div>
@@ -579,7 +664,9 @@
                                     <div class="eco_month_column">
 
                                         <div class="eco_month_value">
+
                                             <t t-esc="formatNumber(month.total)"/>
+
                                         </div>
 
                                         <div class="eco_month_bar_area">
@@ -589,10 +676,15 @@
                                                 t-att-style="'height: ' + getMonthlyBarHeight(month.total) + '%'">
 
                                                 <span class="eco_month_bar_tooltip">
+
                                                     <t t-esc="month.label"/>
+
                                                     :
+
                                                     <t t-esc="formatNumber(month.total)"/>
+
                                                     kg CO₂e
+
                                                 </span>
 
                                             </div>
@@ -600,7 +692,9 @@
                                         </div>
 
                                         <div class="eco_month_label">
+
                                             <t t-esc="month.shortLabel"/>
+
                                         </div>
 
                                     </div>
@@ -634,18 +728,20 @@
                     </article>
 
 
-                    <!-- Department Ranking -->
+                    <!-- Department Leaderboard -->
                     <article class="eco_panel">
 
                         <div class="eco_panel_header">
 
                             <div>
+
                                 <h2>Department Emission Leaderboard</h2>
 
                                 <p>
-                                    Departments ranked using the filtered
+                                    Departments ranked using filtered
                                     transaction data.
                                 </p>
+
                             </div>
 
                             <div class="eco_panel_icon">
@@ -662,6 +758,7 @@
                             </div>
 
                             <div>
+
                                 <span>Highest Emitting Department</span>
 
                                 <strong>
@@ -669,9 +766,13 @@
                                 </strong>
 
                                 <small>
+
                                     <t t-esc="formatNumber(state.topDepartmentEmission)"/>
+
                                     kg CO₂e
+
                                 </small>
+
                             </div>
 
                         </div>
@@ -689,7 +790,9 @@
                                     <div class="eco_department_item">
 
                                         <div class="eco_department_rank">
+
                                             <t t-esc="department.rank"/>
+
                                         </div>
 
                                         <div class="eco_department_details">
@@ -697,18 +800,25 @@
                                             <div class="eco_department_heading">
 
                                                 <div>
+
                                                     <strong>
                                                         <t t-esc="department.name"/>
                                                     </strong>
 
                                                     <span>
+
                                                         <t t-esc="department.transactions"/>
+
                                                         transactions
+
                                                     </span>
+
                                                 </div>
 
                                                 <strong>
+
                                                     <t t-esc="formatNumber(department.total)"/>
+
                                                 </strong>
 
                                             </div>
@@ -748,17 +858,20 @@
                 <!-- Scope and Source Analytics -->
                 <section class="eco_content_grid">
 
+                    <!-- Scope Distribution -->
                     <article class="eco_panel">
 
                         <div class="eco_panel_header">
 
                             <div>
+
                                 <h2>Emission Scope Distribution</h2>
 
                                 <p>
                                     Filtered carbon emissions divided across
                                     operational scopes.
                                 </p>
+
                             </div>
 
                             <div class="eco_panel_icon">
@@ -773,9 +886,13 @@
                             <div class="eco_scope_heading">
 
                                 <div>
+
                                     <span class="eco_scope_dot eco_scope_1"/>
+
                                     <strong>Scope 1</strong>
+
                                     <span>Direct emissions</span>
+
                                 </div>
 
                                 <strong>
@@ -785,14 +902,19 @@
                             </div>
 
                             <div class="eco_progress_track">
+
                                 <div
                                     class="eco_progress_fill eco_fill_1"
                                     t-att-style="'width: ' + state.scope1Percent + '%'"/>
+
                             </div>
 
                             <small>
+
                                 <t t-esc="formatNumber(state.scope1Total)"/>
+
                                 kg CO₂e
+
                             </small>
 
                         </div>
@@ -803,9 +925,13 @@
                             <div class="eco_scope_heading">
 
                                 <div>
+
                                     <span class="eco_scope_dot eco_scope_2"/>
+
                                     <strong>Scope 2</strong>
+
                                     <span>Purchased energy</span>
+
                                 </div>
 
                                 <strong>
@@ -815,14 +941,19 @@
                             </div>
 
                             <div class="eco_progress_track">
+
                                 <div
                                     class="eco_progress_fill eco_fill_2"
                                     t-att-style="'width: ' + state.scope2Percent + '%'"/>
+
                             </div>
 
                             <small>
+
                                 <t t-esc="formatNumber(state.scope2Total)"/>
+
                                 kg CO₂e
+
                             </small>
 
                         </div>
@@ -833,9 +964,13 @@
                             <div class="eco_scope_heading">
 
                                 <div>
+
                                     <span class="eco_scope_dot eco_scope_3"/>
+
                                     <strong>Scope 3</strong>
+
                                     <span>Value-chain emissions</span>
+
                                 </div>
 
                                 <strong>
@@ -845,14 +980,19 @@
                             </div>
 
                             <div class="eco_progress_track">
+
                                 <div
                                     class="eco_progress_fill eco_fill_3"
                                     t-att-style="'width: ' + state.scope3Percent + '%'"/>
+
                             </div>
 
                             <small>
+
                                 <t t-esc="formatNumber(state.scope3Total)"/>
+
                                 kg CO₂e
+
                             </small>
 
                         </div>
@@ -860,18 +1000,20 @@
                     </article>
 
 
-                    <!-- Emission Sources -->
+                    <!-- Source Analytics -->
                     <article class="eco_panel">
 
                         <div class="eco_panel_header">
 
                             <div>
+
                                 <h2>Emission Sources</h2>
 
                                 <p>
                                     Carbon contribution grouped by source
                                     module.
                                 </p>
+
                             </div>
 
                             <div class="eco_panel_icon">
@@ -890,8 +1032,11 @@
                             </strong>
 
                             <small>
+
                                 <t t-esc="formatNumber(state.topSourceEmission)"/>
+
                                 kg CO₂e
+
                             </small>
 
                         </div>
@@ -909,8 +1054,10 @@
                                     <div class="eco_source_card">
 
                                         <div class="eco_source_icon">
+
                                             <i
                                                 t-att-class="'fa ' + getSourceIcon(source.key)"/>
+
                                         </div>
 
                                         <div class="eco_source_details">
@@ -920,8 +1067,11 @@
                                             </strong>
 
                                             <span>
+
                                                 <t t-esc="source.transactions"/>
+
                                                 transactions
+
                                             </span>
 
                                         </div>
@@ -958,20 +1108,23 @@
                 </section>
 
 
-                <!-- Goal Analytics -->
+                <!-- Environmental Goals and Alerts -->
                 <section class="eco_goal_analytics">
 
+                    <!-- Goal Performance -->
                     <article class="eco_panel">
 
                         <div class="eco_panel_header">
 
                             <div>
+
                                 <h2>Environmental Goal Performance</h2>
 
                                 <p>
                                     Real-time progress and risk monitoring
                                     for sustainability targets.
                                 </p>
+
                             </div>
 
                             <button
@@ -980,6 +1133,7 @@
                                 t-on-click="openEnvironmentalGoals">
 
                                 View all goals
+
                                 <i class="fa fa-arrow-right ms-2"/>
 
                             </button>
@@ -990,35 +1144,43 @@
                         <div class="eco_goal_summary_grid">
 
                             <div class="eco_goal_summary">
+
                                 <span>Average Progress</span>
 
                                 <strong>
                                     <t t-esc="state.averageGoalProgress"/>%
                                 </strong>
+
                             </div>
 
                             <div class="eco_goal_summary">
+
                                 <span>Active Goals</span>
 
                                 <strong>
                                     <t t-esc="state.activeGoals"/>
                                 </strong>
+
                             </div>
 
                             <div class="eco_goal_summary eco_goal_summary_success">
+
                                 <span>Completed</span>
 
                                 <strong>
                                     <t t-esc="state.completedGoals"/>
                                 </strong>
+
                             </div>
 
                             <div class="eco_goal_summary eco_goal_summary_risk">
+
                                 <span>At Risk</span>
 
                                 <strong>
                                     <t t-esc="state.atRiskGoals"/>
                                 </strong>
+
                             </div>
 
                         </div>
@@ -1052,26 +1214,33 @@
 
                                             </div>
 
-
                                             <div class="eco_goal_meta">
 
                                                 <span>
+
                                                     <i class="fa fa-building-o me-1"/>
+
                                                     <t t-esc="getDepartmentName(goal.department_id)"/>
+
                                                 </span>
 
                                                 <span>
+
                                                     <i class="fa fa-calendar me-1"/>
+
                                                     <t t-esc="goal.end_date || 'No deadline'"/>
+
                                                 </span>
 
                                                 <span>
+
                                                     <i class="fa fa-line-chart me-1"/>
+
                                                     <t t-esc="getMetricLabel(goal.metric_type)"/>
+
                                                 </span>
 
                                             </div>
-
 
                                             <div class="eco_goal_progress_track">
 
@@ -1083,11 +1252,12 @@
 
                                         </div>
 
-
                                         <div class="eco_goal_percentage">
 
                                             <strong>
+
                                                 <t t-esc="formatNumber(goal.progress_percentage)"/>%
+
                                             </strong>
 
                                             <span>completed</span>
@@ -1134,17 +1304,19 @@
                     </article>
 
 
-                    <!-- Alerts -->
+                    <!-- Sustainability Alerts -->
                     <article class="eco_panel">
 
                         <div class="eco_panel_header">
 
                             <div>
+
                                 <h2>Sustainability Alerts</h2>
 
                                 <p>
                                     Goals requiring review or immediate action.
                                 </p>
+
                             </div>
 
                             <div class="eco_panel_icon">
@@ -1200,8 +1372,7 @@
                                 <h3>All goals are on track</h3>
 
                                 <p>
-                                    No critical sustainability alerts were
-                                    detected.
+                                    No critical sustainability alerts were detected.
                                 </p>
 
                             </div>
@@ -1219,12 +1390,14 @@
                     <div class="eco_panel_header">
 
                         <div>
+
                             <h2>Recent Carbon Transactions</h2>
 
                             <p>
                                 Most recent transaction records matching
-                                the selected filters.
+                                selected filters.
                             </p>
+
                         </div>
 
                         <div class="eco_table_header_actions">
@@ -1235,6 +1408,7 @@
                                 t-on-click="exportFilteredTransactions">
 
                                 <i class="fa fa-download me-1"/>
+
                                 Export CSV
 
                             </button>
@@ -1245,6 +1419,7 @@
                                 t-on-click="openCarbonTransactions">
 
                                 View all
+
                                 <i class="fa fa-arrow-right ms-2"/>
 
                             </button>
@@ -1261,7 +1436,9 @@
                             <table class="table eco_transaction_table">
 
                                 <thead>
+
                                     <tr>
+
                                         <th>Reference</th>
                                         <th>Date</th>
                                         <th>Department</th>
@@ -1269,7 +1446,9 @@
                                         <th>Scope</th>
                                         <th>Emission</th>
                                         <th>Status</th>
+
                                     </tr>
+
                                 </thead>
 
                                 <tbody>
@@ -1282,9 +1461,11 @@
                                         <tr>
 
                                             <td>
+
                                                 <strong>
                                                     <t t-esc="transaction.reference || 'New'"/>
                                                 </strong>
+
                                             </td>
 
                                             <td>
@@ -1309,9 +1490,13 @@
                                             </td>
 
                                             <td>
+
                                                 <span class="eco_scope_badge">
+
                                                     <t t-esc="getScopeLabel(transaction.scope)"/>
+
                                                 </span>
+
                                             </td>
 
                                             <td>
@@ -1385,12 +1570,14 @@
                     <div class="eco_panel_header">
 
                         <div>
+
                             <h2>Quick Actions</h2>
 
                             <p>
                                 Create and manage sustainability records
                                 directly from the dashboard.
                             </p>
+
                         </div>
 
                         <div class="eco_panel_icon">
@@ -1412,8 +1599,13 @@
                             </span>
 
                             <span>
+
                                 <strong>Record Carbon Activity</strong>
-                                <small>Add a new emission transaction</small>
+
+                                <small>
+                                    Add a new emission transaction
+                                </small>
+
                             </span>
 
                             <i class="fa fa-chevron-right"/>
@@ -1431,8 +1623,13 @@
                             </span>
 
                             <span>
+
                                 <strong>Create Environmental Goal</strong>
-                                <small>Define a sustainability target</small>
+
+                                <small>
+                                    Define a sustainability target
+                                </small>
+
                             </span>
 
                             <i class="fa fa-chevron-right"/>
@@ -1450,8 +1647,13 @@
                             </span>
 
                             <span>
+
                                 <strong>Manage Emission Factors</strong>
-                                <small>Configure calculation values</small>
+
+                                <small>
+                                    Configure calculation values
+                                </small>
+
                             </span>
 
                             <i class="fa fa-chevron-right"/>
@@ -1469,8 +1671,13 @@
                             </span>
 
                             <span>
+
                                 <strong>Department Performance</strong>
-                                <small>Review departmental ESG data</small>
+
+                                <small>
+                                    Review departmental ESG data
+                                </small>
+
                             </span>
 
                             <i class="fa fa-chevron-right"/>

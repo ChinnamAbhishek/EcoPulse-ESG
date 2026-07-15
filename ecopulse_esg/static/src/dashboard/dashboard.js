@@ -331,14 +331,12 @@ export class EcoPulseDashboard extends Component {
         if (totalEmissions > 0) {
             this.state.scope1Percent =
                 Math.round(
-                    (scope1Total / totalEmissions) *
-                        100
+                    (scope1Total / totalEmissions) * 100
                 );
 
             this.state.scope2Percent =
                 Math.round(
-                    (scope2Total / totalEmissions) *
-                        100
+                    (scope2Total / totalEmissions) * 100
                 );
 
             this.state.scope3Percent =
@@ -515,8 +513,7 @@ export class EcoPulseDashboard extends Component {
                     ) &&
                     transaction.department_id.length
                         ? String(
-                              transaction
-                                  .department_id[0]
+                              transaction.department_id[0]
                           )
                         : "";
 
@@ -539,9 +536,7 @@ export class EcoPulseDashboard extends Component {
                 if (
                     filters.departmentId &&
                     departmentId !==
-                        String(
-                            filters.departmentId
-                        )
+                        String(filters.departmentId)
                 ) {
                     return false;
                 }
@@ -637,20 +632,11 @@ export class EcoPulseDashboard extends Component {
         this.state.filters.scope = "";
         this.state.filters.status = "";
 
-        this.state.appliedFilters.startDate =
-            "";
-
-        this.state.appliedFilters.endDate =
-            "";
-
-        this.state.appliedFilters.departmentId =
-            "";
-
-        this.state.appliedFilters.scope =
-            "";
-
-        this.state.appliedFilters.status =
-            "";
+        this.state.appliedFilters.startDate = "";
+        this.state.appliedFilters.endDate = "";
+        this.state.appliedFilters.departmentId = "";
+        this.state.appliedFilters.scope = "";
+        this.state.appliedFilters.status = "";
 
         this.state.filtersApplied = false;
 
@@ -675,16 +661,11 @@ export class EcoPulseDashboard extends Component {
 
     hasActiveFilters() {
         return Boolean(
-            this.state.appliedFilters
-                .startDate ||
-            this.state.appliedFilters
-                .endDate ||
-            this.state.appliedFilters
-                .departmentId ||
-            this.state.appliedFilters
-                .scope ||
-            this.state.appliedFilters
-                .status
+            this.state.appliedFilters.startDate ||
+            this.state.appliedFilters.endDate ||
+            this.state.appliedFilters.departmentId ||
+            this.state.appliedFilters.scope ||
+            this.state.appliedFilters.status
         );
     }
 
@@ -720,8 +701,7 @@ export class EcoPulseDashboard extends Component {
             (transaction) => {
                 return [
                     transaction.reference || "",
-                    transaction.transaction_date ||
-                        "",
+                    transaction.transaction_date || "",
                     this.getDepartmentName(
                         transaction.department_id
                     ),
@@ -731,11 +711,9 @@ export class EcoPulseDashboard extends Component {
                     this.getScopeLabel(
                         transaction.scope
                     ),
-                    transaction.activity_quantity ||
-                        0,
+                    transaction.activity_quantity || 0,
                     transaction.activity_unit || "",
-                    transaction.calculated_emission ||
-                        0,
+                    transaction.calculated_emission || 0,
                     this.getStatusLabel(
                         transaction.status
                     ),
@@ -1010,8 +988,7 @@ export class EcoPulseDashboard extends Component {
 
     getMonthlyBarHeight(total) {
         const maximum = Number(
-            this.state.monthlyMaximum ||
-                0
+            this.state.monthlyMaximum || 0
         );
 
         if (maximum <= 0) {
@@ -1030,8 +1007,7 @@ export class EcoPulseDashboard extends Component {
 
     getDepartmentBarWidth(total) {
         const maximum = Number(
-            this.state.departmentMaximum ||
-                0
+            this.state.departmentMaximum || 0
         );
 
         if (maximum <= 0) {
@@ -1256,6 +1232,12 @@ export class EcoPulseDashboard extends Component {
     openEmissionFactors() {
         return this.actionService.doAction(
             "ecopulse_esg.action_ecopulse_emission_factor"
+        );
+    }
+
+    openESGReportWizard() {
+        return this.actionService.doAction(
+            "ecopulse_esg.action_ecopulse_esg_report_wizard"
         );
     }
 
