@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- =====================================================
+         EMISSION ANOMALY FORM VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_transaction_anomaly_form"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.transaction.anomaly.form</field>
+
+        <field name="model">ecopulse.carbon.transaction</field>
+
+        <field
+            name="inherit_id"
+            ref="ecopulse_esg.view_ecopulse_carbon_transaction_form"/>
+
+        <field name="arch" type="xml">
+
+            <!-- Header actions -->
+            <xpath
+                expr="//form/header/field[@name='status']"
+                position="before">
+
+                <button
+                    name="action_analyze_emission_anomaly"
+                    string="Analyse Anomaly"
+                    type="object"
+                    class="btn-secondary"
+                    icon="fa-search"/>
+
+                <button
+                    name="action_mark_anomaly_reviewed"
+                    string="Mark Anomaly Reviewed"
+                    type="object"
+                    class="btn-primary"
+                    icon="fa-check"
+                    invisible="not anomaly_requires_review or anomaly_reviewed"
+                    groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                <button
+                    name="action_reset_anomaly_analysis"
+                    string="Reset Anomaly"
+                    type="object"
+                    icon="fa-undo"
+                    invisible="anomaly_status == 'not_analyzed'"
+                    groups="ecopulse_esg.group_ecopulse_manager"/>
+
+            </xpath>
+
+
+            <!-- Main anomaly summary -->
+            <xpath expr="//sheet/group[1]" position="after">
+
+                <group string="Emission Anomaly Intelligence">
+
+                    <group string="Anomaly Assessment">
+
+                        <field
+                            name="anomaly_status"
+                            readonly="1"
+                            decoration-success="anomaly_status == 'normal'"
+                            decoration-warning="anomaly_status == 'warning'"
+                            decoration-danger="anomaly_status in ('high', 'critical')"/>
+
+                        <field
+                            name="anomaly_score"
+                            readonly="1"
+                            widget="progressbar"/>
+
+                        <field
+                            name="anomaly_deviation_percent"
+                            readonly="1"/>
+
+                        <field
+                            name="anomaly_requires_review"
+                            readonly="1"/>
+
+                        <field
+                            name="anomaly_reviewed"
+                            readonly="1"/>
+
+                    </group>
+
+                    <group string="Historical Comparison">
+
+                        <field
+                            name="historical_average_emission"
+                            readonly="1"/>
+
+                        <field
+                            name="historical_maximum_emission"
+                            readonly="1"/>
+
+                        <field
+                            name="anomaly_sample_count"
+                            readonly="1"/>
+
+                        <field
+                            name="anomaly_analysis_date"
+                            readonly="1"/>
+
+                    </group>
+
+                </group>
+
+            </xpath>
+
+
+            <!-- Detailed anomaly analysis -->
+            <xpath expr="//sheet" position="inside">
+
+                <notebook>
+
+                    <page string="Emission Anomaly Analysis">
+
+                        <group string="Automatic Analysis">
+
+                            <field
+                                name="anomaly_analysis_reason"
+                                readonly="1"
+                                nolabel="1"/>
+
+                        </group>
+
+                        <group string="Management Review">
+
+                            <group>
+
+                                <field
+                                    name="anomaly_reviewed_by_id"
+                                    readonly="1"/>
+
+                                <field
+                                    name="anomaly_reviewed_date"
+                                    readonly="1"/>
+
+                            </group>
+
+                            <group>
+
+                                <field
+                                    name="anomaly_review_note"
+                                    placeholder="Enter the reason, investigation result or corrective action..."/>
+
+                            </group>
+
+                        </group>
+
+                    </page>
+
+                </notebook>
+
+            </xpath>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         EMISSION ANOMALY LIST VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_transaction_anomaly_list"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.transaction.anomaly.list</field>
+
+        <field name="model">ecopulse.carbon.transaction</field>
+
+        <field
+            name="inherit_id"
+            ref="ecopulse_esg.view_ecopulse_carbon_transaction_list"/>
+
+        <field name="arch" type="xml">
+
+            <xpath
+                expr="//field[@name='calculated_emission']"
+                position="after">
+
+                <field
+                    name="anomaly_status"
+                    string="Anomaly"
+                    optional="show"
+                    decoration-success="anomaly_status == 'normal'"
+                    decoration-warning="anomaly_status == 'warning'"
+                    decoration-danger="anomaly_status in ('high', 'critical')"/>
+
+                <field
+                    name="anomaly_score"
+                    string="Anomaly Score"
+                    optional="show"/>
+
+                <field
+                    name="anomaly_deviation_percent"
+                    string="Deviation %"
+                    optional="show"/>
+
+                <field
+                    name="anomaly_requires_review"
+                    string="Anomaly Review"
+                    optional="show"/>
+
+            </xpath>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         EMISSION ANOMALY SEARCH VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_carbon_transaction_anomaly_search"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.carbon.transaction.anomaly.search</field>
+
+        <field name="model">ecopulse.carbon.transaction</field>
+
+        <field
+            name="inherit_id"
+            ref="ecopulse_esg.view_ecopulse_carbon_transaction_search"/>
+
+        <field name="arch" type="xml">
+
+            <xpath expr="//search" position="inside">
+
+                <field name="anomaly_status"/>
+
+                <field name="anomaly_score"/>
+
+                <field name="anomaly_reviewed"/>
+
+                <filter
+                    name="filter_anomaly_review_required"
+                    string="Anomaly Review Required"
+                    domain="[('anomaly_requires_review', '=', True)]"/>
+
+                <filter
+                    name="filter_anomaly_warning"
+                    string="Warning Anomalies"
+                    domain="[('anomaly_status', '=', 'warning')]"/>
+
+                <filter
+                    name="filter_high_anomaly"
+                    string="High Anomalies"
+                    domain="[('anomaly_status', 'in', ['high', 'critical'])]"/>
+
+                <filter
+                    name="filter_normal_anomaly"
+                    string="Normal Emissions"
+                    domain="[('anomaly_status', '=', 'normal')]"/>
+
+                <filter
+                    name="filter_not_analyzed"
+                    string="Not Analysed"
+                    domain="[('anomaly_status', '=', 'not_analyzed')]"/>
+
+                <filter
+                    name="filter_anomaly_reviewed"
+                    string="Reviewed Anomalies"
+                    domain="[('anomaly_reviewed', '=', True)]"/>
+
+                <filter
+                    name="group_by_anomaly_status"
+                    string="Group by Anomaly Status"
+                    context="{'group_by': 'anomaly_status'}"/>
+
+                <filter
+                    name="group_by_anomaly_review"
+                    string="Group by Anomaly Review"
+                    context="{'group_by': 'anomaly_requires_review'}"/>
+
+            </xpath>
+
+        </field>
+
+    </record>
+
+</odoo>
