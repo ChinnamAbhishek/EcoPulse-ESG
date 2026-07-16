@@ -65,14 +65,14 @@ Main Features
     "views/menu_views.xml",
 ],
 
-    "assets": {
-        "web.assets_backend": [
-            "ecopulse_esg/static/src/dashboard/dashboard.js",
-            "ecopulse_esg/static/src/dashboard/dashboard.xml",
-            "ecopulse_esg/static/src/dashboard/dashboard.scss",
-        ],
-    },
-
+   "assets": {
+    "web.assets_backend": [
+        "ecopulse_esg/static/src/dashboard/dashboard.js",
+        "ecopulse_esg/static/src/dashboard/dashboard.xml",
+        "ecopulse_esg/static/src/dashboard/dashboard.scss",
+        "ecopulse_esg/static/src/scss/smart_esg_actions.scss",
+    ],
+},
     "images": [
         "static/description/icon.png",
     ],

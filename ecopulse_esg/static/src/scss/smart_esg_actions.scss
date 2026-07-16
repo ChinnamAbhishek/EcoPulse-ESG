@@ -1,0 +1,366 @@
+/* ==========================================================
+   ECOPULSE SMART ESG ACTIONS
+   Modern and interactive Odoo interface
+   ========================================================== */
+
+.o_ecopulse_esg_action_form {
+    --eco-green-dark: #123c2c;
+    --eco-green: #16834f;
+    --eco-green-light: #eaf7f0;
+    --eco-border: #d9e6df;
+    --eco-text: #21392d;
+    --eco-muted: #718078;
+    --eco-warning: #d98b16;
+    --eco-danger: #c63c3c;
+    --eco-info: #3679b8;
+
+    background: #f6f9f7;
+}
+
+/* Main sheet */
+.o_ecopulse_esg_action_form .o_form_sheet_bg {
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(22, 131, 79, 0.08),
+            transparent 35%
+        ),
+        #f6f9f7;
+}
+
+.o_ecopulse_esg_action_form .o_form_sheet {
+    max-width: 1320px;
+    border: 1px solid var(--eco-border);
+    border-radius: 18px;
+    box-shadow: 0 12px 35px rgba(18, 60, 44, 0.08);
+    overflow: hidden;
+}
+
+/* Hero header */
+.o_ecopulse_action_hero {
+    position: relative;
+    padding: 26px 28px;
+    margin: -16px -16px 24px;
+    color: #ffffff;
+    background:
+        linear-gradient(
+            125deg,
+            #0d5c38 0%,
+            #16834f 55%,
+            #24a666 100%
+        );
+    overflow: hidden;
+}
+
+.o_ecopulse_action_hero::before {
+    content: "";
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    top: -120px;
+    right: -70px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.11);
+}
+
+.o_ecopulse_action_hero::after {
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    right: 130px;
+    bottom: -85px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.o_ecopulse_action_hero_content {
+    position: relative;
+    z-index: 2;
+}
+
+.o_ecopulse_action_reference {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.32);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+.o_ecopulse_action_title input,
+.o_ecopulse_action_title .o_field_widget {
+    color: #ffffff !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+}
+
+.o_ecopulse_action_subtitle {
+    max-width: 760px;
+    margin-top: 8px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+}
+
+/* KPI cards */
+.o_ecopulse_action_kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(170px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.o_ecopulse_kpi_card {
+    position: relative;
+    min-height: 122px;
+    padding: 17px;
+    border: 1px solid var(--eco-border);
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(18, 60, 44, 0.06);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.o_ecopulse_kpi_card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(22, 131, 79, 0.45);
+    box-shadow: 0 14px 28px rgba(18, 60, 44, 0.12);
+}
+
+.o_ecopulse_kpi_icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-bottom: 11px;
+    border-radius: 10px;
+    background: var(--eco-green-light);
+    color: var(--eco-green);
+    font-size: 18px;
+}
+
+.o_ecopulse_kpi_label {
+    color: var(--eco-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.o_ecopulse_kpi_value {
+    margin-top: 5px;
+    color: var(--eco-text);
+    font-size: 22px;
+    font-weight: 750;
+}
+
+.o_ecopulse_kpi_unit {
+    margin-top: 2px;
+    color: var(--eco-muted);
+    font-size: 11px;
+}
+
+/* Card variations */
+.o_ecopulse_kpi_primary {
+    color: #ffffff;
+    border-color: transparent;
+    background:
+        linear-gradient(
+            135deg,
+            #136f43,
+            #1ba461
+        );
+}
+
+.o_ecopulse_kpi_primary .o_ecopulse_kpi_label,
+.o_ecopulse_kpi_primary .o_ecopulse_kpi_value,
+.o_ecopulse_kpi_primary .o_ecopulse_kpi_unit {
+    color: #ffffff;
+}
+
+.o_ecopulse_kpi_primary .o_ecopulse_kpi_icon {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.o_ecopulse_kpi_warning .o_ecopulse_kpi_icon {
+    color: var(--eco-warning);
+    background: #fff4df;
+}
+
+.o_ecopulse_kpi_info .o_ecopulse_kpi_icon {
+    color: var(--eco-info);
+    background: #eaf4fd;
+}
+
+/* Information panels */
+.o_ecopulse_action_panel {
+    padding: 20px;
+    margin-bottom: 18px;
+    border: 1px solid var(--eco-border);
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 5px 16px rgba(18, 60, 44, 0.04);
+}
+
+.o_ecopulse_action_panel_title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding-bottom: 11px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #edf2ef;
+    color: var(--eco-green-dark);
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.o_ecopulse_action_panel_title i {
+    color: var(--eco-green);
+}
+
+/* Notebook */
+.o_ecopulse_esg_action_form .o_notebook {
+    margin-top: 22px;
+}
+
+.o_ecopulse_esg_action_form .nav-tabs {
+    gap: 6px;
+    border-bottom: 1px solid var(--eco-border);
+}
+
+.o_ecopulse_esg_action_form .nav-tabs .nav-link {
+    padding: 11px 17px;
+    border: 0;
+    border-radius: 10px 10px 0 0;
+    color: var(--eco-muted);
+    font-weight: 600;
+}
+
+.o_ecopulse_esg_action_form .nav-tabs .nav-link:hover {
+    color: var(--eco-green);
+    background: var(--eco-green-light);
+}
+
+.o_ecopulse_esg_action_form .nav-tabs .nav-link.active {
+    color: #ffffff;
+    background: var(--eco-green);
+}
+
+/* Status bar */
+.o_ecopulse_esg_action_form .o_statusbar_status {
+    background: #ffffff;
+}
+
+.o_ecopulse_esg_action_form
+.o_statusbar_status
+.o_arrow_button_current {
+    color: #ffffff;
+    background: var(--eco-green);
+}
+
+/* Buttons */
+.o_ecopulse_esg_action_form
+.o_form_statusbar
+.btn-primary {
+    border-color: var(--eco-green);
+    background: var(--eco-green);
+}
+
+.o_ecopulse_esg_action_form
+.o_form_statusbar
+.btn-primary:hover {
+    border-color: #0e653b;
+    background: #0e653b;
+    transform: translateY(-1px);
+}
+
+/* Priority labels */
+.o_ecopulse_priority_low {
+    color: #126f42;
+    background: #e3f6ea;
+}
+
+.o_ecopulse_priority_medium {
+    color: #27699b;
+    background: #e6f2fb;
+}
+
+.o_ecopulse_priority_high {
+    color: #966112;
+    background: #fff1d7;
+}
+
+.o_ecopulse_priority_critical {
+    color: #a32929;
+    background: #fde8e8;
+}
+
+/* Kanban cards */
+.o_ecopulse_esg_action_kanban
+.o_kanban_record {
+    border: 1px solid var(--eco-border);
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 6px 18px rgba(18, 60, 44, 0.07);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.o_ecopulse_esg_action_kanban
+.o_kanban_record:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 26px rgba(18, 60, 44, 0.13);
+}
+
+.o_ecopulse_kanban_header {
+    padding: 14px;
+    border-bottom: 1px solid #edf2ef;
+}
+
+.o_ecopulse_kanban_body {
+    padding: 14px;
+}
+
+.o_ecopulse_kanban_metric {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    color: var(--eco-muted);
+    font-size: 12px;
+}
+
+.o_ecopulse_kanban_metric strong {
+    color: var(--eco-text);
+}
+
+/* Responsive behavior */
+@media (max-width: 1100px) {
+    .o_ecopulse_action_kpis {
+        grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 680px) {
+    .o_ecopulse_action_kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .o_ecopulse_action_hero {
+        padding: 20px;
+    }
+
+    .o_ecopulse_action_title input,
+    .o_ecopulse_action_title .o_field_widget {
+        font-size: 22px !important;
+    }
+}
