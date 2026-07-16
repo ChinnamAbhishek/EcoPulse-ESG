@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- =====================================================
+         ESG ACTION RECOMMENDATION LIST VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_esg_action_recommendation_list"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.esg.action.recommendation.list</field>
+        <field name="model">ecopulse.esg.action.recommendation</field>
+
+        <field name="arch" type="xml">
+
+            <list
+                string="ESG Action Recommendations"
+                decoration-danger="priority == 'critical'"
+                decoration-warning="priority == 'high'"
+                decoration-success="status == 'completed'"
+                decoration-muted="status == 'rejected'">
+
+                <field name="name"/>
+                <field name="title"/>
+                <field name="recommendation_source"/>
+                <field name="department_id"/>
+                <field name="responsible_user_id"/>
+                <field name="priority"/>
+                <field name="target_date"/>
+                <field name="baseline_emission"/>
+                <field name="expected_reduction_percent"/>
+                <field name="expected_reduction_emission"/>
+                <field name="impact_score"/>
+                <field name="status"/>
+
+            </list>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         ESG ACTION RECOMMENDATION FORM VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_esg_action_recommendation_form"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.esg.action.recommendation.form</field>
+        <field name="model">ecopulse.esg.action.recommendation</field>
+
+        <field name="arch" type="xml">
+
+            <form string="ESG Action Recommendation">
+
+                <header>
+
+                    <button
+                        name="action_approve"
+                        string="Approve"
+                        type="object"
+                        class="btn-primary"
+                        invisible="status != 'proposed'"
+                        groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                    <button
+                        name="action_start"
+                        string="Start Action"
+                        type="object"
+                        class="btn-primary"
+                        invisible="status not in ('approved', 'proposed')"
+                        groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                    <button
+                        name="action_complete"
+                        string="Mark Completed"
+                        type="object"
+                        class="btn-primary"
+                        invisible="status != 'in_progress'"
+                        groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                    <button
+                        name="action_reject"
+                        string="Reject"
+                        type="object"
+                        invisible="status in ('completed', 'rejected')"
+                        groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                    <button
+                        name="action_reset_to_proposed"
+                        string="Reset to Proposed"
+                        type="object"
+                        invisible="status not in ('completed', 'rejected')"
+                        groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                    <button
+                        name="action_open_source_record"
+                        string="Open Source Record"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-external-link"/>
+
+                    <field
+                        name="status"
+                        widget="statusbar"
+                        statusbar_visible="proposed,approved,in_progress,completed,rejected"/>
+
+                </header>
+
+                <sheet>
+
+                    <div class="oe_title">
+
+                        <label for="title"/>
+
+                        <h1>
+                            <field
+                                name="title"
+                                placeholder="Enter recommended action title..."/>
+                        </h1>
+
+                        <h3>
+                            <field name="name" readonly="1"/>
+                        </h3>
+
+                    </div>
+
+                    <group>
+
+                        <group string="Recommendation Information">
+
+                            <field name="recommendation_source"/>
+
+                            <field
+                                name="priority"
+                                decoration-danger="priority == 'critical'"
+                                decoration-warning="priority == 'high'"
+                                decoration-success="priority == 'low'"/>
+
+                            <field name="department_id"/>
+
+                            <field name="responsible_user_id"/>
+
+                            <field name="generated_date"/>
+
+                            <field name="target_date"/>
+
+                            <field name="completed_date" readonly="1"/>
+
+                            <field name="active"/>
+
+                        </group>
+
+                        <group string="Expected Environmental Impact">
+
+                            <field name="baseline_emission"/>
+
+                            <field name="expected_reduction_percent"/>
+
+                            <field
+                                name="expected_reduction_emission"
+                                readonly="1"/>
+
+                            <field
+                                name="projected_emission"
+                                readonly="1"/>
+
+                            <field name="actual_reduction_emission"/>
+
+                            <field
+                                name="impact_score"
+                                readonly="1"
+                                widget="progressbar"/>
+
+                        </group>
+
+                    </group>
+
+                    <group string="Linked ESG Records">
+
+                        <group>
+                            <field name="carbon_transaction_id"/>
+                        </group>
+
+                        <group>
+                            <field name="carbon_budget_id"/>
+                        </group>
+
+                    </group>
+
+                    <notebook>
+
+                        <page string="Recommended Action">
+
+                            <group string="Problem Detected">
+
+                                <field
+                                    name="problem_detected"
+                                    nolabel="1"
+                                    placeholder="Describe the ESG issue detected by EcoPulse..."/>
+
+                            </group>
+
+                            <group string="Action Description">
+
+                                <field
+                                    name="description"
+                                    nolabel="1"
+                                    placeholder="Describe the recommended corrective action..."/>
+
+                            </group>
+
+                            <group string="Expected Benefit">
+
+                                <field
+                                    name="expected_benefit"
+                                    nolabel="1"
+                                    placeholder="Describe the environmental and operational benefits..."/>
+
+                            </group>
+
+                        </page>
+
+                        <page string="Implementation Plan">
+
+                            <group string="Implementation Steps">
+
+                                <field
+                                    name="implementation_steps"
+                                    nolabel="1"
+                                    placeholder="1. Assign owner&#10;2. Implement action&#10;3. Monitor progress&#10;4. Verify results"/>
+
+                            </group>
+
+                            <group string="Verification Method">
+
+                                <field
+                                    name="verification_method"
+                                    nolabel="1"
+                                    placeholder="Explain how the emission reduction will be measured and verified..."/>
+
+                            </group>
+
+                        </page>
+
+                        <page string="Management Review">
+
+                            <field
+                                name="management_note"
+                                nolabel="1"
+                                placeholder="Add approval notes, review comments or implementation decisions..."/>
+
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+
+                <chatter/>
+
+            </form>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         ESG ACTION RECOMMENDATION SEARCH VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_esg_action_recommendation_search"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.esg.action.recommendation.search</field>
+        <field name="model">ecopulse.esg.action.recommendation</field>
+
+        <field name="arch" type="xml">
+
+            <search string="Search ESG Recommendations">
+
+                <field name="name"/>
+                <field name="title"/>
+                <field name="department_id"/>
+                <field name="responsible_user_id"/>
+                <field name="recommendation_source"/>
+                <field name="priority"/>
+                <field name="status"/>
+                <field name="target_date"/>
+
+                <filter
+                    name="filter_critical"
+                    string="Critical Priority"
+                    domain="[('priority', '=', 'critical')]"/>
+
+                <filter
+                    name="filter_high"
+                    string="High Priority"
+                    domain="[('priority', '=', 'high')]"/>
+
+                <filter
+                    name="filter_open"
+                    string="Open Actions"
+                    domain="[('status', 'in', ['proposed', 'approved', 'in_progress'])]"/>
+
+                <filter
+                    name="filter_overdue"
+                    string="Overdue"
+                    domain="[
+                        ('target_date', '&lt;', context_today()),
+                        ('status', 'not in', ['completed', 'rejected'])
+                    ]"/>
+
+                <filter
+                    name="filter_completed"
+                    string="Completed"
+                    domain="[('status', '=', 'completed')]"/>
+
+                <filter
+                    name="filter_budget_source"
+                    string="Budget Recommendations"
+                    domain="[('recommendation_source', '=', 'budget')]"/>
+
+                <filter
+                    name="filter_anomaly_source"
+                    string="Anomaly Recommendations"
+                    domain="[('recommendation_source', '=', 'anomaly')]"/>
+
+                <filter
+                    name="filter_greenwashing_source"
+                    string="Greenwashing Recommendations"
+                    domain="[('recommendation_source', '=', 'greenwashing')]"/>
+
+                <filter
+                    name="group_by_priority"
+                    string="Group by Priority"
+                    context="{'group_by': 'priority'}"/>
+
+                <filter
+                    name="group_by_status"
+                    string="Group by Status"
+                    context="{'group_by': 'status'}"/>
+
+                <filter
+                    name="group_by_department"
+                    string="Group by Department"
+                    context="{'group_by': 'department_id'}"/>
+
+                <filter
+                    name="group_by_source"
+                    string="Group by Source"
+                    context="{'group_by': 'recommendation_source'}"/>
+
+                <filter
+                    name="group_by_target_month"
+                    string="Group by Target Month"
+                    context="{'group_by': 'target_date:month'}"/>
+
+            </search>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         ESG ACTION RECOMMENDATION KANBAN VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_esg_action_recommendation_kanban"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.esg.action.recommendation.kanban</field>
+        <field name="model">ecopulse.esg.action.recommendation</field>
+
+        <field name="arch" type="xml">
+
+            <kanban
+                default_group_by="status"
+                class="o_kanban_small_column">
+
+                <field name="name"/>
+                <field name="title"/>
+                <field name="priority"/>
+                <field name="department_id"/>
+                <field name="responsible_user_id"/>
+                <field name="target_date"/>
+                <field name="impact_score"/>
+                <field name="expected_reduction_emission"/>
+                <field name="status"/>
+
+                <templates>
+
+                    <t t-name="card">
+
+                        <div class="oe_kanban_global_click">
+
+                            <div class="d-flex justify-content-between align-items-start">
+
+                                <strong>
+                                    <field name="title"/>
+                                </strong>
+
+                                <span
+                                    t-if="record.priority.raw_value == 'critical'"
+                                    class="badge text-bg-danger">
+                                    Critical
+                                </span>
+
+                                <span
+                                    t-elif="record.priority.raw_value == 'high'"
+                                    class="badge text-bg-warning">
+                                    High
+                                </span>
+
+                                <span
+                                    t-elif="record.priority.raw_value == 'medium'"
+                                    class="badge text-bg-info">
+                                    Medium
+                                </span>
+
+                                <span
+                                    t-else=""
+                                    class="badge text-bg-success">
+                                    Low
+                                </span>
+
+                            </div>
+
+                            <div class="text-muted mt-1">
+                                <field name="name"/>
+                            </div>
+
+                            <div class="mt-2">
+                                <strong>Department:</strong>
+                                <field name="department_id"/>
+                            </div>
+
+                            <div>
+                                <strong>Owner:</strong>
+                                <field name="responsible_user_id"/>
+                            </div>
+
+                            <div>
+                                <strong>Target:</strong>
+                                <field name="target_date"/>
+                            </div>
+
+                            <div class="mt-2">
+                                <strong>Expected Reduction:</strong>
+                                <field name="expected_reduction_emission"/>
+                                kg CO₂e
+                            </div>
+
+                            <div class="mt-2">
+                                <field
+                                    name="impact_score"
+                                    widget="progressbar"/>
+                            </div>
+
+                        </div>
+
+                    </t>
+
+                </templates>
+
+            </kanban>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         ESG ACTION RECOMMENDATION GRAPH VIEW
+         ===================================================== -->
+
+    <record
+        id="view_ecopulse_esg_action_recommendation_graph"
+        model="ir.ui.view">
+
+        <field name="name">ecopulse.esg.action.recommendation.graph</field>
+        <field name="model">ecopulse.esg.action.recommendation</field>
+
+        <field name="arch" type="xml">
+
+            <graph
+                string="Expected ESG Impact"
+                type="bar">
+
+                <field name="department_id"/>
+
+                <field
+                    name="expected_reduction_emission"
+                    type="measure"/>
+
+                <field
+                    name="actual_reduction_emission"
+                    type="measure"/>
+
+            </graph>
+
+        </field>
+
+    </record>
+
+
+    <!-- =====================================================
+         ESG ACTION RECOMMENDATION WINDOW ACTION
+         ===================================================== -->
+
+    <record
+        id="action_ecopulse_esg_action_recommendation"
+        model="ir.actions.act_window">
+
+        <field name="name">Smart ESG Actions</field>
+
+        <field name="res_model">ecopulse.esg.action.recommendation</field>
+
+        <field name="view_mode">kanban,list,form,graph</field>
+
+        <field
+            name="search_view_id"
+            ref="view_ecopulse_esg_action_recommendation_search"/>
+
+        <field
+            name="context"
+            eval="{
+                'search_default_filter_open': 1
+            }"/>
+
+        <field name="help" type="html">
+
+            <p class="o_view_nocontent_smiling_face">
+                Create your first smart ESG action
+            </p>
+
+            <p>
+                Convert carbon risks, budget overruns and emission anomalies
+                into measurable sustainability actions.
+            </p>
+
+        </field>
+
+    </record>
+
+</odoo>

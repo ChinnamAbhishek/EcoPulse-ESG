@@ -27,7 +27,7 @@
 
 
     <!-- =====================================================
-         CARBON MANAGEMENT SECTION
+         CARBON MANAGEMENT
          ===================================================== -->
 
     <menuitem
@@ -59,7 +59,7 @@
 
 
     <!-- =====================================================
-         SUSTAINABILITY SECTION
+         SUSTAINABILITY
          ===================================================== -->
 
     <menuitem
@@ -90,8 +90,28 @@
         groups="ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
 
 
+    <!-- Department Carbon Budgets -->
+    <menuitem
+        id="menu_ecopulse_carbon_budgets"
+        name="Carbon Budgets"
+        parent="menu_ecopulse_sustainability"
+        action="action_ecopulse_carbon_budget"
+        sequence="30"
+        groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
+    <!-- Smart ESG Action Recommendations -->
+    <menuitem
+        id="menu_ecopulse_esg_action_recommendations"
+        name="Smart ESG Actions"
+        parent="menu_ecopulse_sustainability"
+        action="action_ecopulse_esg_action_recommendation"
+        sequence="40"
+        groups="ecopulse_esg.group_ecopulse_employee,ecopulse_esg.group_ecopulse_manager,ecopulse_esg.group_ecopulse_admin"/>
+
+
     <!-- =====================================================
-         ORGANIZATION SECTION
+         ORGANIZATION
          ===================================================== -->
 
     <menuitem
@@ -113,7 +133,7 @@
 
 
     <!-- =====================================================
-         REPORTS SECTION
+         REPORTS
          ===================================================== -->
 
     <menuitem

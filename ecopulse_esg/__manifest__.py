@@ -59,11 +59,11 @@ Main Features
     "views/carbon_reduction_simulator_views.xml",
     "views/carbon_budget_views.xml",
     "views/emission_anomaly_views.xml",
+    "views/esg_action_recommendation_views.xml",
     "views/esg_report_wizard_views.xml",
     "report/esg_summary_report.xml",
     "views/menu_views.xml",
 ],
- 
 
     "assets": {
         "web.assets_backend": [

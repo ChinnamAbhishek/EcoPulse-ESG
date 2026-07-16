@@ -9,3 +9,4 @@ from . import carbon_trust_score
 from . import carbon_reduction_simulator
 from . import carbon_budget
 from . import emission_anomaly
+from . import esg_action_recommendation
