@@ -355,7 +355,235 @@ class EcoPulseESGActionRecommendation(models.Model):
                     "Target Date cannot be earlier than "
                     "Generated Date."
                 )
+    # ---------------------------------------------------------
+    # Smart Recommendation Generator
+    # ---------------------------------------------------------
 
+    def action_generate_smart_recommendation(self):
+        for record in self:
+            baseline = record.baseline_emission or 0.0
+            reduction_percent = (
+                record.expected_reduction_percent or 0.0
+            )
+            source = record.recommendation_source or "manual"
+
+            source_content = {
+                "budget": {
+                    "title": "Reduce Carbon Budget Overrun",
+                    "problem": (
+                        "The selected department is approaching or "
+                        "exceeding its approved carbon-emission budget."
+                    ),
+                    "action": (
+                        "Review the department's major emission sources, "
+                        "prioritize high-impact reduction opportunities, "
+                        "and introduce monthly carbon-budget controls."
+                    ),
+                    "benefit": (
+                        "Improves carbon-budget compliance, reduces "
+                        "avoidable emissions, and supports timely "
+                        "management decisions."
+                    ),
+                    "steps": (
+                        "1. Review current carbon-budget utilization.\n"
+                        "2. Identify the top emission contributors.\n"
+                        "3. Assign reduction responsibilities.\n"
+                        "4. Implement reduction measures.\n"
+                        "5. Review progress every month."
+                    ),
+                    "verification": (
+                        "Compare monthly actual emissions against the "
+                        "approved carbon budget and projected emissions."
+                    ),
+                },
+                "anomaly": {
+                    "title": "Investigate Abnormal Emission Increase",
+                    "problem": (
+                        "EcoPulse detected an unusual increase in carbon "
+                        "emissions compared with the normal operating pattern."
+                    ),
+                    "action": (
+                        "Investigate the abnormal transaction or activity, "
+                        "verify the recorded data, and correct the operational "
+                        "cause responsible for the emission spike."
+                    ),
+                    "benefit": (
+                        "Prevents repeated emission spikes, improves data "
+                        "accuracy, and enables faster corrective action."
+                    ),
+                    "steps": (
+                        "1. Validate the abnormal emission record.\n"
+                        "2. Compare it with historical activity.\n"
+                        "3. Identify the operational root cause.\n"
+                        "4. Apply corrective controls.\n"
+                        "5. Monitor the next reporting period."
+                    ),
+                    "verification": (
+                        "Confirm that subsequent emission values return to "
+                        "the expected range and verify the source data."
+                    ),
+                },
+                "trust": {
+                    "title": "Improve Carbon Trust Performance",
+                    "problem": (
+                        "The current carbon trust score indicates that ESG "
+                        "performance, evidence, or reporting quality requires "
+                        "improvement."
+                    ),
+                    "action": (
+                        "Improve emission-data quality, attach supporting "
+                        "evidence, complete pending sustainability actions, "
+                        "and strengthen review controls."
+                    ),
+                    "benefit": (
+                        "Improves ESG credibility, transparency, audit "
+                        "readiness, and stakeholder confidence."
+                    ),
+                    "steps": (
+                        "1. Review trust-score weaknesses.\n"
+                        "2. Validate carbon records.\n"
+                        "3. Attach supporting evidence.\n"
+                        "4. Resolve incomplete ESG actions.\n"
+                        "5. Recalculate and review the score."
+                    ),
+                    "verification": (
+                        "Recalculate the carbon trust score and confirm that "
+                        "the identified weaknesses have been resolved."
+                    ),
+                },
+                "greenwashing": {
+                    "title": "Resolve Greenwashing Risk",
+                    "problem": (
+                        "EcoPulse identified a possible mismatch between "
+                        "reported sustainability claims and supporting "
+                        "emission evidence."
+                    ),
+                    "action": (
+                        "Review the sustainability claim, verify supporting "
+                        "records, correct unsupported statements, and obtain "
+                        "management approval before publication."
+                    ),
+                    "benefit": (
+                        "Reduces reputational risk, improves reporting "
+                        "accuracy, and strengthens ESG transparency."
+                    ),
+                    "steps": (
+                        "1. Review the flagged sustainability claim.\n"
+                        "2. Collect supporting emission evidence.\n"
+                        "3. Compare the claim with actual performance.\n"
+                        "4. Correct unsupported information.\n"
+                        "5. Obtain management approval."
+                    ),
+                    "verification": (
+                        "Confirm that every sustainability claim is supported "
+                        "by verified records and measurable results."
+                    ),
+                },
+                "high_emission": {
+                    "title": "Reduce High-Emission Activity",
+                    "problem": (
+                        "A high-emission activity or transaction is creating "
+                        "a significant environmental impact."
+                    ),
+                    "action": (
+                        "Optimize the activity, replace inefficient resources, "
+                        "introduce lower-carbon alternatives, and continuously "
+                        "track emission performance."
+                    ),
+                    "benefit": (
+                        "Reduces carbon emissions, operating costs, and "
+                        "dependence on inefficient processes."
+                    ),
+                    "steps": (
+                        "1. Identify the high-emission source.\n"
+                        "2. Evaluate low-carbon alternatives.\n"
+                        "3. Select the most practical reduction measure.\n"
+                        "4. Implement the selected measure.\n"
+                        "5. Measure the achieved reduction."
+                    ),
+                    "verification": (
+                        "Compare baseline emissions with actual emissions "
+                        "after implementation."
+                    ),
+                },
+                "manual": {
+                    "title": "Implement Sustainability Improvement",
+                    "problem": (
+                        "A sustainability improvement opportunity requires "
+                        "structured corrective action."
+                    ),
+                    "action": (
+                        "Define the environmental issue, assign an owner, "
+                        "implement measurable improvement actions, and monitor "
+                        "the results."
+                    ),
+                    "benefit": (
+                        "Improves environmental performance and creates a "
+                        "clear, measurable sustainability workflow."
+                    ),
+                    "steps": (
+                        "1. Define the sustainability issue.\n"
+                        "2. Assign a responsible owner.\n"
+                        "3. Implement the corrective action.\n"
+                        "4. Monitor environmental performance.\n"
+                        "5. Verify and document the result."
+                    ),
+                    "verification": (
+                        "Compare the measured result with the original "
+                        "baseline and the expected reduction target."
+                    ),
+                },
+            }
+
+            content = source_content.get(
+                source,
+                source_content["manual"],
+            )
+
+            priority = "medium"
+
+            if baseline >= 10000:
+                priority = "critical"
+            elif baseline >= 5000:
+                priority = "high"
+            elif baseline > 0:
+                priority = "medium"
+            else:
+                priority = record.priority or "medium"
+
+            record.write({
+                "title": content["title"],
+                "priority": priority,
+                "problem_detected": content["problem"],
+                "description": content["action"],
+                "expected_benefit": content["benefit"],
+                "implementation_steps": content["steps"],
+                "verification_method": content["verification"],
+            })
+
+            record.message_post(
+                body=(
+                    "Smart ESG recommendation generated automatically. "
+                    f"Baseline emission: {baseline:.2f} kg CO2e. "
+                    f"Expected reduction target: "
+                    f"{reduction_percent:.2f}%."
+                )
+            )
+
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": "Smart Recommendation Generated",
+                "message": (
+                    "EcoPulse generated the action title, priority, "
+                    "problem, recommendation, benefits, implementation "
+                    "steps, and verification method."
+                ),
+                "type": "success",
+                "sticky": False,
+            },
+        }
     # ---------------------------------------------------------
     # Workflow Actions
     # ---------------------------------------------------------

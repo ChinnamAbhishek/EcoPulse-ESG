@@ -10,10 +10,7 @@
         id="view_ecopulse_esg_action_recommendation_list"
         model="ir.ui.view">
 
-        <field name="name">
-            ecopulse.esg.action.recommendation.list
-        </field>
-
+        <field name="name">ecopulse.esg.action.recommendation.list</field>
         <field name="model">ecopulse.esg.action.recommendation</field>
 
         <field name="arch" type="xml">
@@ -26,27 +23,16 @@
                 decoration-muted="status == 'rejected'">
 
                 <field name="name"/>
-
                 <field name="title"/>
-
                 <field name="recommendation_source"/>
-
                 <field name="department_id"/>
-
                 <field name="responsible_user_id"/>
-
                 <field name="priority"/>
-
                 <field name="target_date"/>
-
                 <field name="baseline_emission"/>
-
                 <field name="expected_reduction_percent"/>
-
                 <field name="expected_reduction_emission"/>
-
                 <field name="impact_score"/>
-
                 <field name="status"/>
 
             </list>
@@ -64,10 +50,7 @@
         id="view_ecopulse_esg_action_recommendation_form"
         model="ir.ui.view">
 
-        <field name="name">
-            ecopulse.esg.action.recommendation.form
-        </field>
-
+        <field name="name">ecopulse.esg.action.recommendation.form</field>
         <field name="model">ecopulse.esg.action.recommendation</field>
 
         <field name="arch" type="xml">
@@ -79,6 +62,14 @@
                 <!-- WORKFLOW HEADER -->
 
                 <header>
+
+                    <button
+                        name="action_generate_smart_recommendation"
+                        string="Generate Smart Recommendation"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-magic"
+                        invisible="status in ('completed', 'rejected')"/>
 
                     <button
                         name="action_approve"
@@ -135,9 +126,7 @@
 
                 <sheet>
 
-                    <!-- =============================================
-                         MODERN HERO SECTION
-                         ============================================= -->
+                    <!-- HERO SECTION -->
 
                     <div class="o_ecopulse_action_hero">
 
@@ -145,7 +134,9 @@
 
                             <div class="o_ecopulse_action_reference">
 
-                                <i class="fa fa-leaf me-2"/>
+                                <i
+                                    class="fa fa-leaf me-2"
+                                    title="ESG Action"/>
 
                                 <field
                                     name="name"
@@ -180,28 +171,22 @@
                     </div>
 
 
-                    <!-- =============================================
-                         INTERACTIVE KPI CARDS
-                         ============================================= -->
+                    <!-- KPI CARDS -->
 
                     <div class="o_ecopulse_action_kpis">
 
-                        <!-- IMPACT SCORE CARD -->
-
-                        <div
-                            class="o_ecopulse_kpi_card
-                                   o_ecopulse_kpi_primary">
+                        <div class="o_ecopulse_kpi_card o_ecopulse_kpi_primary">
 
                             <div class="o_ecopulse_kpi_icon">
 
-                                <i class="fa fa-line-chart"/>
+                                <i
+                                    class="fa fa-line-chart"
+                                    title="Impact Score"/>
 
                             </div>
 
                             <div class="o_ecopulse_kpi_label">
-
                                 Impact Score
-
                             </div>
 
                             <div class="o_ecopulse_kpi_value">
@@ -214,28 +199,24 @@
                             </div>
 
                             <div class="o_ecopulse_kpi_unit">
-
                                 Sustainability impact out of 100
-
                             </div>
 
                         </div>
 
 
-                        <!-- BASELINE EMISSION CARD -->
-
                         <div class="o_ecopulse_kpi_card">
 
                             <div class="o_ecopulse_kpi_icon">
 
-                                <i class="fa fa-cloud"/>
+                                <i
+                                    class="fa fa-cloud"
+                                    title="Baseline Emission"/>
 
                             </div>
 
                             <div class="o_ecopulse_kpi_label">
-
                                 Baseline Emission
-
                             </div>
 
                             <div class="o_ecopulse_kpi_value">
@@ -247,30 +228,24 @@
                             </div>
 
                             <div class="o_ecopulse_kpi_unit">
-
                                 kg CO2e before action
-
                             </div>
 
                         </div>
 
 
-                        <!-- EXPECTED REDUCTION CARD -->
-
-                        <div
-                            class="o_ecopulse_kpi_card
-                                   o_ecopulse_kpi_warning">
+                        <div class="o_ecopulse_kpi_card o_ecopulse_kpi_warning">
 
                             <div class="o_ecopulse_kpi_icon">
 
-                                <i class="fa fa-arrow-down"/>
+                                <i
+                                    class="fa fa-arrow-down"
+                                    title="Expected Reduction"/>
 
                             </div>
 
                             <div class="o_ecopulse_kpi_label">
-
                                 Expected Reduction
-
                             </div>
 
                             <div class="o_ecopulse_kpi_value">
@@ -283,30 +258,24 @@
                             </div>
 
                             <div class="o_ecopulse_kpi_unit">
-
                                 kg CO2e estimated reduction
-
                             </div>
 
                         </div>
 
 
-                        <!-- PROJECTED EMISSION CARD -->
-
-                        <div
-                            class="o_ecopulse_kpi_card
-                                   o_ecopulse_kpi_info">
+                        <div class="o_ecopulse_kpi_card o_ecopulse_kpi_info">
 
                             <div class="o_ecopulse_kpi_icon">
 
-                                <i class="fa fa-bullseye"/>
+                                <i
+                                    class="fa fa-bullseye"
+                                    title="Projected Emission"/>
 
                             </div>
 
                             <div class="o_ecopulse_kpi_label">
-
                                 Projected Emission
-
                             </div>
 
                             <div class="o_ecopulse_kpi_value">
@@ -319,9 +288,7 @@
                             </div>
 
                             <div class="o_ecopulse_kpi_unit">
-
                                 kg CO2e after implementation
-
                             </div>
 
                         </div>
@@ -329,15 +296,15 @@
                     </div>
 
 
-                    <!-- =============================================
-                         ACTION OVERVIEW PANEL
-                         ============================================= -->
+                    <!-- ACTION OVERVIEW -->
 
                     <div class="o_ecopulse_action_panel">
 
                         <div class="o_ecopulse_action_panel_title">
 
-                            <i class="fa fa-lightbulb-o"/>
+                            <i
+                                class="fa fa-lightbulb-o"
+                                title="Action Overview"/>
 
                             <span>Action Overview</span>
 
@@ -356,7 +323,6 @@
                                     decoration-success="priority == 'low'"/>
 
                                 <field name="department_id"/>
-
                                 <field name="responsible_user_id"/>
 
                             </group>
@@ -364,7 +330,6 @@
                             <group>
 
                                 <field name="generated_date"/>
-
                                 <field name="target_date"/>
 
                                 <field
@@ -380,19 +345,17 @@
                     </div>
 
 
-                    <!-- =============================================
-                         ENVIRONMENTAL IMPACT PANEL
-                         ============================================= -->
+                    <!-- ENVIRONMENTAL IMPACT -->
 
                     <div class="o_ecopulse_action_panel">
 
                         <div class="o_ecopulse_action_panel_title">
 
-                            <i class="fa fa-area-chart"/>
+                            <i
+                                class="fa fa-area-chart"
+                                title="Environmental Impact"/>
 
-                            <span>
-                                Environmental Impact Projection
-                            </span>
+                            <span>Environmental Impact Projection</span>
 
                         </div>
 
@@ -401,7 +364,6 @@
                             <group>
 
                                 <field name="baseline_emission"/>
-
                                 <field name="expected_reduction_percent"/>
 
                                 <field
@@ -430,15 +392,15 @@
                     </div>
 
 
-                    <!-- =============================================
-                         LINKED ESG RECORDS PANEL
-                         ============================================= -->
+                    <!-- LINKED ESG RECORDS -->
 
                     <div class="o_ecopulse_action_panel">
 
                         <div class="o_ecopulse_action_panel_title">
 
-                            <i class="fa fa-link"/>
+                            <i
+                                class="fa fa-link"
+                                title="Linked ESG Records"/>
 
                             <span>Linked ESG Records</span>
 
@@ -447,15 +409,11 @@
                         <group>
 
                             <group>
-
                                 <field name="carbon_transaction_id"/>
-
                             </group>
 
                             <group>
-
                                 <field name="carbon_budget_id"/>
-
                             </group>
 
                         </group>
@@ -463,24 +421,19 @@
                     </div>
 
 
-                    <!-- =============================================
-                         ACTION DETAILS NOTEBOOK
-                         ============================================= -->
+                    <!-- ACTION DETAILS -->
 
                     <notebook>
-
-                        <!-- RECOMMENDED ACTION TAB -->
 
                         <page string="Recommended Action">
 
                             <div class="o_ecopulse_action_panel">
 
-                                <div
-                                    class="o_ecopulse_action_panel_title">
+                                <div class="o_ecopulse_action_panel_title">
 
                                     <i
-                                        class="fa
-                                               fa-exclamation-triangle"/>
+                                        class="fa fa-exclamation-triangle"
+                                        title="Problem Detected"/>
 
                                     <span>Problem Detected</span>
 
@@ -496,14 +449,13 @@
 
                             <div class="o_ecopulse_action_panel">
 
-                                <div
-                                    class="o_ecopulse_action_panel_title">
+                                <div class="o_ecopulse_action_panel_title">
 
-                                    <i class="fa fa-magic"/>
+                                    <i
+                                        class="fa fa-magic"
+                                        title="Recommended Action"/>
 
-                                    <span>
-                                        Recommended Corrective Action
-                                    </span>
+                                    <span>Recommended Corrective Action</span>
 
                                 </div>
 
@@ -517,10 +469,11 @@
 
                             <div class="o_ecopulse_action_panel">
 
-                                <div
-                                    class="o_ecopulse_action_panel_title">
+                                <div class="o_ecopulse_action_panel_title">
 
-                                    <i class="fa fa-trophy"/>
+                                    <i
+                                        class="fa fa-trophy"
+                                        title="Expected Benefit"/>
 
                                     <span>Expected Benefit</span>
 
@@ -536,16 +489,15 @@
                         </page>
 
 
-                        <!-- IMPLEMENTATION PLAN TAB -->
-
                         <page string="Implementation Plan">
 
                             <div class="o_ecopulse_action_panel">
 
-                                <div
-                                    class="o_ecopulse_action_panel_title">
+                                <div class="o_ecopulse_action_panel_title">
 
-                                    <i class="fa fa-tasks"/>
+                                    <i
+                                        class="fa fa-tasks"
+                                        title="Implementation Steps"/>
 
                                     <span>Implementation Steps</span>
 
@@ -561,10 +513,11 @@
 
                             <div class="o_ecopulse_action_panel">
 
-                                <div
-                                    class="o_ecopulse_action_panel_title">
+                                <div class="o_ecopulse_action_panel_title">
 
-                                    <i class="fa fa-check-circle"/>
+                                    <i
+                                        class="fa fa-check-circle"
+                                        title="Verification Method"/>
 
                                     <span>Verification Method</span>
 
@@ -580,20 +533,17 @@
                         </page>
 
 
-                        <!-- MANAGEMENT REVIEW TAB -->
-
                         <page string="Management Review">
 
                             <div class="o_ecopulse_action_panel">
 
-                                <div
-                                    class="o_ecopulse_action_panel_title">
+                                <div class="o_ecopulse_action_panel_title">
 
-                                    <i class="fa fa-comments"/>
+                                    <i
+                                        class="fa fa-comments"
+                                        title="Management Review"/>
 
-                                    <span>
-                                        Management Review Notes
-                                    </span>
+                                    <span>Management Review Notes</span>
 
                                 </div>
 
@@ -609,9 +559,6 @@
                     </notebook>
 
                 </sheet>
-
-
-                <!-- CHATTER -->
 
                 <chatter/>
 
@@ -630,10 +577,7 @@
         id="view_ecopulse_esg_action_recommendation_search"
         model="ir.ui.view">
 
-        <field name="name">
-            ecopulse.esg.action.recommendation.search
-        </field>
-
+        <field name="name">ecopulse.esg.action.recommendation.search</field>
         <field name="model">ecopulse.esg.action.recommendation</field>
 
         <field name="arch" type="xml">
@@ -641,21 +585,13 @@
             <search string="Search ESG Recommendations">
 
                 <field name="name"/>
-
                 <field name="title"/>
-
                 <field name="department_id"/>
-
                 <field name="responsible_user_id"/>
-
                 <field name="recommendation_source"/>
-
                 <field name="priority"/>
-
                 <field name="status"/>
-
                 <field name="target_date"/>
-
 
                 <filter
                     name="filter_critical"
@@ -670,36 +606,12 @@
                 <filter
                     name="filter_open"
                     string="Open Actions"
-                    domain="[
-                        (
-                            'status',
-                            'in',
-                            [
-                                'proposed',
-                                'approved',
-                                'in_progress'
-                            ]
-                        )
-                    ]"/>
+                    domain="[('status', 'in', ['proposed', 'approved', 'in_progress'])]"/>
 
                 <filter
                     name="filter_overdue"
                     string="Overdue"
-                    domain="[
-                        (
-                            'target_date',
-                            '&lt;',
-                            context_today()
-                        ),
-                        (
-                            'status',
-                            'not in',
-                            [
-                                'completed',
-                                'rejected'
-                            ]
-                        )
-                    ]"/>
+                    domain="[('target_date', '&lt;', context_today()), ('status', 'not in', ['completed', 'rejected'])]"/>
 
                 <filter
                     name="filter_completed"
@@ -709,35 +621,17 @@
                 <filter
                     name="filter_budget_source"
                     string="Budget Recommendations"
-                    domain="[
-                        (
-                            'recommendation_source',
-                            '=',
-                            'budget'
-                        )
-                    ]"/>
+                    domain="[('recommendation_source', '=', 'budget')]"/>
 
                 <filter
                     name="filter_anomaly_source"
                     string="Anomaly Recommendations"
-                    domain="[
-                        (
-                            'recommendation_source',
-                            '=',
-                            'anomaly'
-                        )
-                    ]"/>
+                    domain="[('recommendation_source', '=', 'anomaly')]"/>
 
                 <filter
                     name="filter_greenwashing_source"
                     string="Greenwashing Recommendations"
-                    domain="[
-                        (
-                            'recommendation_source',
-                            '=',
-                            'greenwashing'
-                        )
-                    ]"/>
+                    domain="[('recommendation_source', '=', 'greenwashing')]"/>
 
                 <separator/>
 
@@ -759,16 +653,12 @@
                 <filter
                     name="group_by_source"
                     string="Group by Source"
-                    context="{
-                        'group_by': 'recommendation_source'
-                    }"/>
+                    context="{'group_by': 'recommendation_source'}"/>
 
                 <filter
                     name="group_by_target_month"
                     string="Group by Target Month"
-                    context="{
-                        'group_by': 'target_date:month'
-                    }"/>
+                    context="{'group_by': 'target_date:month'}"/>
 
             </search>
 
@@ -785,110 +675,70 @@
         id="view_ecopulse_esg_action_recommendation_kanban"
         model="ir.ui.view">
 
-        <field name="name">
-            ecopulse.esg.action.recommendation.kanban
-        </field>
-
+        <field name="name">ecopulse.esg.action.recommendation.kanban</field>
         <field name="model">ecopulse.esg.action.recommendation</field>
 
         <field name="arch" type="xml">
 
             <kanban
                 default_group_by="status"
-                class="o_kanban_small_column
-                       o_ecopulse_esg_action_kanban">
+                class="o_kanban_small_column o_ecopulse_esg_action_kanban">
 
                 <field name="name"/>
-
                 <field name="title"/>
-
                 <field name="priority"/>
-
                 <field name="department_id"/>
-
                 <field name="responsible_user_id"/>
-
                 <field name="target_date"/>
-
                 <field name="impact_score"/>
-
                 <field name="expected_reduction_emission"/>
-
                 <field name="status"/>
 
                 <templates>
 
                     <t t-name="card">
 
-                        <div
-                            class="oe_kanban_global_click
-                                   o_ecopulse_kanban_card">
+                        <div class="oe_kanban_global_click o_ecopulse_kanban_card">
 
-                            <div
-                                class="o_ecopulse_kanban_header">
+                            <div class="o_ecopulse_kanban_header">
 
-                                <div
-                                    class="d-flex
-                                           justify-content-between
-                                           align-items-start
-                                           gap-2">
+                                <div class="d-flex justify-content-between align-items-start gap-2">
 
                                     <strong>
-
                                         <field name="title"/>
-
                                     </strong>
 
-
                                     <span
-                                        t-if="
-                                            record.priority.raw_value
-                                            == 'critical'
-                                        "
+                                        t-if="record.priority.raw_value == 'critical'"
                                         class="badge text-bg-danger">
-
                                         Critical
-
                                     </span>
 
-
                                     <span
-                                        t-elif="
-                                            record.priority.raw_value
-                                            == 'high'
-                                        "
+                                        t-elif="record.priority.raw_value == 'high'"
                                         class="badge text-bg-warning">
-
                                         High
-
                                     </span>
-
 
                                     <span
-                                        t-elif="
-                                            record.priority.raw_value
-                                            == 'medium'
-                                        "
+                                        t-elif="record.priority.raw_value == 'medium'"
                                         class="badge text-bg-info">
-
                                         Medium
-
                                     </span>
-
 
                                     <span
                                         t-else=""
                                         class="badge text-bg-success">
-
                                         Low
-
                                     </span>
 
                                 </div>
 
                                 <div class="text-muted mt-1">
 
-                                    <i class="fa fa-leaf me-1"/>
+                                    <i
+                                        class="fa fa-leaf me-1"
+                                        title="ESG Action"/>
 
                                     <field name="name"/>
 
@@ -904,9 +754,7 @@
                                     <span>Department</span>
 
                                     <strong>
-
                                         <field name="department_id"/>
-
                                     </strong>
 
                                 </div>
@@ -917,10 +765,7 @@
                                     <span>Responsible Owner</span>
 
                                     <strong>
-
-                                        <field
-                                            name="responsible_user_id"/>
-
+                                        <field name="responsible_user_id"/>
                                     </strong>
 
                                 </div>
@@ -931,9 +776,7 @@
                                     <span>Target Date</span>
 
                                     <strong>
-
                                         <field name="target_date"/>
-
                                     </strong>
 
                                 </div>
@@ -944,12 +787,8 @@
                                     <span>Expected Reduction</span>
 
                                     <strong>
-
-                                        <field
-                                            name="expected_reduction_emission"/>
-
+                                        <field name="expected_reduction_emission"/>
                                         kg CO2e
-
                                     </strong>
 
                                 </div>
@@ -986,10 +825,7 @@
         id="view_ecopulse_esg_action_recommendation_graph"
         model="ir.ui.view">
 
-        <field name="name">
-            ecopulse.esg.action.recommendation.graph
-        </field>
-
+        <field name="name">ecopulse.esg.action.recommendation.graph</field>
         <field name="model">ecopulse.esg.action.recommendation</field>
 
         <field name="arch" type="xml">
@@ -1023,12 +859,8 @@
         id="action_ecopulse_esg_action_recommendation"
         model="ir.actions.act_window">
 
-        <field name="name">
-            Smart ESG Actions
-        </field>
-
+        <field name="name">Smart ESG Actions</field>
         <field name="res_model">ecopulse.esg.action.recommendation</field>
-
         <field name="view_mode">kanban,list,form,graph</field>
 
         <field
@@ -1037,23 +869,17 @@
 
         <field
             name="context"
-            eval="{
-                'search_default_filter_open': 1
-            }"/>
+            eval="{'search_default_filter_open': 1}"/>
 
         <field name="help" type="html">
 
             <p class="o_view_nocontent_smiling_face">
-
                 Create your first smart ESG action
-
             </p>
 
             <p>
-
-                Convert carbon risks, budget overruns and emission
-                anomalies into measurable sustainability actions.
-
+                Convert carbon risks, budget overruns and emission anomalies
+                into measurable sustainability actions.
             </p>
 
         </field>
