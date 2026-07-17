@@ -3,7 +3,7 @@
 <odoo>
 
     <!-- =====================================================
-         ESG ACTION RECOMMENDATION LIST VIEW
+         LIST VIEW
          ===================================================== -->
 
     <record
@@ -30,9 +30,13 @@
                 <field name="priority"/>
                 <field name="target_date"/>
                 <field name="baseline_emission"/>
-                <field name="expected_reduction_percent"/>
                 <field name="expected_reduction_emission"/>
+                <field name="actual_reduction_emission"/>
                 <field name="impact_score"/>
+                <field name="risk_score"/>
+                <field name="risk_level"/>
+                <field name="effectiveness_score"/>
+                <field name="outcome_status"/>
                 <field name="status"/>
 
             </list>
@@ -43,7 +47,7 @@
 
 
     <!-- =====================================================
-         ESG ACTION RECOMMENDATION FORM VIEW
+         FORM VIEW
          ===================================================== -->
 
     <record
@@ -72,6 +76,14 @@
                         invisible="status in ('completed', 'rejected')"/>
 
                     <button
+                        name="action_analyze_risk"
+                        string="Analyze Risk"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-shield"
+                        invisible="status in ('completed', 'rejected')"/>
+
+                    <button
                         name="action_approve"
                         string="Approve"
                         type="object"
@@ -94,6 +106,14 @@
                         class="btn-primary"
                         invisible="status != 'in_progress'"
                         groups="ecopulse_esg.group_ecopulse_manager"/>
+
+                    <button
+                        name="action_analyze_outcome"
+                        string="Analyze Outcome"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-bar-chart"
+                        invisible="status != 'completed'"/>
 
                     <button
                         name="action_reject"
@@ -160,9 +180,9 @@
 
                             <div class="o_ecopulse_action_subtitle">
 
-                                AI-assisted sustainability recommendation
-                                for measurable emission reduction and
-                                environmental improvement.
+                                Intelligent sustainability recommendation,
+                                risk prediction, implementation tracking
+                                and outcome analysis.
 
                             </div>
 
@@ -171,7 +191,7 @@
                     </div>
 
 
-                    <!-- KPI CARDS -->
+                    <!-- PRIMARY KPI CARDS -->
 
                     <div class="o_ecopulse_action_kpis">
 
@@ -199,7 +219,7 @@
                             </div>
 
                             <div class="o_ecopulse_kpi_unit">
-                                Sustainability impact out of 100
+                                Estimated impact out of 100
                             </div>
 
                         </div>
@@ -258,7 +278,7 @@
                             </div>
 
                             <div class="o_ecopulse_kpi_unit">
-                                kg CO2e estimated reduction
+                                kg CO2e target reduction
                             </div>
 
                         </div>
@@ -269,26 +289,26 @@
                             <div class="o_ecopulse_kpi_icon">
 
                                 <i
-                                    class="fa fa-bullseye"
-                                    title="Projected Emission"/>
+                                    class="fa fa-shield"
+                                    title="Implementation Risk"/>
 
                             </div>
 
                             <div class="o_ecopulse_kpi_label">
-                                Projected Emission
+                                Risk Score
                             </div>
 
                             <div class="o_ecopulse_kpi_value">
 
                                 <field
-                                    name="projected_emission"
+                                    name="risk_score"
                                     readonly="1"
                                     nolabel="1"/>
 
                             </div>
 
                             <div class="o_ecopulse_kpi_unit">
-                                kg CO2e after implementation
+                                Predicted risk out of 100
                             </div>
 
                         </div>
@@ -421,9 +441,11 @@
                     </div>
 
 
-                    <!-- ACTION DETAILS -->
+                    <!-- NOTEBOOK -->
 
                     <notebook>
+
+                        <!-- RECOMMENDED ACTION -->
 
                         <page string="Recommended Action">
 
@@ -482,12 +504,14 @@
                                 <field
                                     name="expected_benefit"
                                     nolabel="1"
-                                    placeholder="Describe the environmental and operational benefits..."/>
+                                    placeholder="Describe environmental and operational benefits..."/>
 
                             </div>
 
                         </page>
 
+
+                        <!-- IMPLEMENTATION PLAN -->
 
                         <page string="Implementation Plan">
 
@@ -526,12 +550,504 @@
                                 <field
                                     name="verification_method"
                                     nolabel="1"
-                                    placeholder="Explain how the emission reduction will be measured and verified..."/>
+                                    placeholder="Explain how the achieved reduction will be verified..."/>
 
                             </div>
 
                         </page>
 
+
+                        <!-- RISK PREDICTION -->
+
+                        <page string="Risk Prediction">
+
+                            <div class="o_ecopulse_outcome_dashboard">
+
+                                <div class="o_ecopulse_outcome_cards">
+
+                                    <div class="o_ecopulse_outcome_card o_ecopulse_outcome_primary">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-shield"
+                                                title="Risk Score"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Implementation Risk Score
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_value">
+
+                                            <field
+                                                name="risk_score"
+                                                readonly="1"
+                                                nolabel="1"/>
+
+                                            <span>/100</span>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_progress">
+
+                                            <field
+                                                name="risk_score"
+                                                readonly="1"
+                                                nolabel="1"
+                                                widget="progressbar"/>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="o_ecopulse_outcome_card">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-warning"
+                                                title="Risk Level"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Predicted Risk Level
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_status">
+
+                                            <field
+                                                name="risk_level"
+                                                readonly="1"
+                                                nolabel="1"
+                                                widget="badge"
+                                                decoration-success="risk_level == 'low'"
+                                                decoration-info="risk_level == 'medium'"
+                                                decoration-warning="risk_level == 'high'"
+                                                decoration-danger="risk_level == 'critical'"/>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="o_ecopulse_outcome_banner">
+
+                                    <div class="o_ecopulse_outcome_banner_icon">
+
+                                        <i
+                                            class="fa fa-search"
+                                            title="Risk Analysis"/>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_outcome_banner_content">
+
+                                        <div class="o_ecopulse_outcome_banner_title">
+                                            ESG Implementation Risk Analysis
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_banner_status">
+
+                                            <field
+                                                name="risk_level"
+                                                readonly="1"
+                                                nolabel="1"
+                                                widget="badge"
+                                                decoration-success="risk_level == 'low'"
+                                                decoration-info="risk_level == 'medium'"
+                                                decoration-warning="risk_level == 'high'"
+                                                decoration-danger="risk_level == 'critical'"/>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-exclamation-circle"
+                                            title="Risk Reasons"/>
+
+                                        <span>Detected Risk Reasons</span>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_result_text">
+
+                                        <field
+                                            name="risk_reasons"
+                                            readonly="1"
+                                            nolabel="1"/>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-medkit"
+                                            title="Preventive Recommendation"/>
+
+                                        <span>Preventive Recommendation</span>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_result_text">
+
+                                        <field
+                                            name="preventive_recommendation"
+                                            readonly="1"
+                                            nolabel="1"/>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </page>
+
+
+                        <!-- OUTCOME INTELLIGENCE -->
+
+                        <page string="Outcome Intelligence">
+
+                            <div class="o_ecopulse_outcome_dashboard">
+
+                                <div class="o_ecopulse_outcome_cards">
+
+                                    <div class="o_ecopulse_outcome_card o_ecopulse_outcome_primary">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-trophy"
+                                                title="Effectiveness Score"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Effectiveness Score
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_value">
+
+                                            <field
+                                                name="effectiveness_score"
+                                                readonly="1"
+                                                nolabel="1"/>
+
+                                            <span>/100</span>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_progress">
+
+                                            <field
+                                                name="effectiveness_score"
+                                                readonly="1"
+                                                nolabel="1"
+                                                widget="progressbar"/>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="o_ecopulse_outcome_card">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-bullseye"
+                                                title="Target Achievement"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Target Achievement
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_value">
+
+                                            <field
+                                                name="achievement_percent"
+                                                readonly="1"
+                                                nolabel="1"/>
+
+                                            <span>%</span>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_progress">
+
+                                            <field
+                                                name="achievement_percent"
+                                                readonly="1"
+                                                nolabel="1"
+                                                widget="progressbar"/>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="o_ecopulse_outcome_card">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-exchange"
+                                                title="Reduction Variance"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Reduction Variance
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_value">
+
+                                            <field
+                                                name="reduction_variance"
+                                                readonly="1"
+                                                nolabel="1"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_hint">
+                                            Actual minus expected reduction
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="o_ecopulse_outcome_card">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-check-circle"
+                                                title="Confidence Level"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Confidence Level
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_status">
+
+                                            <field
+                                                name="outcome_confidence"
+                                                readonly="1"
+                                                nolabel="1"
+                                                widget="badge"
+                                                decoration-success="outcome_confidence == 'high'"
+                                                decoration-warning="outcome_confidence == 'medium'"
+                                                decoration-danger="outcome_confidence == 'low'"/>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="o_ecopulse_outcome_banner">
+
+                                    <div class="o_ecopulse_outcome_banner_icon">
+
+                                        <i
+                                            class="fa fa-line-chart"
+                                            title="Outcome Status"/>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_outcome_banner_content">
+
+                                        <div class="o_ecopulse_outcome_banner_title">
+                                            ESG Action Outcome
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_banner_status">
+
+                                            <field
+                                                name="outcome_status"
+                                                readonly="1"
+                                                nolabel="1"
+                                                widget="badge"
+                                                decoration-danger="outcome_status == 'failed'"
+                                                decoration-warning="outcome_status == 'partial'"
+                                                decoration-success="outcome_status in ('achieved', 'exceeded')"
+                                                decoration-muted="outcome_status == 'not_measured'"/>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-balance-scale"
+                                            title="Expected versus Actual"/>
+
+                                        <span>Expected vs Actual Reduction</span>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_comparison_grid">
+
+                                        <div class="o_ecopulse_comparison_box">
+
+                                            <div class="o_ecopulse_comparison_label">
+                                                Expected Reduction
+                                            </div>
+
+                                            <div class="o_ecopulse_comparison_value">
+
+                                                <field
+                                                    name="expected_reduction_emission"
+                                                    readonly="1"
+                                                    nolabel="1"/>
+
+                                            </div>
+
+                                            <div class="o_ecopulse_comparison_unit">
+                                                kg CO2e
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="o_ecopulse_comparison_arrow">
+
+                                            <i
+                                                class="fa fa-long-arrow-right"
+                                                title="Compared with"/>
+
+                                        </div>
+
+
+                                        <div class="o_ecopulse_comparison_box">
+
+                                            <div class="o_ecopulse_comparison_label">
+                                                Actual Reduction
+                                            </div>
+
+                                            <div class="o_ecopulse_comparison_value">
+
+                                                <field
+                                                    name="actual_reduction_emission"
+                                                    readonly="1"
+                                                    nolabel="1"/>
+
+                                            </div>
+
+                                            <div class="o_ecopulse_comparison_unit">
+                                                kg CO2e
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-file-text-o"
+                                            title="Outcome Summary"/>
+
+                                        <span>Outcome Summary</span>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_result_text">
+
+                                        <field
+                                            name="outcome_summary"
+                                            readonly="1"
+                                            nolabel="1"/>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-lightbulb-o"
+                                            title="Improvement Recommendation"/>
+
+                                        <span>Improvement Recommendation</span>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_result_text">
+
+                                        <field
+                                            name="improvement_recommendation"
+                                            readonly="1"
+                                            nolabel="1"/>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-graduation-cap"
+                                            title="Lessons Learned"/>
+
+                                        <span>Lessons Learned</span>
+
+                                    </div>
+
+                                    <field
+                                        name="lessons_learned"
+                                        nolabel="1"
+                                        placeholder="Record implementation lessons, challenges and success factors..."/>
+
+                                </div>
+
+                            </div>
+
+                        </page>
+
+
+                        <!-- MANAGEMENT REVIEW -->
 
                         <page string="Management Review">
 
@@ -570,7 +1086,7 @@
 
 
     <!-- =====================================================
-         ESG ACTION RECOMMENDATION SEARCH VIEW
+         SEARCH VIEW
          ===================================================== -->
 
     <record
@@ -591,6 +1107,8 @@
                 <field name="recommendation_source"/>
                 <field name="priority"/>
                 <field name="status"/>
+                <field name="risk_level"/>
+                <field name="outcome_status"/>
                 <field name="target_date"/>
 
                 <filter
@@ -599,9 +1117,9 @@
                     domain="[('priority', '=', 'critical')]"/>
 
                 <filter
-                    name="filter_high"
-                    string="High Priority"
-                    domain="[('priority', '=', 'high')]"/>
+                    name="filter_high_risk"
+                    string="High Risk Actions"
+                    domain="[('risk_level', 'in', ['high', 'critical'])]"/>
 
                 <filter
                     name="filter_open"
@@ -619,19 +1137,14 @@
                     domain="[('status', '=', 'completed')]"/>
 
                 <filter
-                    name="filter_budget_source"
-                    string="Budget Recommendations"
-                    domain="[('recommendation_source', '=', 'budget')]"/>
+                    name="filter_achieved"
+                    string="Target Achieved"
+                    domain="[('outcome_status', 'in', ['achieved', 'exceeded'])]"/>
 
                 <filter
-                    name="filter_anomaly_source"
-                    string="Anomaly Recommendations"
-                    domain="[('recommendation_source', '=', 'anomaly')]"/>
-
-                <filter
-                    name="filter_greenwashing_source"
-                    string="Greenwashing Recommendations"
-                    domain="[('recommendation_source', '=', 'greenwashing')]"/>
+                    name="filter_failed"
+                    string="Failed Outcomes"
+                    domain="[('outcome_status', '=', 'failed')]"/>
 
                 <separator/>
 
@@ -641,9 +1154,19 @@
                     context="{'group_by': 'priority'}"/>
 
                 <filter
+                    name="group_by_risk"
+                    string="Group by Risk"
+                    context="{'group_by': 'risk_level'}"/>
+
+                <filter
                     name="group_by_status"
                     string="Group by Status"
                     context="{'group_by': 'status'}"/>
+
+                <filter
+                    name="group_by_outcome"
+                    string="Group by Outcome"
+                    context="{'group_by': 'outcome_status'}"/>
 
                 <filter
                     name="group_by_department"
@@ -655,11 +1178,6 @@
                     string="Group by Source"
                     context="{'group_by': 'recommendation_source'}"/>
 
-                <filter
-                    name="group_by_target_month"
-                    string="Group by Target Month"
-                    context="{'group_by': 'target_date:month'}"/>
-
             </search>
 
         </field>
@@ -668,7 +1186,7 @@
 
 
     <!-- =====================================================
-         ESG ACTION RECOMMENDATION KANBAN VIEW
+         KANBAN VIEW
          ===================================================== -->
 
     <record
@@ -691,7 +1209,12 @@
                 <field name="responsible_user_id"/>
                 <field name="target_date"/>
                 <field name="impact_score"/>
+                <field name="risk_score"/>
+                <field name="risk_level"/>
+                <field name="effectiveness_score"/>
                 <field name="expected_reduction_emission"/>
+                <field name="actual_reduction_emission"/>
+                <field name="outcome_status"/>
                 <field name="status"/>
 
                 <templates>
@@ -709,27 +1232,27 @@
                                     </strong>
 
                                     <span
-                                        t-if="record.priority.raw_value == 'critical'"
+                                        t-if="record.risk_level.raw_value == 'critical'"
                                         class="badge text-bg-danger">
-                                        Critical
+                                        Critical Risk
                                     </span>
 
                                     <span
-                                        t-elif="record.priority.raw_value == 'high'"
+                                        t-elif="record.risk_level.raw_value == 'high'"
                                         class="badge text-bg-warning">
-                                        High
+                                        High Risk
                                     </span>
 
                                     <span
-                                        t-elif="record.priority.raw_value == 'medium'"
+                                        t-elif="record.risk_level.raw_value == 'medium'"
                                         class="badge text-bg-info">
-                                        Medium
+                                        Medium Risk
                                     </span>
 
                                     <span
                                         t-else=""
                                         class="badge text-bg-success">
-                                        Low
+                                        Low Risk
                                     </span>
 
                                 </div>
@@ -759,17 +1282,15 @@
 
                                 </div>
 
-
                                 <div class="o_ecopulse_kanban_metric">
 
-                                    <span>Responsible Owner</span>
+                                    <span>Owner</span>
 
                                     <strong>
                                         <field name="responsible_user_id"/>
                                     </strong>
 
                                 </div>
-
 
                                 <div class="o_ecopulse_kanban_metric">
 
@@ -780,7 +1301,6 @@
                                     </strong>
 
                                 </div>
-
 
                                 <div class="o_ecopulse_kanban_metric">
 
@@ -793,6 +1313,16 @@
 
                                 </div>
 
+                                <div class="o_ecopulse_kanban_metric">
+
+                                    <span>Risk Score</span>
+
+                                    <strong>
+                                        <field name="risk_score"/>
+                                        /100
+                                    </strong>
+
+                                </div>
 
                                 <div class="mt-3">
 
@@ -818,7 +1348,7 @@
 
 
     <!-- =====================================================
-         ESG ACTION RECOMMENDATION GRAPH VIEW
+         GRAPH VIEW
          ===================================================== -->
 
     <record
@@ -831,7 +1361,7 @@
         <field name="arch" type="xml">
 
             <graph
-                string="Expected ESG Impact"
+                string="ESG Action Performance"
                 type="bar">
 
                 <field name="department_id"/>
@@ -844,6 +1374,14 @@
                     name="actual_reduction_emission"
                     type="measure"/>
 
+                <field
+                    name="risk_score"
+                    type="measure"/>
+
+                <field
+                    name="effectiveness_score"
+                    type="measure"/>
+
             </graph>
 
         </field>
@@ -852,7 +1390,7 @@
 
 
     <!-- =====================================================
-         ESG ACTION RECOMMENDATION WINDOW ACTION
+         WINDOW ACTION
          ===================================================== -->
 
     <record
@@ -878,8 +1416,8 @@
             </p>
 
             <p>
-                Convert carbon risks, budget overruns and emission anomalies
-                into measurable sustainability actions.
+                Generate sustainability recommendations, predict
+                implementation risks and analyze actual environmental outcomes.
             </p>
 
         </field>

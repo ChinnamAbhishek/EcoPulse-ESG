@@ -10,3 +10,5 @@ from . import carbon_reduction_simulator
 from . import carbon_budget
 from . import emission_anomaly
 from . import esg_action_recommendation
+from . import esg_action_outcome
+from . import esg_action_risk
