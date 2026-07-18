@@ -37,6 +37,8 @@
                 <field name="risk_level"/>
                 <field name="effectiveness_score"/>
                 <field name="outcome_status"/>
+                <field name="actual_roi_percent"/>
+                <field name="roi_status"/>
                 <field name="status"/>
 
             </list>
@@ -63,8 +65,6 @@
                 string="ESG Action Recommendation"
                 class="o_ecopulse_esg_action_form">
 
-                <!-- WORKFLOW HEADER -->
-
                 <header>
 
                     <button
@@ -82,6 +82,13 @@
                         class="btn-secondary"
                         icon="fa-shield"
                         invisible="status in ('completed', 'rejected')"/>
+
+                    <button
+                        name="action_calculate_esg_roi"
+                        string="Calculate ESG ROI"
+                        type="object"
+                        class="btn-secondary"
+                        icon="fa-inr"/>
 
                     <button
                         name="action_approve"
@@ -179,11 +186,9 @@
                             </div>
 
                             <div class="o_ecopulse_action_subtitle">
-
                                 Intelligent sustainability recommendation,
-                                risk prediction, implementation tracking
-                                and outcome analysis.
-
+                                implementation-risk prediction, carbon-value
+                                analysis and outcome intelligence.
                             </div>
 
                         </div>
@@ -191,18 +196,16 @@
                     </div>
 
 
-                    <!-- PRIMARY KPI CARDS -->
+                    <!-- KPI CARDS -->
 
                     <div class="o_ecopulse_action_kpis">
 
                         <div class="o_ecopulse_kpi_card o_ecopulse_kpi_primary">
 
                             <div class="o_ecopulse_kpi_icon">
-
                                 <i
                                     class="fa fa-line-chart"
                                     title="Impact Score"/>
-
                             </div>
 
                             <div class="o_ecopulse_kpi_label">
@@ -228,11 +231,9 @@
                         <div class="o_ecopulse_kpi_card">
 
                             <div class="o_ecopulse_kpi_icon">
-
                                 <i
                                     class="fa fa-cloud"
                                     title="Baseline Emission"/>
-
                             </div>
 
                             <div class="o_ecopulse_kpi_label">
@@ -257,41 +258,9 @@
                         <div class="o_ecopulse_kpi_card o_ecopulse_kpi_warning">
 
                             <div class="o_ecopulse_kpi_icon">
-
-                                <i
-                                    class="fa fa-arrow-down"
-                                    title="Expected Reduction"/>
-
-                            </div>
-
-                            <div class="o_ecopulse_kpi_label">
-                                Expected Reduction
-                            </div>
-
-                            <div class="o_ecopulse_kpi_value">
-
-                                <field
-                                    name="expected_reduction_emission"
-                                    readonly="1"
-                                    nolabel="1"/>
-
-                            </div>
-
-                            <div class="o_ecopulse_kpi_unit">
-                                kg CO2e target reduction
-                            </div>
-
-                        </div>
-
-
-                        <div class="o_ecopulse_kpi_card o_ecopulse_kpi_info">
-
-                            <div class="o_ecopulse_kpi_icon">
-
                                 <i
                                     class="fa fa-shield"
-                                    title="Implementation Risk"/>
-
+                                    title="Risk Score"/>
                             </div>
 
                             <div class="o_ecopulse_kpi_label">
@@ -308,7 +277,35 @@
                             </div>
 
                             <div class="o_ecopulse_kpi_unit">
-                                Predicted risk out of 100
+                                Implementation risk out of 100
+                            </div>
+
+                        </div>
+
+
+                        <div class="o_ecopulse_kpi_card o_ecopulse_kpi_info">
+
+                            <div class="o_ecopulse_kpi_icon">
+                                <i
+                                    class="fa fa-inr"
+                                    title="Actual ESG ROI"/>
+                            </div>
+
+                            <div class="o_ecopulse_kpi_label">
+                                Actual ESG ROI
+                            </div>
+
+                            <div class="o_ecopulse_kpi_value">
+
+                                <field
+                                    name="actual_roi_percent"
+                                    readonly="1"
+                                    nolabel="1"/>
+
+                            </div>
+
+                            <div class="o_ecopulse_kpi_unit">
+                                Percentage financial return
                             </div>
 
                         </div>
@@ -636,41 +633,6 @@
                                 </div>
 
 
-                                <div class="o_ecopulse_outcome_banner">
-
-                                    <div class="o_ecopulse_outcome_banner_icon">
-
-                                        <i
-                                            class="fa fa-search"
-                                            title="Risk Analysis"/>
-
-                                    </div>
-
-                                    <div class="o_ecopulse_outcome_banner_content">
-
-                                        <div class="o_ecopulse_outcome_banner_title">
-                                            ESG Implementation Risk Analysis
-                                        </div>
-
-                                        <div class="o_ecopulse_outcome_banner_status">
-
-                                            <field
-                                                name="risk_level"
-                                                readonly="1"
-                                                nolabel="1"
-                                                widget="badge"
-                                                decoration-success="risk_level == 'low'"
-                                                decoration-info="risk_level == 'medium'"
-                                                decoration-warning="risk_level == 'high'"
-                                                decoration-danger="risk_level == 'critical'"/>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-
                                 <div class="o_ecopulse_action_panel">
 
                                     <div class="o_ecopulse_action_panel_title">
@@ -711,6 +673,320 @@
 
                                         <field
                                             name="preventive_recommendation"
+                                            readonly="1"
+                                            nolabel="1"/>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </page>
+
+
+                        <!-- ESG ROI INTELLIGENCE -->
+
+                        <page string="ESG ROI Intelligence">
+
+                            <div class="o_ecopulse_outcome_dashboard">
+
+                                <!-- ROI INPUT PANEL -->
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-calculator"
+                                            title="ROI Inputs"/>
+
+                                        <span>ROI Calculation Inputs</span>
+
+                                    </div>
+
+                                    <group>
+
+                                        <group>
+
+                                            <field name="implementation_cost"/>
+
+                                            <field name="carbon_price_per_ton"/>
+
+                                        </group>
+
+                                        <group>
+
+                                            <field name="currency_id"/>
+
+                                            <field
+                                                name="roi_status"
+                                                readonly="1"
+                                                widget="badge"
+                                                decoration-danger="roi_status == 'negative'"
+                                                decoration-warning="roi_status == 'break_even'"
+                                                decoration-success="roi_status in ('positive', 'high_return')"
+                                                decoration-muted="roi_status == 'not_calculated'"/>
+
+                                        </group>
+
+                                    </group>
+
+                                </div>
+
+
+                                <!-- ROI KPI CARDS -->
+
+                                <div class="o_ecopulse_outcome_cards">
+
+                                    <div class="o_ecopulse_outcome_card o_ecopulse_outcome_primary">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-line-chart"
+                                                title="Actual ESG ROI"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Actual ESG ROI
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_value">
+
+                                            <field
+                                                name="actual_roi_percent"
+                                                readonly="1"
+                                                nolabel="1"/>
+
+                                            <span>%</span>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_progress">
+
+                                            <field
+                                                name="actual_roi_percent"
+                                                readonly="1"
+                                                nolabel="1"
+                                                widget="progressbar"/>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="o_ecopulse_outcome_card">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-bullseye"
+                                                title="Expected ESG ROI"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Expected ESG ROI
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_value">
+
+                                            <field
+                                                name="expected_roi_percent"
+                                                readonly="1"
+                                                nolabel="1"/>
+
+                                            <span>%</span>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="o_ecopulse_outcome_card">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-inr"
+                                                title="Actual Net Benefit"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Actual Net Benefit
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_value">
+
+                                            <field
+                                                name="actual_net_benefit"
+                                                readonly="1"
+                                                nolabel="1"/>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="o_ecopulse_outcome_card">
+
+                                        <div class="o_ecopulse_outcome_icon">
+
+                                            <i
+                                                class="fa fa-money"
+                                                title="Actual Carbon Value"/>
+
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_label">
+                                            Actual Carbon Value
+                                        </div>
+
+                                        <div class="o_ecopulse_outcome_value">
+
+                                            <field
+                                                name="actual_carbon_value"
+                                                readonly="1"
+                                                nolabel="1"/>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- EXPECTED VS ACTUAL CARBON VALUE -->
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-balance-scale"
+                                            title="Carbon Value Comparison"/>
+
+                                        <span>Expected vs Actual Carbon Value</span>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_comparison_grid">
+
+                                        <div class="o_ecopulse_comparison_box">
+
+                                            <div class="o_ecopulse_comparison_label">
+                                                Expected Carbon Value
+                                            </div>
+
+                                            <div class="o_ecopulse_comparison_value">
+
+                                                <field
+                                                    name="expected_carbon_value"
+                                                    readonly="1"
+                                                    nolabel="1"/>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="o_ecopulse_comparison_arrow">
+
+                                            <i
+                                                class="fa fa-long-arrow-right"
+                                                title="Compared With"/>
+
+                                        </div>
+
+
+                                        <div class="o_ecopulse_comparison_box">
+
+                                            <div class="o_ecopulse_comparison_label">
+                                                Actual Carbon Value
+                                            </div>
+
+                                            <div class="o_ecopulse_comparison_value">
+
+                                                <field
+                                                    name="actual_carbon_value"
+                                                    readonly="1"
+                                                    nolabel="1"/>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- NET BENEFIT COMPARISON -->
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-exchange"
+                                            title="Net Benefit Comparison"/>
+
+                                        <span>Expected vs Actual Net Benefit</span>
+
+                                    </div>
+
+                                    <group>
+
+                                        <group>
+
+                                            <field
+                                                name="expected_net_benefit"
+                                                readonly="1"/>
+
+                                            <field
+                                                name="expected_roi_percent"
+                                                readonly="1"/>
+
+                                        </group>
+
+                                        <group>
+
+                                            <field
+                                                name="actual_net_benefit"
+                                                readonly="1"/>
+
+                                            <field
+                                                name="actual_roi_percent"
+                                                readonly="1"/>
+
+                                        </group>
+
+                                    </group>
+
+                                </div>
+
+
+                                <!-- ROI SUMMARY -->
+
+                                <div class="o_ecopulse_action_panel">
+
+                                    <div class="o_ecopulse_action_panel_title">
+
+                                        <i
+                                            class="fa fa-file-text-o"
+                                            title="ROI Summary"/>
+
+                                        <span>ROI Intelligence Summary</span>
+
+                                    </div>
+
+                                    <div class="o_ecopulse_result_text">
+
+                                        <field
+                                            name="roi_summary"
                                             readonly="1"
                                             nolabel="1"/>
 
@@ -794,16 +1070,6 @@
 
                                         </div>
 
-                                        <div class="o_ecopulse_outcome_progress">
-
-                                            <field
-                                                name="achievement_percent"
-                                                readonly="1"
-                                                nolabel="1"
-                                                widget="progressbar"/>
-
-                                        </div>
-
                                     </div>
 
 
@@ -830,10 +1096,6 @@
 
                                         </div>
 
-                                        <div class="o_ecopulse_outcome_hint">
-                                            Actual minus expected reduction
-                                        </div>
-
                                     </div>
 
 
@@ -843,7 +1105,7 @@
 
                                             <i
                                                 class="fa fa-check-circle"
-                                                title="Confidence Level"/>
+                                                title="Outcome Confidence"/>
 
                                         </div>
 
@@ -944,7 +1206,7 @@
 
                                             <i
                                                 class="fa fa-long-arrow-right"
-                                                title="Compared with"/>
+                                                title="Compared With"/>
 
                                         </div>
 
@@ -1038,7 +1300,7 @@
                                     <field
                                         name="lessons_learned"
                                         nolabel="1"
-                                        placeholder="Record implementation lessons, challenges and success factors..."/>
+                                        placeholder="Record implementation lessons and success factors..."/>
 
                                 </div>
 
@@ -1066,7 +1328,7 @@
                                 <field
                                     name="management_note"
                                     nolabel="1"
-                                    placeholder="Add approval notes, review comments or implementation decisions..."/>
+                                    placeholder="Add approval notes and implementation decisions..."/>
 
                             </div>
 
@@ -1109,6 +1371,7 @@
                 <field name="status"/>
                 <field name="risk_level"/>
                 <field name="outcome_status"/>
+                <field name="roi_status"/>
                 <field name="target_date"/>
 
                 <filter
@@ -1120,6 +1383,16 @@
                     name="filter_high_risk"
                     string="High Risk Actions"
                     domain="[('risk_level', 'in', ['high', 'critical'])]"/>
+
+                <filter
+                    name="filter_positive_roi"
+                    string="Positive ESG ROI"
+                    domain="[('roi_status', 'in', ['positive', 'high_return'])]"/>
+
+                <filter
+                    name="filter_negative_roi"
+                    string="Negative ESG ROI"
+                    domain="[('roi_status', '=', 'negative')]"/>
 
                 <filter
                     name="filter_open"
@@ -1141,11 +1414,6 @@
                     string="Target Achieved"
                     domain="[('outcome_status', 'in', ['achieved', 'exceeded'])]"/>
 
-                <filter
-                    name="filter_failed"
-                    string="Failed Outcomes"
-                    domain="[('outcome_status', '=', 'failed')]"/>
-
                 <separator/>
 
                 <filter
@@ -1157,6 +1425,11 @@
                     name="group_by_risk"
                     string="Group by Risk"
                     context="{'group_by': 'risk_level'}"/>
+
+                <filter
+                    name="group_by_roi"
+                    string="Group by ROI"
+                    context="{'group_by': 'roi_status'}"/>
 
                 <filter
                     name="group_by_status"
@@ -1172,11 +1445,6 @@
                     name="group_by_department"
                     string="Group by Department"
                     context="{'group_by': 'department_id'}"/>
-
-                <filter
-                    name="group_by_source"
-                    string="Group by Source"
-                    context="{'group_by': 'recommendation_source'}"/>
 
             </search>
 
@@ -1211,9 +1479,8 @@
                 <field name="impact_score"/>
                 <field name="risk_score"/>
                 <field name="risk_level"/>
-                <field name="effectiveness_score"/>
-                <field name="expected_reduction_emission"/>
-                <field name="actual_reduction_emission"/>
+                <field name="actual_roi_percent"/>
+                <field name="roi_status"/>
                 <field name="outcome_status"/>
                 <field name="status"/>
 
@@ -1304,22 +1571,32 @@
 
                                 <div class="o_ecopulse_kanban_metric">
 
-                                    <span>Expected Reduction</span>
+                                    <span>Risk Score</span>
 
                                     <strong>
-                                        <field name="expected_reduction_emission"/>
-                                        kg CO2e
+                                        <field name="risk_score"/>
+                                        /100
                                     </strong>
 
                                 </div>
 
                                 <div class="o_ecopulse_kanban_metric">
 
-                                    <span>Risk Score</span>
+                                    <span>Actual ESG ROI</span>
 
                                     <strong>
-                                        <field name="risk_score"/>
-                                        /100
+                                        <field name="actual_roi_percent"/>
+                                        %
+                                    </strong>
+
+                                </div>
+
+                                <div class="o_ecopulse_kanban_metric">
+
+                                    <span>ROI Status</span>
+
+                                    <strong>
+                                        <field name="roi_status"/>
                                     </strong>
 
                                 </div>
@@ -1382,6 +1659,10 @@
                     name="effectiveness_score"
                     type="measure"/>
 
+                <field
+                    name="actual_roi_percent"
+                    type="measure"/>
+
             </graph>
 
         </field>
@@ -1417,7 +1698,8 @@
 
             <p>
                 Generate sustainability recommendations, predict
-                implementation risks and analyze actual environmental outcomes.
+                implementation risks, calculate carbon value and analyze
+                actual environmental outcomes.
             </p>
 
         </field>
